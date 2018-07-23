@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -28,14 +26,14 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.geometry.Translatable;
 
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.preferences.IControlStructureConstants;
 
 /**
  * 
- * This class contains methods which creating a root figure. Other figures will
- * be displayed on it
+ * This class contains methods which creating a root figure. Other figures will be displayed on it
  * 
  * @version 1.0
  * @author Aliaksei Babkoivch, Lukas Balzer
@@ -54,8 +52,8 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
   private boolean generalEnable = false;
 
   /**
-   * Constructs the RootFigure which is used as the basis of the
-   * GraphicalEditor, this method is only called once in CSEditor
+   * Constructs the RootFigure which is used as the basis of the GraphicalEditor, this method is
+   * only called once in CSEditor
    * 
    * @author Lukas Balzer
    * @param id
@@ -82,6 +80,11 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
   }
 
   @Override
+  public void translateFromRoot(Translatable t) {
+    
+  }
+
+  @Override
   public void addHighlighter(Point ref) {
 
     this.translateToRelative(ref);
@@ -98,8 +101,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
       this.highlighter.setOpaque(false);
       this.add(this.highlighter);
     }
-    Rectangle rec = new Rectangle(ref.x - offset, ref.y - offset, width,
-        width);
+    Rectangle rec = new Rectangle(ref.x - offset, ref.y - offset, width, width);
     this.translateFromParent(rec);
     this.highlighter.setBounds(rec);
     this.highlighter.setVisible(true);
@@ -160,12 +162,10 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
 
         for (Point anchor : childrenAnchorsPoints) {
           anchorHighlighter = new Figure();
-          anchorHighlighter
-              .setBackgroundColor(ColorConstants.lightBlue);
+          anchorHighlighter.setBackgroundColor(ColorConstants.lightBlue);
           anchorHighlighter.setOpaque(true);
           this.add(anchorHighlighter);
-          Rectangle rec = new Rectangle(anchor.x - offset, anchor.y
-              - offset, width, width);
+          Rectangle rec = new Rectangle(anchor.x - offset, anchor.y - offset, width, width);
           this.translateFromParent(rec);
           anchorHighlighter.setBounds(rec);
           anchorHighlighter.setVisible(true);

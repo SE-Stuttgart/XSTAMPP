@@ -48,7 +48,7 @@ public class ConnectionTest {
 		connection = new CSConnection();
 		connection.setSourceAnchor(source, false);
 		Assert.assertEquals(source, connection.getSourceAnchor());
-		connection.setTargetAnchor(target, withPm);
+		connection.setTargetAnchor(target, false);
 		Assert.assertEquals(target, connection.getTargetAnchor());
 		connection.setConnectionType(ConnectionType.ARROW_SIMPLE);
 		Assert.assertEquals(ConnectionType.ARROW_SIMPLE, connection.getConnectionType());

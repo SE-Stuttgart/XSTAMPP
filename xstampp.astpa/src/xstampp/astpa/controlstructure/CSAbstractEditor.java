@@ -141,21 +141,19 @@ import xstampp.util.service.UndoRedoService;
 
 /**
  * 
- * CSGraphicalEditor is an implementation of the
- * <code>org.eclipse.ui.part.EditorPart</code> the code is based on the
- * implementation of GraphicalEditor
+ * CSGraphicalEditor is an implementation of the <code>org.eclipse.ui.part.EditorPart</code> the
+ * code is based on the implementation of GraphicalEditor
  * 
  * @version 1.0
  * @author Lukas Balzer
  * @since 2.1
  * 
  */
-public abstract class CSAbstractEditor extends StandartEditorPart
-    implements IControlStructureEditor, IZoomContributor, IPropertyChangeListener, ISelectionProvider {
+public abstract class CSAbstractEditor extends StandartEditorPart implements
+    IControlStructureEditor, IZoomContributor, IPropertyChangeListener, ISelectionProvider {
 
   /**
-   * The GraphicalViewer is responsible for displaying all graphical Elements on
-   * the screen
+   * The GraphicalViewer is responsible for displaying all graphical Elements on the screen
    */
   private GraphicalViewer graphicalViewer;
 
@@ -211,8 +209,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   private ArrayList<ISelectionChangedListener> selectionListeners;
 
   /**
-   * This constructor defines the Domain where the editable content should be
-   * displayed in
+   * This constructor defines the Domain where the editable content should be displayed in
    * 
    * @param store
    *          The {@link IPreferenceStore} used to store this editors preferences
@@ -301,10 +298,11 @@ public abstract class CSAbstractEditor extends StandartEditorPart
    */
   private IRectangleComponent createRoot() {
     root = null;
-    if (((STPAEditorInput) getEditorInput()).getProperties().containsKey(RenameRootComponentHandler.ROOT_ID)) {
+    if (((STPAEditorInput) getEditorInput()).getProperties()
+        .containsKey(RenameRootComponentHandler.ROOT_ID)) {
       for (IRectangleComponent availableRoot : this.getModelInterface().getRoots()) {
-        if (availableRoot.getId().toString().equals(
-            ((STPAEditorInput) getEditorInput()).getProperties().get(RenameRootComponentHandler.ROOT_ID))) {
+        if (availableRoot.getId().toString().equals(((STPAEditorInput) getEditorInput())
+            .getProperties().get(RenameRootComponentHandler.ROOT_ID))) {
           root = availableRoot;
         }
       }
@@ -320,9 +318,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * Called to configure the graphical viewer before it receives its contents.
-   * This is where the root editpart should be configured. Subclasses should
-   * extend or override this method as needed.
+   * Called to configure the graphical viewer before it receives its contents. This is where the
+   * root editpart should be configured. Subclasses should extend or override this method as needed.
    */
   public void configureGraphicalViewer(GraphicalViewer viewer) {
     viewer.getControl().setBackground(ColorConstants.listBackground);
@@ -330,7 +327,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     double[] zoomLevel = new double[CSAbstractEditor.ZOOM_LEVEL];
     ArrayList<String> zoomContributions;
 
-    viewer.setEditPartFactory(new CSEditPartFactory(this.getModelInterface(), this.getId(), this.store));
+    viewer.setEditPartFactory(
+        new CSEditPartFactory(this.getModelInterface(), this.getId(), this.store));
     // zooming
     ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
     viewer.setRootEditPart(rootEditPart);
@@ -390,20 +388,20 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     viewer.getKeyHandler().put(KeyStroke.getPressed('Y', SWT.CONTROL),
         this.getActionRegistry().getAction(ActionFactory.REDO.getId()));
 
-    viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL), MouseWheelZoomHandler.SINGLETON);
+    viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.CONTROL),
+        MouseWheelZoomHandler.SINGLETON);
 
-    ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer, this.getActionRegistry(),
-        getModelInterface());
+    ContextMenuProvider contextProvider = new CSContextMenuProvider(viewer,
+        this.getActionRegistry(), getModelInterface());
     viewer.setContextMenu(contextProvider);
     ((FigureCanvas) viewer.getControl()).setScrollBarVisibility(FigureCanvas.AUTOMATIC);
     this.getSite().registerContextMenu(viewer.getContextMenu(), viewer);
   }
 
   /**
-   * Hooks the GraphicalViewer to the rest of the Editor. By default, the viewer
-   * is added to the SelectionSynchronizer, which can be used to keep 2 or more
-   * EditPartViewers in sync. The viewer is also registered as the
-   * ISelectionProvider for the Editor's PartSite.
+   * Hooks the GraphicalViewer to the rest of the Editor. By default, the viewer is added to the
+   * SelectionSynchronizer, which can be used to keep 2 or more EditPartViewers in sync. The viewer
+   * is also registered as the ISelectionProvider for the Editor's PartSite.
    */
   protected void hookGraphicalViewer() {
     this.getSite().setSelectionProvider(this.getGraphicalViewer());
@@ -411,8 +409,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * this method (re-)creates the toolbar on the given composite The parent should
-   * have a formlayout since this class only accepts one
+   * this method (re-)creates the toolbar on the given composite The parent should have a formlayout
+   * since this class only accepts one
    * 
    * @author Lukas Balzer
    * 
@@ -457,8 +455,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       @Override
       public void widgetSelected(SelectionEvent e) {
         Map<String, String> values = new HashMap<>();
-        values.put("preferencePageId", "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$ //$NON-NLS-2$
-        STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", values); //$NON-NLS-1$
+        values.put("preferencePageId", //$NON-NLS-1$
+            "xstampp.astpa.preferencePage.controlstructure"); //$NON-NLS-1$
+        STPAPluginUtils.executeParaCommand("org.eclipse.ui.window.preferences", //$NON-NLS-1$
+            values);
       }
     });
 
@@ -467,7 +467,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     data.width = 200;
     data.left = new FormAttachment(preferenceButton, 30);
     this.positionLabel = new Label(this.toolBar, SWT.CENTER);
-    this.positionLabel.setText(" ----- x ----- "); //$NON-NLS-1$
+    this.positionLabel.setText(" ----- x ----- (----- x -----)"); //$NON-NLS-1$
     this.positionLabel.setLayoutData(data);
 
     if (getModelInterface().getFileExtension().equals("acc")) { //$NON-NLS-1$
@@ -481,7 +481,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
         @Override
         public void widgetSelected(SelectionEvent e) {
           try {
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("A-CAST.view1"); //$NON-NLS-1$
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .showView("A-CAST.view1"); //$NON-NLS-1$
           } catch (PartInitException e1) {
             e1.printStackTrace();
           }
@@ -541,12 +542,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * Initializes the ActionRegistry. This registry may be used by
-   * {@link ActionBarContributor ActionBarContributors} and/or
-   * {@link ContextMenuProvider ContextMenuProviders}.
-   * <P>
-   * This method may be called on Editor creation, or lazily the first time
-   * {@link #getActionRegistry()} is called.
+   * Initializes the ActionRegistry. This registry may be used by {@link ActionBarContributor
+   * ActionBarContributors} and/or {@link ContextMenuProvider ContextMenuProviders}. <P> This method
+   * may be called on Editor creation, or lazily the first time {@link #getActionRegistry()} is
+   * called.
    */
   protected void initializeActionRegistry() {
     this.createActions();
@@ -567,10 +566,9 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * Returns the list of {@link IAction IActions} dependant any actions in the
-   * Editor. These actions should implement the {@link UpdateAction} interface so
-   * that they can be updated in response to property changes. An example is the
-   * "Save" action.
+   * Returns the list of {@link IAction IActions} dependant any actions in the Editor. These actions
+   * should implement the {@link UpdateAction} interface so that they can be updated in response to
+   * property changes. An example is the "Save" action.
    * 
    * @param the
    *          enum constant which says what actions should be returned
@@ -602,8 +600,7 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * @see org.eclipse.ui.ISelectionListener#selectionChanged(IWorkbenchPart,
-   *      ISelection)
+   * @see org.eclipse.ui.ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
    */
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -613,8 +610,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * Creates actions for this editor. Subclasses should override this method to
-   * create and register actions with the {@link ActionRegistry}.
+   * Creates actions for this editor. Subclasses should override this method to create and register
+   * actions with the {@link ActionRegistry}.
    * 
    * @author Lukas Balzer
    */
@@ -671,8 +668,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * this method returns a stack with all executed commands in it, this Stack is
-   * used for e.g. undo/redo by removing/re-adding commands to the stack
+   * this method returns a stack with all executed commands in it, this Stack is used for e.g.
+   * undo/redo by removing/re-adding commands to the stack
    * 
    * @return the stack of the domain where the executed commands are stored
    */
@@ -682,14 +679,12 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * This method sets the GraphicalViewer of this Editor and adds it to the
-   * EditDomain
+   * This method sets the GraphicalViewer of this Editor and adds it to the EditDomain
    * 
    * @author Lukas
    * 
    * @param viewer
-   *          the Viewer instance wich says what type of viewer is used, for
-   *          example a scalable
+   *          the Viewer instance wich says what type of viewer is used, for example a scalable
    */
   public void setGraphicalViewer(GraphicalViewer viewer) {
     this.getEditDomain().addViewer(viewer);
@@ -707,8 +702,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * sets the EditDomain and calls <code>CSEditor.getPaletteRoot()</code> on it to
-   * create the attached palette
+   * sets the EditDomain and calls <code>CSEditor.getPaletteRoot()</code> on it to create the
+   * attached palette
    * 
    * @author Lukas Balzer
    * @param editor
@@ -721,14 +716,19 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       @Override
       public void mouseMove(MouseEvent mouseEvent, EditPartViewer viewer) {
 
-        org.eclipse.draw2d.geometry.Point point = new org.eclipse.draw2d.geometry.Point(mouseEvent.x,
-            mouseEvent.y);
-        // getZoomManager().getViewport().translateFromParent(point);
+        org.eclipse.draw2d.geometry.Point point = new org.eclipse.draw2d.geometry.Point(
+            mouseEvent.x, mouseEvent.y);
         CSAbstractEditPart root = (CSAbstractEditPart) getGraphicalViewer().getContents();
-        root.getFigure().translateToRelative(point);
-        CSAbstractEditor.this.mousePosition = new Point(point.x, point.y);
-        CSAbstractEditor.this.positionLabel
-            .setText(CSAbstractEditor.this.mousePosition.x + " x " + CSAbstractEditor.this.mousePosition.y); //$NON-NLS-1$
+        org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(point.x,
+            point.y);
+        root.getFigure().translateToRelative(p);
+        CSAbstractEditor.this.mousePosition = new Point(p.x, p.y);
+        p.setLocation(mousePosition.x, mousePosition.y);
+        IControlStructureFigure figure = (IControlStructureFigure) root.getFigure()
+            .findFigureAt(mousePosition.x, mousePosition.y);
+        figure.translateFromRoot(p);
+        CSAbstractEditor.this.positionLabel.setText(CSAbstractEditor.this.mousePosition.x + " x " //$NON-NLS-1$
+            + CSAbstractEditor.this.mousePosition.y + " (" + p.x + " x " + p.y + ")");
         super.mouseMove(mouseEvent, viewer);
       }
     };
@@ -739,8 +739,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
         if (event.isPreChangeEvent()) {
           getModelInterface().lockUpdate();
         } else if (event.isPostChangeEvent()) {
-          getModelInterface().releaseLockAndUpdate(
-              new ObserverValue[] { ObserverValue.CONTROL_STRUCTURE, ObserverValue.CONTROL_ACTION });
+          getModelInterface().releaseLockAndUpdate(new ObserverValue[] {
+              ObserverValue.CONTROL_STRUCTURE, ObserverValue.CONTROL_ACTION });
         }
       }
     });
@@ -761,15 +761,15 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   @Override
   public void setFocus() {
     this.getGraphicalViewer().getControl().setFocus();
-    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI.getWorkbench()
-        .getService(ISourceProviderService.class);
+    ISourceProviderService sourceProviderService = (ISourceProviderService) PlatformUI
+        .getWorkbench().getService(ISourceProviderService.class);
     sourceProviderService.getSourceProvider(CommandState.SAVE_STATE);
 
   }
 
   /**
-   * Creates a PaletteViewerProvider that will be used to create palettes for the
-   * view and the flyout.
+   * Creates a PaletteViewerProvider that will be used to create palettes for the view and the
+   * flyout.
    * 
    * @return the palette provider
    */
@@ -816,8 +816,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   /**
    * @author Lukas Balzer
    * @param store
-   *          The preference store which should be used, see that the store must
-   *          contain all keys defined in IControlStructureConstants
+   *          The preference store which should be used, see that the store must contain all keys
+   *          defined in IControlStructureConstants
    * @see IControlStructureConstants
    */
   public void setPreferenceStore(IPreferenceStore store) {
@@ -830,7 +830,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       this.store.addPropertyChangeListener(this);
     }
     if (this.graphicalViewer != null) {
-      ((IControlStructureEditPart) this.graphicalViewer.getContents()).setPreferenceStore(this.store);
+      ((IControlStructureEditPart) this.graphicalViewer.getContents())
+          .setPreferenceStore(this.store);
       ((CSEditPartFactory) this.graphicalViewer.getEditPartFactory()).setStore(this.store);
     }
   }
@@ -874,11 +875,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * By default, this method returns a FlyoutPreferences object that stores the
-   * flyout settings in the GEF plugin. Sub-classes may override.
+   * By default, this method returns a FlyoutPreferences object that stores the flyout settings in
+   * the GEF plugin. Sub-classes may override.
    * 
-   * @return the FlyoutPreferences object used to save the flyout palette's
-   *         preferences
+   * @return the FlyoutPreferences object used to save the flyout palette's preferences
    */
 
   protected FlyoutPreferences getPalettePreferences() {
@@ -893,11 +893,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   protected abstract PaletteRoot getPaletteRoot();
 
   /**
-   * Returns the palette viewer provider that is used to create palettes for the
-   * view and the flyout. Creates one if it doesn't already exist.
+   * Returns the palette viewer provider that is used to create palettes for the view and the
+   * flyout. Creates one if it doesn't already exist.
    * 
-   * @return the PaletteViewerProvider that can be used to create PaletteViewers
-   *         for this editor
+   * @return the PaletteViewerProvider that can be used to create PaletteViewers for this editor
    * @see #createPaletteViewerProvider()
    */
   protected final PaletteViewerProvider getPaletteViewerProvider() {
@@ -909,10 +908,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
   }
 
   /**
-   * A convenience method for updating a set of actions defined by the given List
-   * of action IDs. The actions are found by looking up the ID in the
-   * {@link #getActionRegistry() action registry}. If the corresponding action is
-   * an {@link UpdateAction}, it will have its <code>update() method called.
+   * A convenience method for updating a set of actions defined by the given List of action IDs. The
+   * actions are found by looking up the ID in the {@link #getActionRegistry() action registry}. If
+   * the corresponding action is an {@link UpdateAction}, it will have its <code>update() method
+   * called.
    * 
    * @param actions
    *          the list of IDs to update
@@ -928,7 +927,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     }
   }
 
-  protected boolean printStructure(String path, int imgOffset, String name, String processName, boolean decorate) {
+  protected boolean printStructure(String path, int imgOffset, String name, String processName,
+      boolean decorate) {
 
     Job exportJob = new CSExportJob(path, imgOffset,
         (String) this.getGraphicalViewer().getProperty(IControlStructureEditor.STEP_EDITOR),
@@ -1049,7 +1049,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       this.decoSwitch.notifyListeners(SWT.Selection, null);
       this.decoSwitch.setSelection((boolean) event.getNewValue());
     }
-    if ((event.getPropertyName() == IControlStructureEditor.STEP_EDITOR) && (this.getGraphicalViewer() != null)) {
+    if ((event.getPropertyName() == IControlStructureEditor.STEP_EDITOR)
+        && (this.getGraphicalViewer() != null)) {
       this.getGraphicalViewer().getContents().refresh();
     }
 
@@ -1088,7 +1089,8 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       // when the user
       // trys to insert not storeable
       // components
-      boolean conflict = ProjectManager.getContainerInstance().getProjectExtension(getProjectID()).equals("haz");//$NON-NLS-1$
+      boolean conflict = ProjectManager.getContainerInstance().getProjectExtension(getProjectID())
+          .equals("haz");//$NON-NLS-1$
       boolean hideWarning = PlatformUI.getPreferenceStore()
           .getBoolean(IControlStructureConstants.CS_HideIllegalComponentWarning);
       // the message is only promted if the choosen tool creates one of the new and
@@ -1097,15 +1099,15 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       ComponentType obj = (ComponentType) ((CombinedTemplateCreationEntry) tool).getTemplate();
       boolean criticalComp = obj == ComponentType.CONTAINER || obj == ComponentType.DASHEDBOX;
       if (criticalComp && !hideWarning && conflict) {
-        MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(null, Messages.LossOfData,
-            String.format(Messages.InformationCannotBeStored, obj.toString()),
+        MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(null,
+            Messages.LossOfData, String.format(Messages.InformationCannotBeStored, obj.toString()),
             Messages.DontPromtThisMsgAgain, false, null, null);
         hideWarning = dialog.getToggleState();
         if (dialog.getReturnCode() == Window.OK) {
           ProjectManager.getContainerInstance().changeProjectExtension(getProjectID(), "hazx"); //$NON-NLS-1$
         }
-        PlatformUI.getPreferenceStore().setValue(IControlStructureConstants.CS_HideIllegalComponentWarning,
-            hideWarning);
+        PlatformUI.getPreferenceStore()
+            .setValue(IControlStructureConstants.CS_HideIllegalComponentWarning, hideWarning);
       }
     }
 
@@ -1120,14 +1122,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
 
   /**
    * @param values
-   *          <ol>
-   *          <li>[0] must be the filePath
-   *          <li>[1] if there is a second value it is assumed as the offset if
-   *          not a default value is used
-   *          <li>[3] if there is a third value it is assumed as the boolean
-   *          deciding the decoration if there is no such value decoration is
-   *          turned off
-   *          </ol>
+   *          <ol> <li>[0] must be the filePath <li>[1] if there is a second value it is assumed as
+   *          the offset if not a default value is used <li>[3] if there is a third value it is
+   *          assumed as the boolean deciding the decoration if there is no such value decoration is
+   *          turned off </ol>
    */
   protected boolean initExport(String name, String processName, Object[] values) {
     int offset;
@@ -1237,28 +1235,25 @@ public abstract class CSAbstractEditor extends StandartEditorPart
     this.copySelectionCommand = new CopyComponentCommand(id, getModelInterface(), getId());
     IControlStructureEditPart parentPart = null;
     for (Object obj : getGraphicalViewer().getSelectedEditParts()) {
-      EditPart newParentPart = ((GraphicalEditPart) obj).getParent();
-      if (parentPart != null && parentPart.getClass() != newParentPart.getClass()) {
-        boolean equalParents = parentPart.getClass() != newParentPart.getClass();
-        boolean parentIsChild = newParentPart.getChildren().contains(parentPart);
-        boolean parentSelected = getGraphicalViewer().getSelectedEditParts().contains(newParentPart);
-        if (!equalParents && !parentSelected && !parentIsChild) {
-          Display.getDefault().beep();
-          return false;
-        }
+      CSAbstractEditPart newParentPart = (CSAbstractEditPart) ((CSAbstractEditPart) obj)
+          .getParent();
+      // if more than one component is attempted to be copied they must have the same parent
+      if (parentPart != null && !parentPart.getId().equals(newParentPart.getId())) {
+        Display.getDefault().beep();
+        return false;
       }
       if (newParentPart instanceof IControlStructureEditPart) {
-        parentPart = (IControlStructureEditPart) ((IControlStructureEditPart) obj).getParent();
+        parentPart = newParentPart;
         this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(),
             parentPart.getId());
       } else if ((GraphicalEditPart) obj instanceof CSConnectionEditPart) {
         this.copySelectionCommand.addComponent(((IControlStructureEditPart) obj).getModel(), null);
       }
     }
-    org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,
-        this.mousePosition.y);
+    org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(
+        this.mousePosition.x, this.mousePosition.y);
     if (parentPart != null) {
-      parentPart.getFigure().translateFromParent(p);
+      parentPart.getFigure().translateToRelative(p);
       this.copySelectionCommand.setPosition(p);
     } else {
       return false;
@@ -1271,10 +1266,10 @@ public abstract class CSAbstractEditor extends StandartEditorPart
       return false;
     }
     CSAbstractEditPart part = (CSAbstractEditPart) this.graphicalViewer.getContents();
-    org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(this.mousePosition.x,
-        this.mousePosition.y);
+    org.eclipse.draw2d.geometry.Point p = new org.eclipse.draw2d.geometry.Point(
+        this.mousePosition.x, this.mousePosition.y);
     IControlStructureFigure figure = (IControlStructureFigure) part.getFigure().findFigureAt(p);
-    figure.translateToRelative(p);
+    figure.translateFromRoot(p);
     this.copySelectionCommand.setPastePosition(figure.getId(), p.x, p.y);
     if (!this.copySelectionCommand.canExecute()) {
       Display.getDefault().beep();
