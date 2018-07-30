@@ -47,6 +47,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
   public CellEditorCausalEntry(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
       List<Link> factorComponentLinks, IUnsafeControlAction uca, UUID entryId) {
     super(gridWrapper, getUcaText(uca), entryId);
+    setShowDelete(true);
     addition = new ModeAddition() {
     };
     this.factorComponentLinkList = factorComponentLinks;
@@ -66,6 +67,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
   public CellEditorCausalEntry(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
       Link factorComponentLink, IUnsafeControlAction uca, UUID entryId) {
     super(gridWrapper, getUcaText(uca), entryId);
+    setShowDelete(true);
     addition = new ToggleConstraintModeAddition(this, factorComponentLink, dataInterface);
     this.factorComponentLinkList = Arrays.asList(new Link[] { factorComponentLink });
     this.dataInterface = dataInterface;
