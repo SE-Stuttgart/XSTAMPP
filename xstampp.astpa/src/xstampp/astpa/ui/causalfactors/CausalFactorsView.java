@@ -309,13 +309,25 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     Link ucaCfLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
         factorComponentLink.getLinkA());
     String hazString = "";
+    String tooltip = "";
     for (UUID hazId : getDataModel().getLinkController().getLinksFor(LinkingType.UCA_HAZ_LINK,
         ucaCfLink.getLinkA())) {
+      ITableModel hazard = getDataModel().getHazard(hazId);
       hazString += hazString.isEmpty() ? "" : ", ";
-      hazString += getDataModel().getHazard(hazId).getIdString();
+      hazString += hazard.getIdString();
+      tooltip += tooltip.isEmpty() ? "" : "\n";
+      tooltip += hazard.getIdString();
+      for(int i=0; i < hazard.getTitle().length();) {
+        int nextI = hazard.getTitle().indexOf(' ', i+ 30);
+        nextI = nextI == -1 ? hazard.getTitle().length(): nextI;
+        tooltip += "\n   " + hazard.getTitle().substring(i, nextI);
+        i = nextI;
+      }
     }
     entryRow.setRowSpanningCells(new int[] { 2, 3 });
-    entryRow.addCell(3, new GridCellText(hazString));
+    GridCellText cell = new GridCellText(hazString);
+    cell.setToolTip(tooltip);
+    entryRow.addCell(3, cell);
   }
 
   /**
@@ -564,17 +576,24 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
           addComponentRow = true;
           List<Link> causalEntryLinks = ucaCfLink_Component_To_UCA_map.get(uca);
           ucaList.add(uca);
+          ITableModel ca = getDataModel().getControlActionForUca(uca.getId());
           GridRow ucaFactorRow;
           ucaFactorRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 1 });
           CellEditorCausalEntry cell = new CellEditorCausalEntry(getGridWrapper(), getDataModel(),
               causalEntryLinks, uca, uca.getId());
-          cell.setToolTip(uca.getIdString());
+          String tooltip = uca.getIdString() + "\n\n" + ca.getIdString();
+          for(int i=0; i < ca.getTitle().length();) {
+            int nextI = ca.getTitle().indexOf(' ', i+ 200);
+            nextI = nextI == -1 ? ca.getTitle().length(): nextI;
+            tooltip += "\n   " + ca.getTitle().substring(i, nextI);
+            i = nextI;
+          }
+          cell.setToolTip(tooltip);
           // If the current user of the project is an Administrator than he/she can delete or edit
           // causal factors
-          UUID controlAction = getDataModel().getControlActionForUca(uca.getId()).getId();
 
           cell.setReadOnly(true);
-          if (!checkAccess(controlAction, AccessRights.WRITE)) {
+          if (!checkAccess(ca.getId(), AccessRights.WRITE)) {
             cell.setShowDelete(false);
           }
           ucaFactorRow.addCell(1, cell);
