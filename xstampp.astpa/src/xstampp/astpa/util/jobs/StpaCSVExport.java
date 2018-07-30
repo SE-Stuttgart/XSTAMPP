@@ -122,6 +122,10 @@ public class StpaCSVExport extends Job {
         this.writeCausalFactorsCSV(csvWriter,
             Messages.CausalFactorsTable);
       }
+      if ((type & ICSVExportConstants.CAUSAL_FACTOR_SafetyConstraints) != 0) {
+        this.exportAsCSV(this.model.getCausalFactorController().getSafetyConstraints(), csvWriter,
+            Messages.SafetyConstraints + "Step 4");
+      }
       csvWriter.close();
       if (this.enablePreview && tableCSV.exists() && Desktop.isDesktopSupported()) {
         Desktop.getDesktop().open(tableCSV);

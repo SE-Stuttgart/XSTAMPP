@@ -41,6 +41,7 @@ public interface ICSVExportConstants {
       this.add(Messages.CorrespondingSafetyConstraints);
       this.add(Messages.UnsafeControlActionsTable);
       this.add(Messages.CausalFactorsTable);
+      this.add(Messages.SafetyConstraints + " Step 4");
     }
 
   };
@@ -95,4 +96,9 @@ public interface ICSVExportConstants {
    * @author Lukas Balzer
    */
   public static final int CAUSAL_FACTOR = 1 << 9;
+  /**
+   * 
+   * @author Lukas Balzer
+   */
+  public static final int CAUSAL_FACTOR_SafetyConstraints = 1 << 10;
 }
