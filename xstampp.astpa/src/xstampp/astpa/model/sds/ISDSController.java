@@ -82,7 +82,8 @@ public interface ISDSController {
    * 
    * @param safetyConstraintId
    *          the id of the safety constraint
-   * @return safety constraint object
+   * @return safety constraint object or a {@link BadReferenceModel} if no safety constraint for the
+   *         given id exists
    * 
    * @author Fabian Toth
    */

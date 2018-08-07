@@ -157,6 +157,9 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
   public String getCurrentText() {
     return currentText;
   }
+  public String getCurrentTitle() {
+    return "";
+  }
 
   @Override
   public void onMouseDown(MouseEvent error, Point relativeMouse, Rectangle cellBounds) {
@@ -164,7 +167,7 @@ public abstract class GridCellTextEditor extends AbstractGridCell {
       Point point = grid.getGrid().toDisplay(editField.x, editField.y);
       point = Display.getDefault().map(grid.getGrid(), null, editField.x, editField.y);
       Rectangle rectangle = new Rectangle(point.x, point.y, editField.width, cellBounds.height);
-      String string = editorProvider.open(currentText, rectangle);
+      String string = editorProvider.open(getCurrentTitle(), currentText, rectangle);
       if (string != null) {
         currentText = string.trim();
         grid.setUpdateLock();

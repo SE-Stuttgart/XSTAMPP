@@ -24,6 +24,7 @@ public class Messages extends NLS {
   public static String AddWrongTimingUCA;
   public static String CellButtonAddScenario_ToolTip;
   public static String CellButtonImportConstraint_ToolTip;
+  public static String CellButtonLinkToConstraint_0;
   public static String CellEditorCausalEntry_ConfirmDeleteUCA;
   public static String CellEditorCausalEntry_ConfirmDeleteUCAMsg;
   public static String CellEditorCausalEntry_None;

@@ -36,7 +36,6 @@ public class CellButtonImportConstraint extends CellButton {
 
   private Grid grid;
   private ICausalFactorDataModel dataModel;
-  private Link ucaHazLink;
   private Consumer<UUID> linkAction;
 
   /**
@@ -47,11 +46,12 @@ public class CellButtonImportConstraint extends CellButton {
    * @param dataInterface
    */
   public CellButtonImportConstraint(Grid grid, ICausalFactorDataModel dataInterface, Consumer<UUID> linkAction) {
-    super(GridWrapper.getLinkButton16());
+    super(GridWrapper.getCopyButton16());
 
     this.grid = grid;
     dataModel = dataInterface;
     this.linkAction = linkAction;
+    setToolTip(Messages.CellButtonImportConstraint_ToolTip);
   }
 
   @Override
@@ -93,10 +93,5 @@ public class CellButtonImportConstraint extends CellButton {
         new Point(relativeMouse.x + cellBounds.x, relativeMouse.y + cellBounds.y));
     scLinking.openPopup();
 
-  }
-
-  @Override
-  public String getToolTip() {
-    return Messages.CellButtonImportConstraint_ToolTip;
   }
 }

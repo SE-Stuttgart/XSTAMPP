@@ -153,7 +153,7 @@ class LinkingShell {
     final Text searchField = new Text(shell, SWT.SINGLE | SWT.SEARCH);
     searchField.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
     searchField.setMessage("search..");
-
+    searchField.setToolTipText("Filter the items for both their labels and their descriptions"); 
     final List proposalList = new List(shell,
         SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.BORDER_SOLID);
     proposalList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -227,7 +227,8 @@ class LinkingShell {
         ArrayList<String> entryLabels = new ArrayList<>();
         ArrayList<LinkProposal> proposalEntries = new ArrayList<>();
         for (int i = 0; i < proposals.length; i++) {
-          if (proposals[i].getLabel().toLowerCase().contains(searchField.getText().toLowerCase())) {
+          String searchText = proposals[i].getLabel() + " " + proposals[i].getDescription();
+          if (searchText.toLowerCase().contains(searchField.getText().toLowerCase())) {
             entryLabels.add(proposals[i].getLabel());
             proposalEntries.add(proposals[i]);
           }
@@ -264,6 +265,7 @@ class LinkingShell {
       descShell.open();
     }
     this.shell.open();
+    searchField.setFocus();
   }
 
   public void setProposalListener(IContentProposalListener listener) {

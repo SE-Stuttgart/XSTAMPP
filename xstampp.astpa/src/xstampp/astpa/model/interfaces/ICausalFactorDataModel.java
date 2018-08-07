@@ -14,6 +14,7 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.UCAHazLink;
@@ -38,6 +39,11 @@ public interface ICausalFactorDataModel extends IDataModel {
    */
   List<UCAHazLink> getAllUCALinks();
 
+ /**
+ * {@link ISafetyConstraintViewDataModel#getSafetyConstraint(UUID)}
+ */
+  ITableModel getSafetyConstraint(UUID safetyConstraintId);
+  
   /**
    * Adds a causal factor to the causal component with the given id. <br>
    * Triggers an update for {@link astpa.model.ObserverValue#CAUSAL_FACTOR}

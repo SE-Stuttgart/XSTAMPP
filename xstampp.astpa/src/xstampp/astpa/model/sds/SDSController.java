@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.ATableModelController;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.hazacc.IHazAccController;
@@ -155,7 +156,7 @@ public class SDSController extends ATableModelController implements ISDSControll
         return s;
       }
     }
-    return null;
+    return BadReferenceModel.getBadReference();
   }
 
   /*

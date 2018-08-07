@@ -12,6 +12,7 @@ package xstampp.astpa.model.controlaction;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -552,7 +553,7 @@ public interface IControlActionController {
    *          the id of an corresponding safety constraint created for a uca, if <b>null</b> is
    *          given than the return value will also be null.
    * @return the {@link ITableModel} of a safety constraint corresponding to a unsafe control action
-   *         or null if there is no corresponding safety constraint stored under the given id.
+   *         or a {@link BadReferenceModel} if there is no corresponding safety constraint stored under the given id.
    */
   ITableModel getCorrespondingSafetyConstraint(UUID id);
 

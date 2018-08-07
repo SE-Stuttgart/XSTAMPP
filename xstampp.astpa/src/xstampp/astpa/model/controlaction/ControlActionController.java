@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Assert;
 import messages.Messages;
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.ATableModelController;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
@@ -408,7 +409,7 @@ public class ControlActionController extends ATableModelController implements IC
         return unsafeControlAction.getCorrespondingSafetyConstraint();
       }
     }
-    return null;
+    return BadReferenceModel.getBadReference();
   }
 
   private void moveRulesInCA() {

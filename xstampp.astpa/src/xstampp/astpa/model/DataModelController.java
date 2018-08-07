@@ -1040,14 +1040,17 @@ public class DataModelController extends AbstractDataModel
   @Override
   public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
     if (safetyConstraintId == null) {
-      return null;
+      return BadReferenceModel.getBadReference();
     }
-    if (!(this.getSdsController()
-        .getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
-      return null;
+    ITableModel constraint = this.getSdsController().getSafetyConstraint(safetyConstraintId);
+    if (constraint instanceof BadReferenceModel) {
+      constraint = this.getControlActionController().getCorrespondingSafetyConstraint(safetyConstraintId);
+    }
+    if(constraint instanceof BadReferenceModel) {
+      constraint = this.getCausalFactorController().getSafetyConstraint(safetyConstraintId);
     }
 
-    return this.getSdsController().getSafetyConstraint(safetyConstraintId);
+    return constraint;
   }
 
   @Override
@@ -1286,7 +1289,7 @@ public class DataModelController extends AbstractDataModel
     provider.pushRecord();
     this.refreshLock = false;
     this.recordCallbacks = false;
-    blockedUpdates = new ArrayList<>();
+    blockedUpdates = blockedUpdates == null?new ArrayList<>(): blockedUpdates;
     if (values != null) {
       for (int i = 0; i < values.length; i++) {
         if (!blockedUpdates.contains(values[i])) {

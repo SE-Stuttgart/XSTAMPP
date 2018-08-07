@@ -1,13 +1,11 @@
 /*******************************************************************************
  * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
- * Software Engineering Group University of Stuttgart, Germany.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Software Engineering Group University of Stuttgart, Germany. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- * Lukas Balzer- initial API and implementation
+ * Contributors: Lukas Balzer- initial API and implementation
  ******************************************************************************/
 package xstampp.ui.common.grid;
 
@@ -23,6 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -31,15 +30,18 @@ public class GridTextEditorProvider {
 
   /**
    * 
+   * @param title
+   *          The title is displayed in a label above the editable text,<br> if an empty string is
+   *          given or <b>null</b> than the label is not drawn
    * @param text
    *          the initial text of the editor
-   * @param textSize
-   *          the size of the text input
    * @param size
    *          the overall
+   * @param textSize
+   *          the size of the text input
    * @return
    */
-  public String open(String text, final Rectangle size) {
+  public String open(String title, String text, final Rectangle size) {
     final Shell shell = new Shell(Display.getCurrent().getActiveShell(),
         SWT.APPLICATION_MODAL | SWT.RESIZE);
     returnString = null;
@@ -47,19 +49,31 @@ public class GridTextEditorProvider {
     shell.setLayout(layout);
     int y = Math.max(shell.getParent().getLocation().y, size.y);
     shell.setLocation(size.x - (layout.marginWidth + layout.horizontalSpacing), y);
+    // if the title is not empty or null than it is added
+    if (title != null && !title.isEmpty()) {
+      Label titleLabel = new Label(shell, SWT.None);
+      titleLabel.setText(title);
+
+      final GridData layoutData = new GridData(SWT.DEFAULT, SWT.DEFAULT);
+      layoutData.horizontalAlignment = SWT.FILL;
+      layoutData.verticalAlignment = SWT.FILL;
+      layoutData.grabExcessHorizontalSpace = true;
+      layoutData.grabExcessVerticalSpace = true;
+      titleLabel.setLayoutData(layoutData);
+      shell.setLocation(shell.getLocation().x, shell.getLocation().y - 30);
+    }
     final Text textField = new Text(shell, SWT.WRAP | SWT.V_SCROLL);
-    textField.setLocation(new Point(0, 0));
     if (text == null) {
       textField.setText("");
     } else {
       textField.setText(text);
     }
-    final GridData layoutData = new GridData(size.width, size.height);
-    layoutData.horizontalAlignment = SWT.FILL;
-    layoutData.verticalAlignment = SWT.FILL;
-    layoutData.grabExcessHorizontalSpace = true;
-    layoutData.grabExcessVerticalSpace = true;
-    textField.setLayoutData(layoutData);
+    final GridData textLayoutData = new GridData(size.width, size.height);
+    textLayoutData.horizontalAlignment = SWT.FILL;
+    textLayoutData.verticalAlignment = SWT.FILL;
+    textLayoutData.grabExcessHorizontalSpace = true;
+    textLayoutData.grabExcessVerticalSpace = true;
+    textField.setLayoutData(textLayoutData);
 
     Composite buttonComp = new Composite(shell, SWT.None);
     buttonComp.setLayout(new GridLayout(2, true));

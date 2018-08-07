@@ -323,6 +323,7 @@ public class GridWrapper {
   private static final String DELETE_LINK_ICON_PATH_16 = "/icons/buttons/grid/DeleteButton_InCell_16.png"; //$NON-NLS-1$
   private static final String EDIT_LINK_ICON_PATH_16 = "/icons/buttons/grid/LinkButton_InCell_16.png"; //$NON-NLS-1$
   private static final String ADD_ICON_PATH_16 = "/icons/buttons/grid/AddButton_InCell_16.png"; //$NON-NLS-1$
+  private static final String COPY_ICON_PATH_16 = "/icons/buttons/grid/CopyButton_InCell_16.png"; //$NON-NLS-1$
 
   private static final String DELETE_LINK_ICON_PATH_32 = "/icons/buttons/grid/DeleteButton_InCell_32.png"; //$NON-NLS-1$
 
@@ -336,6 +337,7 @@ public class GridWrapper {
 
   private static Image editLinkImage16 = null;
   private static Image addImage16 = null;
+  private static Image copyImage16 = null;
   private static Image deleteLinkImage32 = null;
 
   private static Image editLinkImage32 = null;
@@ -362,6 +364,20 @@ public class GridWrapper {
     }
 
     return GridWrapper.addImage16;
+  }
+  
+  /**
+   * Get the image for the icon for copying in 16x16
+   * 
+   * @return the icon for copying in 16x16
+   */
+  public static final Image getCopyButton16() {
+    if (GridWrapper.copyImage16 == null) {
+      GridWrapper.copyImage16 = Activator.getImageDescriptor(GridWrapper.COPY_ICON_PATH_16)
+          .createImage();
+    }
+
+    return GridWrapper.copyImage16;
   }
 
   /**

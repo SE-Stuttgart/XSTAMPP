@@ -237,7 +237,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     entryRow.addCell(3, hazCell);
 
-    CellEditorSafetyConstraint cell = new CellEditorSafetyConstraint(getGridWrapper(),
+    CellEditorSingleSafetyConstraint cell = new CellEditorSingleSafetyConstraint(getGridWrapper(),
         getDataModel(), ucaHazLink);
     Link factorComponentLink = getDataModel().getLinkController().getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK,
         ucaHazLink.getLinkA());

@@ -9,6 +9,7 @@
 package xstampp.astpa.ui.causalfactors;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -38,14 +39,14 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
    * @param causalHazLink
    *          a Link of type {@link LinkingType#CausalEntryLink_SC2_LINK}
    */
-  public CellEditorSingleSafetyConstraint(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      Link causalEntrySc2Link) {
+  public CellEditorSingleSafetyConstraint(GridWrapper gridWrapper,
+      ICausalFactorDataModel dataInterface, Link causalEntrySc2Link) {
     super(gridWrapper, "", causalEntrySc2Link.getId());
     setShowDelete(true);
     this.causalDataInterface = dataInterface;
     this.causalEntrySc2Link = causalEntrySc2Link;
-    this.safetyOption = causalDataInterface.getCausalFactorController()
-        .getSafetyConstraint(causalEntrySc2Link.getLinkB());
+    this.safetyOption = causalDataInterface.getSafetyConstraint(causalEntrySc2Link.getLinkB());
+    setToolTip(safetyOption.getIdString());
   }
 
   @Override
@@ -54,7 +55,7 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
   }
 
   @Override
-  public String getToolTip(Point point) {
+  public String getCurrentTitle() {
     return safetyOption.getIdString();
   }
 
@@ -66,16 +67,22 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
       setShowDelete(false);
       CellButtonAdd addButton = new CellButtonAdd(() -> {
         UUID constraintId = causalDataInterface.getCausalFactorController().addSafetyConstraint("");
-        causalDataInterface.getLinkController().changeLink(causalEntrySc2Link, causalEntrySc2Link.getLinkA(),
-            constraintId);
+        causalDataInterface.getLinkController().changeLink(causalEntrySc2Link,
+            causalEntrySc2Link.getLinkA(), constraintId);
       });
       addButton.setToolTip("Add a new Safety Constraint");
       addCellButton(addButton);
-      addCellButton(
-          new CellButtonImportConstraint(getGridWrapper().getGrid(), causalDataInterface, (id) -> causalDataInterface
-              .getLinkController().changeLink(causalEntrySc2Link, causalEntrySc2Link.getLinkA(), id)));
-    } else {
+      Consumer<UUID> linkAction = (id) -> causalDataInterface.getLinkController()
+          .changeLink(causalEntrySc2Link, causalEntrySc2Link.getLinkA(), id);
+      addCellButton(new CellButtonImportConstraint(getGridWrapper().getGrid(), causalDataInterface,
+          linkAction));
+      addCellButton(new CellButtonLinkToConstraint(getGridWrapper().getGrid(), causalDataInterface,
+          linkAction));
+    } else if (safetyOption.getIdString().startsWith("SC2")) {
       setReadOnly(false);
+      setShowDelete(true);
+    } else {
+      setReadOnly(true);
       setShowDelete(true);
     }
     super.paint(renderer, gc, item);
@@ -84,15 +91,17 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
 
   @Override
   public void updateDataModel(String newText) {
-    causalDataInterface.getCausalFactorController().setSafetyConstraintText(causalEntrySc2Link.getLinkB(), newText);
+    causalDataInterface.getCausalFactorController()
+        .setSafetyConstraintText(causalEntrySc2Link.getLinkB(), newText);
   }
 
   @Override
   public void delete() {
     if (!(safetyOption instanceof BadReferenceModel)) {
-      if (this.causalDataInterface.getCausalFactorController().removeSafetyConstraint(safetyOption.getId())) {
-        causalDataInterface.getLinkController().changeLink(this.causalEntrySc2Link, this.causalEntrySc2Link.getLinkA(),
-            null);
+      if (this.causalDataInterface.getCausalFactorController()
+          .removeSafetyConstraint(safetyOption.getId())) {
+        causalDataInterface.getLinkController().changeLink(this.causalEntrySc2Link,
+            this.causalEntrySc2Link.getLinkA(), null);
         this.safetyOption = BadReferenceModel.getBadReference();
       }
     }
