@@ -97,8 +97,8 @@ public class StpaCSVExport extends Job {
             Messages.Hazards);
       }
       if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
-        this.exportAsCSV(this.model.getAllSafetyConstraints(), "SR0.",
-            csvWriter, Messages.SafetyConstraints);
+        this.exportAsCSV(this.model.getAllSafetyConstraints(), csvWriter,
+            Messages.SafetyConstraints);
       }
       if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {
         this.exportAsCSV(this.model.getAllSystemGoals(), csvWriter,
@@ -109,7 +109,7 @@ public class StpaCSVExport extends Job {
             csvWriter, Messages.DesignRequirements);
       }
       if ((type & ICSVExportConstants.CONTROL_ACTION) != 0) {
-        this.exportCAcAsCSV(this.model.getAllControlActions(), csvWriter,
+        this.exportAsCSV(this.model.getAllControlActions(), csvWriter,
             Messages.ControlActions);
       }
       if ((type & ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS) != 0) {
@@ -138,10 +138,6 @@ public class StpaCSVExport extends Job {
 
   }
 
-  protected void exportAsCSV(List<ITableModel> models,
-      BufferedCSVWriter csvWriter, String title) throws IOException {
-    exportAsCSV(models, "", csvWriter, title);
-  }
 
   /**
    * 
@@ -151,50 +147,19 @@ public class StpaCSVExport extends Job {
    *          the data which shall be exported as CSV
    * @throws IOException
    */
-  protected void exportAsCSV(List<ITableModel> models, String literals,
-      BufferedCSVWriter csvWriter, String title) throws IOException {
+  protected void exportAsCSV(List<? extends ITableModel> models, BufferedCSVWriter csvWriter,
+      String title) throws IOException {
     csvWriter.newLine();
-    csvWriter.write(title);
-    csvWriter.newLine();
-    csvWriter.writeCell("ID");
-    csvWriter.writeCell("Name");
-    csvWriter.write("Description");
-    csvWriter.newLine();
-    int i = 0;
-    for (ITableModel data : models) {
-      i++;
-      csvWriter.writeCell(literals + Integer.toString(i));
-
-      csvWriter.writeCell(data.getTitle());
-      csvWriter.write(data.getDescription());
-      csvWriter.newLine();
-    }
-  }
-
-  /**
-   * 
-   * @author Lukas Balzer
-   * 
-   * @param models
-   *          the data which shall be exported as CSV
-   * @throws IOException
-   */
-  protected void exportCAcAsCSV(List<IControlAction> models,
-      BufferedCSVWriter csvWriter, String title) throws IOException {
-    csvWriter.newLine();
-    csvWriter.write(title);
+    csvWriter.writeCell(title);
     csvWriter.newLine();
     csvWriter.writeCell("ID");
     csvWriter.writeCell("Name");
-    csvWriter.write("Description");
+    csvWriter.writeCell("Description");
     csvWriter.newLine();
-    int i = 0;
     for (ITableModel data : models) {
-      i++;
-      csvWriter.writeCell(Integer.toString(i));
-
+      csvWriter.writeCell(data.getIdString());
       csvWriter.writeCell(data.getTitle());
-      csvWriter.write(data.getDescription());
+      csvWriter.writeCell(data.getDescription());
       csvWriter.newLine();
     }
   }
@@ -356,22 +321,22 @@ public class StpaCSVExport extends Job {
         writer.writeCell();
         for (ITableModel haz : this.model
             .getLinkedHazardsOfUCA(notGiven.getUCAId(i))) {
-          writer.write("[H-" + haz.getNumber() + "]");
+          writer.write("[" + haz.getIdString() + "]");
         }
         writer.writeCell();
         for (ITableModel haz : this.model
             .getLinkedHazardsOfUCA(givenInc.getUCAId(i))) {
-          writer.write("[H-" + haz.getNumber() + "]");
+          writer.write("[" + haz.getIdString() + "]");
         }
         writer.writeCell();
         for (ITableModel haz : this.model
             .getLinkedHazardsOfUCA(wrongTiming.getUCAId(i))) {
-          writer.write("[H-" + haz.getNumber() + "]");
+          writer.write("[" + haz.getIdString() + "]");
         }
         writer.writeCell();
         for (ITableModel haz : this.model
             .getLinkedHazardsOfUCA(stoppedTooSoon.getUCAId(i))) {
-          writer.write("[H-" + haz.getNumber() + "]");
+          writer.write("[" + haz.getIdString() + "]");
         }
         writer.newLine();
       }
@@ -416,16 +381,11 @@ public class StpaCSVExport extends Job {
     csvWriter.write(this.model.getProjectName());
     csvWriter.newLine();
     csvWriter.writeCell(Messages.ID);
-    csvWriter.writeCell(Messages.UnsafeControlActions);
-    csvWriter.writeCell(Messages.ID);
     csvWriter.writeCell(Messages.CorrespondingSafetyConstraints);
     csvWriter.newLine();
     for (ICorrespondingUnsafeControlAction data : this.model
         .getAllUnsafeControlActions()) {
-
-      csvWriter.writeCell("UCA1." + this.model.getUCANumber(data.getId()));
-      csvWriter.writeCell(data.getDescription());
-      csvWriter.writeCell("SR1." + this.model.getUCANumber(data.getId()));
+      csvWriter.writeCell(data.getCorrespondingSafetyConstraint().getIdString());
       csvWriter.writeCell(data.getCorrespondingSafetyConstraint().getText());
       csvWriter.newLine();
     }

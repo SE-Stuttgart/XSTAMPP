@@ -49,7 +49,7 @@ public class BufferedCSVWriter extends BufferedWriter {
    */
   public void writeCell(String text) throws IOException {
     if (text != null) {
-      write(text.replaceAll("\\n|[\\r]\\n|" + seperator, ""));
+      write("\"" + text.replaceAll("\\n|[\\r]\\n|" + seperator, "") + "\"");
     }
     write(this.seperator);
   }
