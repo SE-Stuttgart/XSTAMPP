@@ -29,11 +29,6 @@ public class DesignReq0LinkSupport extends LinkSupport<DataModelController> {
   }
 
   @Override
-  protected String getLiteral() {
-    return "DR0.";
-  }
-
-  @Override
   public String getTitle() {
     return "Design Requirement Links";
   }

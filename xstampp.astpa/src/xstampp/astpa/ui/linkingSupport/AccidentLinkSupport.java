@@ -29,11 +29,6 @@ public class AccidentLinkSupport extends LinkSupport<DataModelController> {
   }
 
   @Override
-  protected String getLiteral() {
-    return "A-";
-  }
-
-  @Override
   public String getTitle() {
     return "Accident Links";
   }

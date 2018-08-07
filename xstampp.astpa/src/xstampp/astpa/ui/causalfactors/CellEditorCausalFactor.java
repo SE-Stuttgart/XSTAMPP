@@ -56,6 +56,7 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
     };
     this.dataInterface = dataInterface;
     this.factorId = factorId;
+    setToolTip(dataInterface.getCausalFactorController().getCausalFactor(factorId).getIdString());
   }
 
   /**
@@ -76,6 +77,7 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
     addition = new ToggleConstraintModeAddition(this, factorComponentLink, dataInterface);
     this.dataInterface = dataInterface;
     this.factorId = factorId;
+    setToolTip(dataInterface.getCausalFactorController().getCausalFactor(factorId).getIdString());
   }
 
   @Override

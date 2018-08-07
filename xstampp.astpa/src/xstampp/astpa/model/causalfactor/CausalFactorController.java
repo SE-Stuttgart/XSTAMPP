@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -52,8 +52,7 @@ import xstampp.model.ObserverValue;
 /**
  * Manager class for the causal factors
  * 
- * for reference of the causal factor model during runtime refere to
- * xstampp.astpa/docs/architecture
+ * for reference of the causal factor model during runtime refere to xstampp.astpa/docs/architecture
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class CausalFactorController extends ATableModelController implements ICausalController {
@@ -121,6 +120,10 @@ public class CausalFactorController extends ATableModelController implements ICa
   public ICausalFactor getCausalFactor(UUID causalFactorId) {
     return this.causalFactors.stream().filter((factor) -> factor.getId().equals(causalFactorId))
         .findFirst().orElse(null);
+  }
+
+  public List<ITableModel> getCausalFactors() {
+    return new ArrayList<>(causalFactors);
   }
 
   @Override
@@ -191,15 +194,14 @@ public class CausalFactorController extends ATableModelController implements ICa
 
   @Override
   public void prepareForExport(IHazAccController hazAccController, IRectangleComponent root,
-      IExtendedDataController extendedDataController,
-      IControlActionController caController,
+      IExtendedDataController extendedDataController, IControlActionController caController,
       LinkController linkController, ISDSController sdsController) {
     this.componentsList = new ArrayList<>();
     for (IRectangleComponent child : root.getChildren()) {
       if (linkController.isLinked(LinkingType.UcaCfLink_Component_LINK, child.getId())) {
         CausalCSComponent comp = new CausalCSComponent();
-        comp.prepareForExport(this, hazAccController, child, extendedDataController, caController, linkController,
-            sdsController);
+        comp.prepareForExport(this, hazAccController, child, extendedDataController, caController,
+            linkController, sdsController);
         this.componentsList.add(comp);
       }
     }
@@ -209,7 +211,8 @@ public class CausalFactorController extends ATableModelController implements ICa
   public SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
       LinkController linkController) {
     TreeMap<ICausalFactor, List<Link>> ucaCfLink_Component_ToCFmap = new TreeMap<>();
-    for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())) {
+    for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK,
+        component.getId())) {
       Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
           link.getLinkA());
       try {
@@ -229,7 +232,8 @@ public class CausalFactorController extends ATableModelController implements ICa
   public SortedMap<IUnsafeControlAction, List<Link>> getUCABasedMap(ICausalComponent component,
       LinkController linkController, IControlActionController caController) {
     TreeMap<IUnsafeControlAction, List<Link>> ucaCfLink_Component_To_UCA_map = new TreeMap<>();
-    for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, component.getId())) {
+    for (Link link : linkController.getRawLinksFor(LinkingType.UcaCfLink_Component_LINK,
+        component.getId())) {
       Link ucaCFLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
           link.getLinkA());
       try {
@@ -256,7 +260,8 @@ public class CausalFactorController extends ATableModelController implements ICa
           Link ucaCfLink = linkController.getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
               entryLink.getLinkA());
           Optional<Link> sc2Option = linkController
-              .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, entryLink.getId()).stream().findFirst();
+              .getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK, entryLink.getId()).stream()
+              .findFirst();
           IUnsafeControlAction uca = caController.getUnsafeControlAction(ucaCfLink.getLinkA());
           if (sc2Option.isPresent() && uca != null) {
             ucaCfLink_Component_ToCFmap.put(uca, new ArrayList<>());
@@ -345,7 +350,8 @@ public class CausalFactorController extends ATableModelController implements ICa
 
   @Override
   public boolean setSafetyConstraintDescription(UUID constraintId, String newText) {
-    return setModelDescription(getSafetyConstraint(constraintId), newText, ObserverValue.CAUSAL_FACTOR);
+    return setModelDescription(getSafetyConstraint(constraintId), newText,
+        ObserverValue.CAUSAL_FACTOR);
   }
 
   private NumberedArrayList<CausalSafetyConstraint> getCausalSafetyConstraints() {
@@ -384,8 +390,7 @@ public class CausalFactorController extends ATableModelController implements ICa
     this.causalFactors.addAll(causalFactors);
   }
 
-  void setCausalSafetyConstraints(
-      ArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
+  void setCausalSafetyConstraints(ArrayList<CausalSafetyConstraint> causalSafetyConstraints) {
     this.causalSafetyConstraints.clear();
     this.causalSafetyConstraints.addAll(causalSafetyConstraints);
   }

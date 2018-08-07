@@ -36,8 +36,8 @@ public interface ICausalController {
 
   /**
    * Adds a simple {@link ICausalFactor} that is not linked to a {@link ICausalComponent} but which
-   * is can be used to create a Entry in the causal analysis.
-   * Notifies all observers with {@link ObserverValue#CAUSAL_FACTOR}.
+   * is can be used to create a Entry in the causal analysis. Notifies all observers with
+   * {@link ObserverValue#CAUSAL_FACTOR}.
    * 
    * @return the {@link UUID} of the {@link ICausalFactor}
    */
@@ -50,16 +50,14 @@ public interface ICausalController {
    * @param causalFactorText
    *          the text that should be set as the {@link ICausalFactor#getText()}
    * @return <b style="color:blue">true</b> if the given id is valid and the text is different to
-   *         the current <br>
-   *         <b style="color:blue">false</b> otherwise
+   *         the current <br> <b style="color:blue">false</b> otherwise
    */
   boolean setCausalFactorText(UUID causalFactorId, String causalFactorText);
 
   boolean removeCausalFactor(UUID causalFactor);
 
   void prepareForExport(IHazAccController hazAccController, IRectangleComponent root,
-      IExtendedDataController extendedDataController,
-      IControlActionController caController,
+      IExtendedDataController extendedDataController, IControlActionController caController,
       LinkController linkController, ISDSController sdsController);
 
   void prepareForSave(IHazAccController hazAccController, List<Component> list,
@@ -114,6 +112,12 @@ public interface ICausalController {
   ICausalFactor getCausalFactor(UUID causalFactorId);
 
   /**
+   * @return a list containing all causalFactors as {@link ITableModel}s, changes to this list
+   *         doesn't affect the causal factors list
+   */
+  List<ITableModel> getCausalFactors();
+
+  /**
    * 
    * @param csComp
    *          an {@link IRectangleComponent} that is stored with a valid {@link ComponentType} in
@@ -132,18 +136,16 @@ public interface ICausalController {
    * @param description
    *          the description that should be set as the {@link ITableModel#getDescription()}
    * @return <b style="color:blue">true</b> if the given id is valid and the description is
-   *         different to
-   *         the current <br>
-   *         <b style="color:blue">false</b> otherwise
+   *         different to the current <br> <b style="color:blue">false</b> otherwise
    */
   boolean setSafetyConstraintDescription(UUID causalFactorId, String description);
 
   /**
    * Creates a sorted mapping of a List of {@link Link}s to a {@link ICausalFactor}. The list set as
    * value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
-   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the
-   * id of a {@link ICausalComponent}.<br>
-   * The {@link List} is mapped to the <b>specific {@link ICausalFactor}</b> of that list.
+   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the id
+   * of a {@link ICausalComponent}.<br> The {@link List} is mapped to the <b>specific
+   * {@link ICausalFactor}</b> of that list.
    * 
    * @param component
    *          a component that appears in the causal analysis
@@ -157,12 +159,10 @@ public interface ICausalController {
 
   /**
    * Creates a sorted mapping of a List of {@link Link}s to a {@link IUnsafeControlAction}. The list
-   * set as
-   * value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
-   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
-   * and the
-   * id of a {@link ICausalComponent}.<br>
-   * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
+   * set as value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
+   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link IUnsafeControlAction}</b> and
+   * the id of a {@link ICausalComponent}.<br> The {@link List} is mapped to the <b>specific
+   * {@link IUnsafeControlAction}</b> of that list.
    * 
    * @param component
    *          a component that appears in the causal analysis
@@ -178,18 +178,15 @@ public interface ICausalController {
 
   /**
    * Creates a sorted mapping of a List of {@link Link}s to a {@link IUnsafeControlAction}. The list
-   * set as
-   * The value is a {@link List} containing:
-   * <ul>
+   * set as The value is a {@link List} containing: <ul>
    * <li>{@link LinkingType#CausalEntryLink_SC2_LINK}'s between an
    * {@link LinkingType#UcaCfLink_Component_LINK} and the {@link UUID} of a Safety Constraint if one
-   * is defined for the respective {@link LinkingType#UcaCfLink_Component_LINK}
-   * <li>all {@link LinkingType#CausalEntryLink_HAZ_LINK}s between a
+   * is defined for the respective {@link LinkingType#UcaCfLink_Component_LINK} <li>all
+   * {@link LinkingType#CausalEntryLink_HAZ_LINK}s between a
    * {@link LinkingType#UcaCfLink_Component_LINK} of a <b>specific {@link IUnsafeControlAction}</b>
-   * and the id of the hazModel.
-   * </ul>
-   * for each {@link LinkingType#UcaCfLink_Component_LINK} defined for the given hazard.<br>
-   * The {@link List} is mapped to the <b>specific {@link IUnsafeControlAction}</b> of that list.
+   * and the id of the hazModel. </ul> for each {@link LinkingType#UcaCfLink_Component_LINK} defined
+   * for the given hazard.<br> The {@link List} is mapped to the <b>specific
+   * {@link IUnsafeControlAction}</b> of that list.
    * 
    * @param hazModel
    *          a hazard model given as {@link ITableModel}
@@ -199,24 +196,24 @@ public interface ICausalController {
    *         {@link LinkingType#CausalEntryLink_HAZ_LINK} or
    *         {@link LinkingType#CausalEntryLink_SC2_LINK} to a {@link IUnsafeControlAction}s.
    */
-  SortedMap<IUnsafeControlAction, List<Link>> getHazardBasedMap(ITableModel hazModel, LinkController linkController,
-      IControlActionController caController);
+  SortedMap<IUnsafeControlAction, List<Link>> getHazardBasedMap(ITableModel hazModel,
+      LinkController linkController, IControlActionController caController);
 
   /**
-   * this determines if in the causal analysis the causal factor and UCA column are switched,
-   * in A-STPA they are classically ordered CF, UCA but it might be better to change to UCA, CF
-   * which will than list all Causal Factors for one UCA rather than all UCAs for a single Causal
-   * (which might be 1 UCA).
+   * this determines if in the causal analysis the causal factor and UCA column are switched, in
+   * A-STPA they are classically ordered CF, UCA but it might be better to change to UCA, CF which
+   * will than list all Causal Factors for one UCA rather than all UCAs for a single Causal (which
+   * might be 1 UCA).
    * 
    * @return if the Causal Factor and UCA column in the Causal Factors Table are switched
    */
   boolean analyseFactorsPerUCA();
 
   /**
-   * this determines if in the causal analysis the causal factor and UCA column are switched,
-   * in A-STPA they are classically ordered CF, UCA but it might be better to change to UCA, CF
-   * which will than list all Causal Factors for one UCA rather than all UCAs for a single Causal
-   * (which might be 1 UCA).
+   * this determines if in the causal analysis the causal factor and UCA column are switched, in
+   * A-STPA they are classically ordered CF, UCA but it might be better to change to UCA, CF which
+   * will than list all Causal Factors for one UCA rather than all UCAs for a single Causal (which
+   * might be 1 UCA).
    * 
    * @param analyseFactorsPerUCA
    *          if the Causal Factor and UCA column in the Causal Factors Table should be switched

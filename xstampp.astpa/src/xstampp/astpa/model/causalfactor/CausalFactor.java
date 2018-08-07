@@ -148,4 +148,19 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
     return null;
   }
 
+  @Override
+  public String getTitle() {
+    return getText();
+  }
+
+  @Override
+  public String getDescription() {
+    return getText();
+  }
+
+  @Override
+  public String getIdString() {
+    return "CF-" + getNumber();
+  }
+
 }

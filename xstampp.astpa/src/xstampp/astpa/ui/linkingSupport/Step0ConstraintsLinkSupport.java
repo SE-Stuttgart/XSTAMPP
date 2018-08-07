@@ -29,11 +29,6 @@ public class Step0ConstraintsLinkSupport extends LinkSupport<DataModelController
   }
 
   @Override
-  protected String getLiteral() {
-    return "S0.";
-  }
-
-  @Override
   public String getTitle() {
     return "Safety Constraint Links";
   }

@@ -1,13 +1,11 @@
 /*******************************************************************************
  * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
- * Software Engineering Group University of Stuttgart, Germany.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Software Engineering Group University of Stuttgart, Germany. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- * Lukas Balzer - initial API and implementation
+ * Contributors: Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.ui.linkingSupport;
 
@@ -59,6 +57,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   private LinkingType type;
   private List<ITableModel> modelList;
   private Composite linkComp;
+  private boolean withoutWidget = false;
   private boolean readOnly;
 
   public LinkSupport(M dataInterface, LinkingType type) {
@@ -72,6 +71,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
     this.changeListeners = new ArrayList<>();
   }
 
+  
   /**
    * Sets the id of the entry which's links are displayed in the {@link TableViewer} set in
    * {@link #setDisplayedList(TableViewer)}. This method updates the array obtained by
@@ -83,7 +83,7 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   public void update(UUID id) {
     currentLinkedId = id;
     currentContent = null;
-    if (!this.displayedList.getTable().isDisposed()) {
+    if (!(withoutWidget || this.displayedList.getTable().isDisposed())) {
 
       for (Control control : linkComp.getChildren()) {
         control.setEnabled(true);
@@ -170,7 +170,8 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    */
   public List<UUID> fetch() {
     List<UUID> list = new ArrayList<>();
-    for (UUID uuid : getDataInterface().getLinkController().getLinksFor(getLinkType(), getCurrentId())) {
+    for (UUID uuid : getDataInterface().getLinkController().getLinksFor(getLinkType(),
+        getCurrentId())) {
       if (getText(uuid) != null) {
         list.add(uuid);
       }
@@ -270,11 +271,6 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
    */
   protected abstract List<ITableModel> getModels();
 
-  /**
-   * @deprecated the {@link LinkSupport} uses {@link ITableModel#getIdString()}
-   */
-  protected abstract String getLiteral();
-
   protected abstract String getTitle();
 
   public LinkingType getLinkType() {
@@ -317,6 +313,9 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
   }
 
   public void createLinkWidget(Composite parent) {
+    if(withoutWidget) {
+      return;
+    }
     linkComp = new Composite(parent, SWT.BORDER);
     linkComp.setLayout(new GridLayout(3, false));
     Label linkTitle = new Label(linkComp, SWT.WRAP);
@@ -382,5 +381,13 @@ public abstract class LinkSupport<M extends ILinkModel> extends SelectionAdapter
         }
       }
     });
+  }
+
+  public boolean isWithoutWidget() {
+    return withoutWidget;
+  }
+
+  public void setWithoutWidget(boolean withoutWidget) {
+    this.withoutWidget = withoutWidget;
   }
 }

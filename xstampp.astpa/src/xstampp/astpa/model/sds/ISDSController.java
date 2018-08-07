@@ -1,19 +1,18 @@
 /*******************************************************************************
  * Copyright (C) 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of SoftwareTechnology,
- * Software Engineering Group University of Stuttgart, Germany.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Software Engineering Group University of Stuttgart, Germany. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- * Lukas Balzer - initial API and implementation
+ * Contributors: Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.model.sds;
 
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.hazacc.IHazAccController;
@@ -22,13 +21,9 @@ import xstampp.astpa.model.linking.LinkController;
 import xstampp.model.ObserverValue;
 
 /**
- * An implementation of this interface holds 3 to n {@link List}'s of {@link ITableModel}'s
- * <ol>
- * <li>safety constraints [1]
- * <li>System goals [1]
- * <li>design requirements [1..n]
- * </ol>
- * The amount of design requirements that can be stored depends on the implementation. The default
+ * An implementation of this interface holds 3 to n {@link List}'s of {@link ITableModel}'s <ol>
+ * <li>safety constraints [1] <li>System goals [1] <li>design requirements [1..n] </ol> The amount
+ * of design requirements that can be stored depends on the implementation. The default
  * implementation of ASTPA accepts <b>3 Lists of Design Requirements</b> for each of the 3 STPA
  * steps
  * 

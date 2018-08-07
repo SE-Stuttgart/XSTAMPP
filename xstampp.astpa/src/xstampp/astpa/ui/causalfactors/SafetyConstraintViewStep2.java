@@ -20,6 +20,8 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.ui.CommonTableView;
+import xstampp.astpa.ui.linkingSupport.CausalFactorHazardLinksSupport;
+import xstampp.astpa.ui.linkingSupport.CausalFactorsLinkSupport;
 import xstampp.astpa.ui.linkingSupport.DesignReq2LinkSupport;
 import xstampp.astpa.ui.linkingSupport.Step1ConstraintsLinkSupport;
 import xstampp.model.AbstractLtlProviderData;
@@ -65,6 +67,8 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
           new Step1ConstraintsLinkSupport((DataModelController) getDataInterface(), LinkingType.SC2_SC1_LINK, true));
     }
     addLinkSupport(new DesignReq2LinkSupport((DataModelController) getDataInterface(), LinkingType.DR2_CausalSC_LINK));
+    addLinkSupport(new CausalFactorsLinkSupport((DataModelController) getDataInterface()));
+    addLinkSupport(new CausalFactorHazardLinksSupport((DataModelController) getDataInterface()));
   }
 
   @Override

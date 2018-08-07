@@ -29,11 +29,6 @@ public class Step2ScenarioConstraintsLinkSupport extends LinkSupport<DataModelCo
   }
 
   @Override
-  protected String getLiteral() {
-    return "S2.";
-  }
-
-  @Override
   public String getTitle() {
     return "Causal Scenario Safety Constraint Links";
   }

@@ -29,11 +29,6 @@ public class Step2ConstraintsLinkSupport extends LinkSupport<DataModelController
   }
 
   @Override
-  protected String getLiteral() {
-    return "S2.";
-  }
-
-  @Override
   public String getTitle() {
     return "Causal Safety Constraint Links";
   }

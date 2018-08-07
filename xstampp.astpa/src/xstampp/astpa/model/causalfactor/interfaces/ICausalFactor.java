@@ -15,13 +15,15 @@ package xstampp.astpa.model.causalfactor.interfaces;
 
 import java.util.UUID;
 
+import xstampp.astpa.model.interfaces.ITableModel;
+
 /**
  * Interface for a causal factor
  * 
  * @author Fabian
  * 
  */
-public interface ICausalFactor {
+public interface ICausalFactor extends ITableModel{
 
   /**
    * @return the id

@@ -29,11 +29,6 @@ public class HazardLinkSupport extends LinkSupport<DataModelController> {
   }
 
   @Override
-  protected String getLiteral() {
-    return "H-";
-  }
-
-  @Override
   public String getTitle() {
     return "Hazard Linking";
   }
