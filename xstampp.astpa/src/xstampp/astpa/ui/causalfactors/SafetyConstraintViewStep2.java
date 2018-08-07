@@ -56,7 +56,7 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
    * 
    */
   public SafetyConstraintViewStep2(String tableHeader) {
-    super(EnumSet.of(TableStyle.WITHOUT_CONTROLS), tableHeader);
+    super(null, tableHeader);
     setUpdateValues(EnumSet.of(ObserverValue.CAUSAL_FACTOR, ObserverValue.LINKING));
   }
 
@@ -73,7 +73,7 @@ public class SafetyConstraintViewStep2 extends CommonTableView<ICausalFactorData
 
   @Override
   protected void deleteEntry(ATableModel model) {
-
+    getDataInterface().getCausalFactorController().removeSafetyConstraint(model.getId());
   }
 
   /**
