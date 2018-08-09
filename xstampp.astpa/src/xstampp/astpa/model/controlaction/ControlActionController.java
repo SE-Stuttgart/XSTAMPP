@@ -1,8 +1,8 @@
 /*******************************************************************************
  * 
  * Copyright (c) 2013-2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -59,7 +59,8 @@ import xstampp.ui.common.ProjectManager;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlActionController extends ATableModelController implements IControlActionController {
+public class ControlActionController extends ATableModelController
+    implements IControlActionController {
 
   @XmlElementWrapper(name = "controlactions")
   @XmlElement(name = "controlaction")
@@ -184,6 +185,18 @@ public class ControlActionController extends ATableModelController implements IC
     }
     UUID ucaId = controlAction.addUnsafeControlAction(getNextUCACount(), description,
         unsafeControlActionType);
+    if (ucaId != null) {
+      getControlActionMap().put(ucaId, controlAction);
+    }
+    return ucaId;
+  }
+
+  public UUID addUnsafeControlAction(UUID controlActionId, IUnsafeControlAction otherUca) {
+    ControlAction controlAction = this.getInternalControlAction(controlActionId);
+    if (controlAction == null) {
+      return null;
+    }
+    UUID ucaId = controlAction.addUnsafeControlAction(otherUca);
     if (ucaId != null) {
       getControlActionMap().put(ucaId, controlAction);
     }
@@ -339,7 +352,8 @@ public class ControlActionController extends ATableModelController implements IC
 
   @Override
   public boolean setControlActionDescription(UUID controlActionId, String description) {
-    return setModelDescription(getControlAction(controlActionId), description, ObserverValue.CONTROL_ACTION);
+    return setModelDescription(getControlAction(controlActionId), description,
+        ObserverValue.CONTROL_ACTION);
   }
 
   @Override
@@ -455,8 +469,9 @@ public class ControlActionController extends ATableModelController implements IC
         String links = ""; //$NON-NLS-1$
         for (UUID id : dataModel.getLinkController().getLinksFor(LinkingType.DR1_CSC_LINK,
             unsafeControlAction.getCorrespondingSafetyConstraint().getId())) {
-          links += dataModel.getSdsController().getDesignRequirement(id, ObserverValue.DESIGN_REQUIREMENT_STEP1)
-              .getIdString() + ", "; //$NON-NLS-1$
+          links += dataModel.getSdsController()
+              .getDesignRequirement(id, ObserverValue.DESIGN_REQUIREMENT_STEP1).getIdString()
+              + ", "; //$NON-NLS-1$
         }
         if (links.length() > 2) {
           unsafeControlAction.getCorrespondingSafetyConstraint()
@@ -507,8 +522,7 @@ public class ControlActionController extends ATableModelController implements IC
 
   @SuppressWarnings("deprecation")
   @Override
-  public boolean prepareForSave(LinkController linkController,
-      IHazAccController hazAccController) {
+  public boolean prepareForSave(LinkController linkController, IHazAccController hazAccController) {
     moveRulesInCA();
     getUCANumber(null);
     for (ControlAction controlAction : this.getControlActions()) {
@@ -523,7 +537,8 @@ public class ControlActionController extends ATableModelController implements IC
     }
     linkController.deleteAllFor(LinkingType.UNSAFE_CONTROL_ACTION, null);
     for (UCAHazLink ucaHazLink : getAllUCALinks()) {
-      linkController.addLink(LinkingType.UCA_HAZ_LINK, ucaHazLink.getUnsafeControlActionId(), ucaHazLink.getHazardId());
+      linkController.addLink(LinkingType.UCA_HAZ_LINK, ucaHazLink.getUnsafeControlActionId(),
+          ucaHazLink.getHazardId());
     }
     this.links = null;
     boolean isUsed = nextCAIndex != null || nextUcaIndex != null;
@@ -656,6 +671,7 @@ public class ControlActionController extends ATableModelController implements IC
 
   /*
    * (non-Javadoc)
+   * 
    * @see xstampp.astpa.model.controlaction.IControlActionController#
    * getProvidedVariables(java.util.UUID)
    */
@@ -836,42 +852,49 @@ public class ControlActionController extends ATableModelController implements IC
   }
 
   public void syncContent(ControlActionController userController, List<UUID> responsibilities) {
-    for (ControlAction userCa : userController.getControlActions()) {
+    this.ucaCustomHeaders = userController.ucaCustomHeaders;
+    this.nextCAIndex = userController.nextCAIndex;
+    this.nextUcaIndex = userController.nextUcaIndex;
+    for (ControlAction otherCa : userController.getControlActions()) {
 
-      ControlAction originalCa = getInternalControlAction(userCa.getId());
-      if (originalCa == null && responsibilities.contains(userCa.getId())) {
-        addControlAction(userCa);
-        originalCa = getInternalControlAction(userCa.getId());
+      ControlAction ownCa = getInternalControlAction(otherCa.getId());
+      if (ownCa == null && responsibilities.contains(otherCa.getId())) {
+        addControlAction(otherCa);
+        ownCa = getInternalControlAction(otherCa.getId());
       }
-      if (originalCa != null && responsibilities.contains(userCa.getId())) {
-        setControlActionTitle(userCa.getId(), userCa.getTitle());
-        setControlActionDescription(userCa.getId(), userCa.getDescription());
+      if (ownCa != null && responsibilities.contains(otherCa.getId()) && otherCa.hasChanged()) {
+        setControlActionTitle(otherCa.getId(), otherCa.getTitle());
+        setControlActionDescription(otherCa.getId(), otherCa.getDescription());
         // get all changes in the unsafe control actions defined for the current control action
-        for (IUnsafeControlAction uca : userCa.getUnsafeControlActions()) {
+        for (IUnsafeControlAction otherUca : otherCa.getUnsafeControlActions()) {
           // check whether the uca must be created in the original model
-          UnsafeControlAction originalUca = (UnsafeControlAction) originalCa
-              .getUnsafeControlAction(uca.getId());
-          if (originalUca == null) {
-            addUnsafeControlAction(userCa.getId(), uca.getDescription(), uca.getType(),
-                uca.getId());
+          UnsafeControlAction ownUca = (UnsafeControlAction) ownCa
+              .getUnsafeControlAction(otherUca.getId());
+          if (ownUca == null) {
+            addUnsafeControlAction(otherCa.getId(), otherUca);
+          } else if (((ATableModel) otherUca).hasChanged()) {
+            if (!getUnsafeControlAction(otherUca.getId()).getSeverity()
+                .equals(otherUca.getSeverity())) {
+              Severity oldSeverity = ((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()))
+                  .getSeverity();
+              ((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()))
+                  .setSeverity(otherUca.getSeverity());
+              setChanged();
+              notifyObservers(new UndoChangeSeverity(
+                  (EntryWithSeverity) getUnsafeControlAction(otherUca.getId()), oldSeverity,
+                  ObserverValue.UNSAFE_CONTROL_ACTION));
+            }
+            setUcaDescription(otherUca.getId(), otherUca.getDescription());
+            setCorrespondingSafetyConstraint(otherUca.getId(),
+                ((UnsafeControlAction) otherUca).getCorrespondingSafetyConstraint().getText());
           }
-          setUcaDescription(uca.getId(), uca.getDescription());
-          if (!getUnsafeControlAction(uca.getId()).getSeverity().equals(uca.getSeverity())) {
-            Severity oldSeverity = ((EntryWithSeverity) getUnsafeControlAction(uca.getId())).getSeverity();
-            ((EntryWithSeverity) getUnsafeControlAction(uca.getId())).setSeverity(uca.getSeverity());
-            setChanged();
-            notifyObservers(new UndoChangeSeverity((EntryWithSeverity) getUnsafeControlAction(uca.getId()), oldSeverity,
-                ObserverValue.UNSAFE_CONTROL_ACTION));
-          }
-          setCorrespondingSafetyConstraint(uca.getId(),
-              ((UnsafeControlAction) uca).getCorrespondingSafetyConstraint().getText());
-
         }
       }
     }
     List<UUID> obsoleteCAs = new ArrayList<>();
     for (ControlAction ownCa : getControlActions()) {
-      if (userController.getControlAction(ownCa.getId()) == null && responsibilities.contains(ownCa.getId())) {
+      if (userController.getControlAction(ownCa.getId()) == null
+          && responsibilities.contains(ownCa.getId())) {
         obsoleteCAs.add(ownCa.getId());
       }
     }

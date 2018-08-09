@@ -16,6 +16,7 @@ import java.util.Observable;
 import java.util.UUID;
 
 import messages.Messages;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ICorrespondingSafetyConstraintDataModel;
@@ -212,7 +213,7 @@ public class CSCView extends AbstractFilteredTableView {
               ((ICorrespondingUnsafeControlAction) element).getCorrespondingSafetyConstraint().getId())) {
             ITableModel requirement = dataModel.getSdsController().getDesignRequirement(uuid,
                 ObserverValue.DESIGN_REQUIREMENT_STEP1);
-            if (requirement != null) {
+            if (!(requirement instanceof BadReferenceModel)) {
               links += links.isEmpty() ? "" : ", ";
               links += requirement.getIdString();
             }

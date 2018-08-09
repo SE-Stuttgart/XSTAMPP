@@ -24,7 +24,6 @@ import java.util.UUID;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -410,10 +409,10 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
 
     @Override
     public boolean addPrimaryFactor(IRectangleComponent component, GridRow componentRow) {
-      Map<ICausalFactor, List<Link>> ucaCfLink_Component_To_CF_map = getDataModel()
+      Map<ITableModel, List<Link>> ucaCfLink_Component_To_CF_map = getDataModel()
           .getCausalFactorController()
           .getCausalFactorBasedMap(component, getDataModel().getLinkController());
-      for (ICausalFactor factor : ucaCfLink_Component_To_CF_map.keySet()) {
+      for (ITableModel factor : ucaCfLink_Component_To_CF_map.keySet()) {
         if (factor != null && !isFiltered(factor.getText(), CAUSALFACTORS)) {
           GridRow causalFactorRow;
           causalFactorRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 1 });
@@ -605,7 +604,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
              */
             Link ucaCFLink = getDataModel().getLinkController()
                 .getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, link.getLinkA());
-            ICausalFactor factor = getDataModel().getCausalFactorController()
+            ITableModel factor = getDataModel().getCausalFactorController()
                 .getCausalFactor(ucaCFLink.getLinkB());
             if (!(factor == null || isFiltered(factor.getId(), CAUSALFACTORS))) {
               addSecondaryFactor(ucaFactorRow, link, ucaCFLink, factor);
@@ -646,7 +645,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
      *          a model of type {@link IUnsafeControlAction}
      */
     public void addSecondaryFactor(GridRow factorRow, Link factorComponentLink, Link ucaCFLink,
-        ICausalFactor factor) {
+        ITableModel factor) {
 
       GridRow entryRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
       CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(), factor.getId(),

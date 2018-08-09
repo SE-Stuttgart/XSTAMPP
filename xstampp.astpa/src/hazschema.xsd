@@ -184,15 +184,16 @@
     </xs:complexType>
 
     <xs:complexType name="sdsType">
-        <xs:all>
-            <xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="0" />
-            <xs:element type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
-            <xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="0" />
-            <xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="0" />
-            <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0" />
-            <xs:element name="idString" type="xs:string" maxOccurs="1" minOccurs="0" />
-        </xs:all>
-        <xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
+    				<xs:all>
+    								<xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="0" />
+    								<xs:element type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
+    								<xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="0" />
+    								<xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="0" />
+    								<xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0" />
+    								<xs:element name="idString" type="xs:string" maxOccurs="1" minOccurs="0" />
+    				</xs:all>
+    				<xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
+    				<xs:attribute name="changed" type="xs:boolean" use="optional"></xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="componentType">
@@ -404,7 +405,7 @@
                                     <xs:element name="title" type="xs:string" maxOccurs="1" minOccurs="0">
                                     </xs:element>
                                 </xs:all>
-
+    							<xs:attribute name="changed" type="xs:boolean" use="optional"></xs:attribute>
                                 <xs:attribute name="severityType" type="xs:string" use="optional">
                                 </xs:attribute>
                             </xs:complexType>
@@ -474,6 +475,7 @@
             </xs:element>
             <xs:element type="xs:string" name="componentLink" maxOccurs="1" minOccurs="0" />
         </xs:all>
+    	<xs:attribute name="changed" type="xs:boolean" use="optional"></xs:attribute>
         <xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
     </xs:complexType>
 

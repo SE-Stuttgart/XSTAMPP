@@ -74,6 +74,19 @@ public class UnsafeControlAction extends ATableModel
     setSeverity(Severity.S0);
   }
 
+  /**
+   * Constructs a new unsafe control action with the same values as the given one
+   * 
+   * @param description
+   *          the description of the new unsafe control action
+   * @param type
+   *          the type of the new unsafe control action
+   */
+  public UnsafeControlAction(IUnsafeControlAction otherUca) {
+    super(otherUca, otherUca.getNumber());
+    this.type = otherUca.getType();
+  }
+
   @Override
   public UnsafeControlActionType getType() {
     return this.type;

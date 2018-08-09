@@ -426,11 +426,13 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   }
 
   public void syncContent(HazAccController controller) {
+    this.useHazardConstraints = controller.useHazardConstraints; 
+    this.useSeverity = controller.useSeverity;
     for (ATableModel other : controller.accidents) {
       ITableModel own = getAccident(other.getId());
-      if (own == null) {
+      if (own instanceof BadReferenceModel) {
         addAccident(other);
-      } else {
+      } else if(other.hasChanged()){
         setAccidentTitle(other.getId(), other.getTitle());
         setAccidentDescription(other.getId(), other.getDescription());
         ((Accident) own).setSeverity(other.getSeverity());
@@ -438,9 +440,9 @@ public class HazAccController extends ATableModelController implements IHazAccCo
     }
     for (ATableModel other : controller.hazards) {
       ITableModel own = getHazard(other.getId());
-      if (own == null) {
+      if (own instanceof BadReferenceModel) {
         addHazard(other);
-      } else {
+      } else if(other.hasChanged()){
         setHazardTitle(other.getId(), other.getTitle());
         setHazardDescription(other.getId(), other.getDescription());
         ((Hazard) own).setSeverity(other.getSeverity());

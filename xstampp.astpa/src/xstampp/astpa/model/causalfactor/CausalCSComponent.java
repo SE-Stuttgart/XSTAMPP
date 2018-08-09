@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -52,8 +52,8 @@ public class CausalCSComponent implements Comparable<CausalCSComponent> {
       IControlActionController caController,
       LinkController linkController, ISDSController sdsController) {
     this.text = child.getText();
-    Map<ICausalFactor, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
-    for (Entry<ICausalFactor, List<Link>> entry : factorBasedMap.entrySet()) {
+    Map<ITableModel, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
+    for (Entry<ITableModel, List<Link>> entry : factorBasedMap.entrySet()) {
       ((CausalFactor) entry.getKey()).prepareForExport(hazAccController, extendedDataController, caController,
           controller, entry.getValue(), linkController, sdsController);
       getFactors().add(((CausalFactor) entry.getKey()));

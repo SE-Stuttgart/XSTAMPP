@@ -94,7 +94,6 @@ import xstampp.astpa.model.linking.LinkingType;
 import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.sds.SDSController;
-import xstampp.astpa.model.sds.SafetyConstraint;
 import xstampp.astpa.model.sds.SystemGoal;
 import xstampp.astpa.usermanagement.AstpaCollaborationSystem;
 import xstampp.astpa.util.jobs.SaveJob;
@@ -879,12 +878,8 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public ITableModel getDesignRequirement(UUID designRequirementId) {
-    if (designRequirementId == null) {
-      return null;
-    }
-    ITableModel designRequirement = this.getSdsController()
+    return this.getSdsController()
         .getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
-    return designRequirement;
   }
 
   public ExportInformation getExportInfo() {

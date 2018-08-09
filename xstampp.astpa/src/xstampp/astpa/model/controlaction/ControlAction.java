@@ -88,6 +88,7 @@ public class ControlAction extends ATableModel implements IControlAction {
   public boolean setComponentLink(UUID componentLink) {
     if (this.componentLink == null || !this.componentLink.equals(componentLink)) {
       this.componentLink = componentLink;
+      setChanged();
       return true;
     }
     return false;
@@ -193,8 +194,12 @@ public class ControlAction extends ATableModel implements IControlAction {
       UnsafeControlActionType unsafeControlActionType) {
     UnsafeControlAction unsafeControlAction = new UnsafeControlAction(description,
         unsafeControlActionType);
-    this.unsafeControlActions.add(unsafeControlAction);
+    setChanged(this.unsafeControlActions.add(unsafeControlAction));
     unsafeControlAction.setNumber(number);
+    return unsafeControlAction.getId();
+  }
+  public UUID addUnsafeControlAction(IUnsafeControlAction otherUca) {
+    UnsafeControlAction unsafeControlAction = new UnsafeControlAction(otherUca);
     return unsafeControlAction.getId();
   }
 
@@ -214,7 +219,7 @@ public class ControlAction extends ATableModel implements IControlAction {
     UnsafeControlAction unsafeControlAction = new UnsafeControlAction(description,
         unsafeControlActionType);
     unsafeControlAction.setId(id);
-    this.unsafeControlActions.add(unsafeControlAction);
+    setChanged(this.unsafeControlActions.add(unsafeControlAction));
     unsafeControlAction.setNumber(number);
     return unsafeControlAction.getId();
   }
@@ -263,6 +268,7 @@ public class ControlAction extends ATableModel implements IControlAction {
   public boolean setSafetyCritical(boolean isSafetyCritical) {
     if (this.isSafetyCritical != isSafetyCritical) {
       this.isSafetyCritical = isSafetyCritical;
+      setChanged();
       return true;
     }
     return false;
@@ -284,6 +290,7 @@ public class ControlAction extends ATableModel implements IControlAction {
    */
   public void setValuesWhenNotProvided(List<NotProvidedValuesCombi> valuesWhenNotProvided) {
     this.valuesWhenNotProvided = valuesWhenNotProvided;
+    setChanged();
   }
 
   /**
@@ -294,13 +301,13 @@ public class ControlAction extends ATableModel implements IControlAction {
     if (this.valuesWhenNotProvided == null) {
       this.valuesWhenNotProvided = new ArrayList<>();
     }
-    return this.valuesWhenNotProvided.add(valueWhenNotProvided);
+    return setChanged(this.valuesWhenNotProvided.add(valueWhenNotProvided));
   }
 
   public boolean removeValuesWhenNotProvided(UUID combieId) {
     for (IValueCombie combie : this.valuesWhenNotProvided) {
       if (combie.getCombieId().equals(combieId)) {
-        return this.valuesWhenNotProvided.remove(combie);
+        return setChanged(this.valuesWhenNotProvided.remove(combie));
       }
     }
     return false;
@@ -322,6 +329,7 @@ public class ControlAction extends ATableModel implements IControlAction {
    */
   public void setValuesWhenProvided(List<ProvidedValuesCombi> valuesWhenProvided) {
     this.valuesWhenProvided = valuesWhenProvided;
+    setChanged();
   }
 
   /**
@@ -332,13 +340,13 @@ public class ControlAction extends ATableModel implements IControlAction {
     if (this.valuesWhenNotProvided == null) {
       this.valuesWhenNotProvided = new ArrayList<>();
     }
-    return this.valuesWhenProvided.add(valueWhenNotProvided);
+    return setChanged(this.valuesWhenProvided.add(valueWhenNotProvided));
   }
 
   public boolean removeValueWhenProvided(UUID combieId) {
     for (ProvidedValuesCombi combie : this.valuesWhenProvided) {
       if (combie.getCombieId().equals(combieId)) {
-        return this.valuesWhenProvided.remove(combie);
+        return setChanged(this.valuesWhenProvided.remove(combie));
       }
     }
     return false;
@@ -366,7 +374,7 @@ public class ControlAction extends ATableModel implements IControlAction {
     if (this.notProvidedVariables == null) {
       this.notProvidedVariables = new ArrayList<>();
     }
-    this.notProvidedVariables.add(notProvidedVariable);
+    setChanged(this.notProvidedVariables.add(notProvidedVariable));
   }
 
   /**
@@ -392,7 +400,7 @@ public class ControlAction extends ATableModel implements IControlAction {
       this.providedVariables = new ArrayList<>();
     }
     if (!this.providedVariables.contains(providedVariable)) {
-      this.providedVariables.add(providedVariable);
+      setChanged(this.providedVariables.add(providedVariable));
     }
   }
 
@@ -458,7 +466,7 @@ public class ControlAction extends ATableModel implements IControlAction {
       if (ruleIds == null) {
         this.ruleIds = new ArrayList<>();
       }
-      return ruleIds.add(ruleId);
+      return setChanged(ruleIds.add(ruleId));
     }
     return false;
   }

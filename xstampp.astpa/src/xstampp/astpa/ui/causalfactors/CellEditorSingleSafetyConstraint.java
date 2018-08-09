@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 
 import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;

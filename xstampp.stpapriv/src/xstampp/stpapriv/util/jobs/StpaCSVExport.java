@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import messages.Messages;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -276,10 +276,10 @@ public class StpaCSVExport extends Job {
       ucaDescMap.put(uca.getId(), "PCA1." + uca.getNumber() + ": " + uca.getDescription());
     }
     for (ICausalComponent component : this.model.getCausalComponents()) {
-      SortedMap<ICausalFactor, List<Link>> factorBasedMap = model.getCausalFactorController()
+      SortedMap<ITableModel, List<Link>> factorBasedMap = model.getCausalFactorController()
           .getCausalFactorBasedMap(component, model.getLinkController());
       // this loop writes two lines
-      for (ICausalFactor factor : factorBasedMap.keySet()) {
+      for (ITableModel factor : factorBasedMap.keySet()) {
 
         for (Link entryLink : factorBasedMap.get(factor)) {
           String ucaCell = ""; //$NON-NLS-1$

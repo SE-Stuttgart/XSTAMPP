@@ -444,8 +444,8 @@ public class LinkController extends Observable {
     return true;
   }
 
-  public boolean isLinked(LinkingType linkType, UUID part, UUID rightPart) {
-    return isLinked(linkType, rightPart, Optional.of(rightPart));
+  public boolean isLinked(Link otherLink) {
+    return this.linkMap.get(otherLink.getLinkType()).stream().anyMatch(e -> e.equals(otherLink));
   }
 
   public boolean isLinked(LinkingType linkType, UUID part, Optional<UUID> rightPart) {
@@ -543,7 +543,7 @@ public class LinkController extends Observable {
     for (Entry<LinkingType, List<Link>> entry : linkMap.entrySet()) {
       ArrayList<Link> links = new ArrayList<>();
       for (Link link : entry.getValue()) {
-        if (links.contains(link)) {
+        if (!links.contains(link)) {
           if (entry.getKey().isAcceptingNullLinks()
               && (link.isLinkAPresent() || link.isLinkBPresent())) {
             links.add(link);
@@ -567,7 +567,7 @@ public class LinkController extends Observable {
     List<Link> removeList = new ArrayList<>();
     for (Entry<LinkingType, List<Link>> ownEntry : linkMap.entrySet()) {
       for (Link ownLink : ownEntry.getValue()) {
-        if (!controller.isLinked(ownEntry.getKey(), ownLink.getLinkA(), ownLink.getLinkB())) {
+        if (!controller.isLinked(ownLink)) {
           removeList.add(ownLink);
         }
       }

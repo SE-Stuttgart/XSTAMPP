@@ -23,9 +23,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
@@ -115,7 +116,7 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
       row = row == null ? createRow(sheet) : row;
       Link ucaCfLink = getController().getLinkController().getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK,
           causalEntryLink.getLinkA());
-      ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
+      ITableModel factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
       createCell(row, 5, factor.getText());
 
       index = createSubRows(sheet, row, new int[] { 5 }, (parentRow) -> {
@@ -159,11 +160,11 @@ public class Step2HazardProgress extends AbstractProgressSheetCreator {
     ITableModel requirement = getController().getSdsController().getDesignRequirement(designOptional.orElse(null),
         ObserverValue.DESIGN_REQUIREMENT_STEP2);
     String designRequirement = "";
-    if (requirement != null) {
+    if (requirement instanceof BadReferenceModel) {
+      addProgress(causalEntryLink.getId(), 0f);
+    } else {
       designRequirement = requirement.getIdString();
       addProgress(causalEntryLink.getId(), 100f);
-    } else {
-      addProgress(causalEntryLink.getId(), 0f);
     }
     createCell(hazRow, 6, constraint);
     createCell(hazRow, 7, designRequirement);

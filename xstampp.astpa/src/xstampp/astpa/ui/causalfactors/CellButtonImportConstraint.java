@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import xstampp.astpa.messages.Messages;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.ObserverValue;
 import xstampp.ui.common.contentassist.AutoCompleteField;

@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -244,9 +244,9 @@ public class ConstraintResultController extends Observable implements Observer {
       ltlMap.put(ltl.getId(), ltl);
     }
     for (ICausalComponent entry : getModel().getCausalComponents()) {
-      SortedMap<ICausalFactor, List<Link>> factorBasedMap = getModel().getCausalFactorController()
+      SortedMap<ITableModel, List<Link>> factorBasedMap = getModel().getCausalFactorController()
           .getCausalFactorBasedMap(entry, getModel().getLinkController());
-      for (ICausalFactor causalFactor : factorBasedMap.keySet()) {
+      for (ITableModel causalFactor : factorBasedMap.keySet()) {
 
         for (Link entryLink : factorBasedMap.get(causalFactor)) {
           List<UUID> scenarioIds = getModel().getLinkController()

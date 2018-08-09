@@ -19,8 +19,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
@@ -78,7 +79,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
       row = row == null ? createRow(sheet) : row;
       // The causal entry is defined as link between the linking between uca and causal factor and a
       // component
-      ICausalFactor factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
+      ITableModel factor = getController().getCausalFactorController().getCausalFactor(ucaCfLink.getLinkB());
       Optional<Link> causalEntryOpt = getController().getLinkController()
           .getRawLinksFor(LinkingType.UcaCfLink_Component_LINK, ucaCfLink.getId()).stream().findFirst();
       if (factor != null && causalEntryOpt.isPresent()) {
@@ -94,7 +95,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
 
   }
 
-  private int createCausalEntries(Sheet sheet, Row parentRow, ICausalFactor factor, Link causalEntryLink) {
+  private int createCausalEntries(Sheet sheet, Row parentRow, ITableModel factor, Link causalEntryLink) {
     Row row = parentRow;
     int index = parentRow.getRowNum();
     // each entry (link between uca-cf and a component is used to get the hazard linking for this
@@ -115,7 +116,7 @@ public class Step2Progress extends AbstractProgressSheetCreator {
 
   }
 
-  private void createSC(ICausalFactor factor, Row hazRow, Link causalEntryLink) {
+  private void createSC(ITableModel factor, Row hazRow, Link causalEntryLink) {
     String idString = "";
     for (UUID hazId : getController().getLinkController().getLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
         causalEntryLink.getId())) {
@@ -132,11 +133,11 @@ public class Step2Progress extends AbstractProgressSheetCreator {
     ITableModel requirement = getController().getSdsController().getDesignRequirement(designOptional.orElse(null),
         ObserverValue.DESIGN_REQUIREMENT_STEP2);
     String designRequirement = "";
-    if (requirement != null) {
+    if (requirement instanceof BadReferenceModel) {
+      addProgress(causalEntryLink.getId(), 0f);
+    } else {
       designRequirement = requirement.getIdString();
       addProgress(causalEntryLink.getId(), 100f);
-    } else {
-      addProgress(causalEntryLink.getId(), 0f);
     }
     createCell(hazRow, 3, idString);
     if (sc2Optional.isPresent()) {

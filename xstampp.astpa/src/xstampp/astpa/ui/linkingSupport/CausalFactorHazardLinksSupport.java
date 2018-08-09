@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import xstampp.astpa.model.DataModelController;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
@@ -45,7 +45,7 @@ public class CausalFactorHazardLinksSupport extends LinkSupport<DataModelControl
           .getLinkObjectFor(LinkingType.UcaCfLink_Component_LINK, ucaCfCompLink).getLinkA();
       UUID cfLink = getDataInterface().getLinkController()
           .getLinkObjectFor(LinkingType.UCA_CausalFactor_LINK, UcaCfLink).getLinkB();
-      ICausalFactor causalFactor = getDataInterface().getCausalFactorController()
+      ITableModel causalFactor = getDataInterface().getCausalFactorController()
           .getCausalFactor(cfLink);
       result = ((ITableModel) causalFactor).getIdString();
     } catch (Exception e) {

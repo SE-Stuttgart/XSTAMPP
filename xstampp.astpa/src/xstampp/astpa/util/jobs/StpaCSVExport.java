@@ -183,12 +183,12 @@ public class StpaCSVExport extends Job {
 
 //    for (ICausalComponent component : this.model.getCausalComponents()) {
 //      // this loop writes two lines
-//      for (ICausalFactor factor : component.getCausalFactors()) {
+//      for (ITableModel factor : component.getCausalFactors()) {
 //        Map<UUID, String> ucaDescMap = new HashMap<>();
 //        for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
 //          ucaDescMap.put(uca.getId(), "UCA1." + uca.getNumber() + ": " + uca.getDescription());
 //        }
-//        for (ICausalFactorEntry entry : factor.getAllEntries()) {
+//        for (ITableModelEntry entry : factor.getAllEntries()) {
 //          String ucaCell = ""; //$NON-NLS-1$
 //          String hazCell = ""; //$NON-NLS-1$
 //          String scenarioCell = ""; //$NON-NLS-1$

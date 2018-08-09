@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -23,8 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import xstampp.astpa.model.controlstructure.interfaces.IAnchor;
 
 /**
- * Class that represents anchor points of a connection in the control structure
- * diagram
+ * Class that represents anchor points of a connection in the control structure diagram
  * 
  * @author Fabian Toth
  */
@@ -57,8 +54,7 @@ public class Anchor implements IAnchor {
    * Constructs a new anchor with the given values
    * 
    * @param isFlying
-   *          true if this anchor is flying, which means that it is directly
-   *          created on the root
+   *          true if this anchor is flying, which means that it is directly created on the root
    * @param xOrientation
    *          the xOrientation of the new anchor
    * @param yOrientation
@@ -68,8 +64,7 @@ public class Anchor implements IAnchor {
    * 
    * @author Fabian Toth
    */
-  public Anchor(boolean isFlying, int xOrientation, int yOrientation,
-      UUID ownerId) {
+  public Anchor(boolean isFlying, int xOrientation, int yOrientation, UUID ownerId) {
     this.isFlying = isFlying ? true : null;
     this.xOrientation = xOrientation;
     this.yOrientation = yOrientation;
@@ -80,7 +75,8 @@ public class Anchor implements IAnchor {
   }
 
   public Anchor clone() {
-    Anchor anchor = new Anchor(isFlying, xOrientation, yOrientation, ownerId);
+    Anchor anchor = new Anchor(isFlying == null ? false : isFlying, xOrientation, yOrientation,
+        ownerId);
     anchor.id = this.id;
     return anchor;
   }
@@ -128,8 +124,8 @@ public class Anchor implements IAnchor {
    *          the xOrientation to set
    * @param withPm
    *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
-   *          visualization of the control structure with process models<br>
-   *          <b><span style="color:blue;">false</span></b> otherwise
+   *          visualization of the control structure with process models<br> <b><span
+   *          style="color:blue;">false</span></b> otherwise
    */
   public void setxOrientation(int xOrientation, boolean withPm) {
     if (withPm) {
@@ -159,8 +155,8 @@ public class Anchor implements IAnchor {
    *          the yOrientation to set
    * @param withPm
    *          <b><span style="color:blue;">true</span></b> if the given orientation is meant for the
-   *          visualization of the control structure with process models<br>
-   *          <b><span style="color:blue;">false</span></b> otherwise
+   *          visualization of the control structure with process models<br> <b><span
+   *          style="color:blue;">false</span></b> otherwise
    */
   public void setyOrientation(int yOrientation, boolean withPm) {
     if (withPm) {

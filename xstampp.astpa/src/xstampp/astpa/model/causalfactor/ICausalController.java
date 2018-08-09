@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.causalfactor.interfaces.ICausalComponent;
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
@@ -35,20 +34,20 @@ import xstampp.model.ObserverValue;
 public interface ICausalController {
 
   /**
-   * Adds a simple {@link ICausalFactor} that is not linked to a {@link ICausalComponent} but which
+   * Adds a simple {@link ITableModel} that is not linked to a {@link ICausalComponent} but which
    * is can be used to create a Entry in the causal analysis. Notifies all observers with
    * {@link ObserverValue#CAUSAL_FACTOR}.
    * 
-   * @return the {@link UUID} of the {@link ICausalFactor}
+   * @return the {@link UUID} of the {@link ITableModel}
    */
   UUID addCausalFactor();
 
   /**
    * 
    * @param causalFactorId
-   *          the {@link UUID} of a {@link ICausalFactor}
+   *          the {@link UUID} of a {@link ITableModel}
    * @param causalFactorText
-   *          the text that should be set as the {@link ICausalFactor#getText()}
+   *          the text that should be set as the {@link ITableModel#getText()}
    * @return <b style="color:blue">true</b> if the given id is valid and the text is different to
    *         the current <br> <b style="color:blue">false</b> otherwise
    */
@@ -106,10 +105,10 @@ public interface ICausalController {
    * 
    * @param causalFactorId
    *          the {@link UUID} that was given to a causal factor by creation
-   * @return the {@link ICausalFactor} for the given id or <b>null</b> if no {@link ICausalFactor}
+   * @return the {@link ITableModel} for the given id or a singleton instance of {@link BadReferenceModel} if no {@link ITableModel}
    *         was found with the given id
    */
-  ICausalFactor getCausalFactor(UUID causalFactorId);
+  ITableModel getCausalFactor(UUID causalFactorId);
 
   /**
    * @return a list containing all causalFactors as {@link ITableModel}s, changes to this list
@@ -132,7 +131,7 @@ public interface ICausalController {
   /**
    * 
    * @param causalFactorId
-   *          the {@link UUID} of a {@link ICausalFactor}
+   *          the {@link UUID} of a {@link ITableModel}
    * @param description
    *          the description that should be set as the {@link ITableModel#getDescription()}
    * @return <b style="color:blue">true</b> if the given id is valid and the description is
@@ -141,20 +140,20 @@ public interface ICausalController {
   boolean setSafetyConstraintDescription(UUID causalFactorId, String description);
 
   /**
-   * Creates a sorted mapping of a List of {@link Link}s to a {@link ICausalFactor}. The list set as
+   * Creates a sorted mapping of a List of {@link Link}s to a {@link ITableModel}. The list set as
    * value contains all {@link LinkingType#UcaCfLink_Component_LINK}s between a
-   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link ICausalFactor}</b> and the id
+   * {@link LinkingType#UCA_CausalFactor_LINK} of a <b>specific {@link ITableModel}</b> and the id
    * of a {@link ICausalComponent}.<br> The {@link List} is mapped to the <b>specific
-   * {@link ICausalFactor}</b> of that list.
+   * {@link ITableModel}</b> of that list.
    * 
    * @param component
    *          a component that appears in the causal analysis
    * @param linkController
    *          the {@link LinkController} that contains the {@link Link}s
    * @return A {@link SortedMap} that links a {@link List} of {@link Link}s of type
-   *         {@link LinkingType#UcaCfLink_Component_LINK} to a {@link ICausalFactor}s.
+   *         {@link LinkingType#UcaCfLink_Component_LINK} to a {@link ITableModel}s.
    */
-  SortedMap<ICausalFactor, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
+  SortedMap<ITableModel, List<Link>> getCausalFactorBasedMap(ICausalComponent component,
       LinkController linkController);
 
   /**

@@ -880,6 +880,9 @@ public class ControlStructureController extends Observable {
   }
 
   public void sync(ControlStructureController controller) {
+    this.useMultiRoots = controller.useMultiRoots;
+    this.step2Initialiesed = controller.step2Initialiesed;
+    this.changed = controller.changed;
     if (controller.rootComponents != null) {
       this.rootComponents = new ArrayList<>();
       this.rootComponents.add(controller.rootComponents.get(0).clone());

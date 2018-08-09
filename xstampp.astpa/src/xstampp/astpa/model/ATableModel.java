@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -35,6 +35,9 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @XmlAttribute
   private UUID createdBy;
+
+  @XmlAttribute
+  private Boolean changed;
 
   @XmlElement
   private UUID id;
@@ -71,13 +74,15 @@ public abstract class ATableModel extends EntryWithSeverity
     this.title = title;
     this.description = description;
     this.number = number;
+    this.changed = null;
   }
 
   public ATableModel(ITableModel model, int i) {
     this.id = model.getId();
     this.title = model.getTitle();
     this.description = model.getDescription();
-    this.number = i;
+    this.number = model.getNumber();
+    this.changed = false;
   }
 
   /**
@@ -123,6 +128,19 @@ public abstract class ATableModel extends EntryWithSeverity
     return false;
   }
 
+  public boolean hasChanged() {
+    return changed == null ? false : changed;
+  }
+
+  public void setChanged() {
+    changed = changed == null ? null : true;
+  }
+
+  public boolean setChanged(boolean changed) {
+    this.changed = this.changed == null ? null : changed;
+    return changed;
+  }
+
   /**
    * Setter for the description
    * 
@@ -136,6 +154,7 @@ public abstract class ATableModel extends EntryWithSeverity
     if (this.description == null || !this.description.equals(description)) {
       String result = this.description;
       this.description = description;
+      setChanged();
       return result;
     }
     return null;
@@ -160,6 +179,7 @@ public abstract class ATableModel extends EntryWithSeverity
     if (this.title == null || !this.title.equals(title)) {
       String result = this.title;
       this.title = title;
+      setChanged();
       return result;
     }
     return null;
@@ -219,6 +239,7 @@ public abstract class ATableModel extends EntryWithSeverity
   public boolean setNumber(int number) {
     if (this.number != number) {
       this.number = number;
+      setChanged();
       return true;
     }
     return false;
@@ -237,8 +258,10 @@ public abstract class ATableModel extends EntryWithSeverity
    * @return
    */
   public boolean setLinks(String links) {
-    if (this.links == null || !this.links.equals(links)) {
+    if ((this.links == null && links != null)
+        || !(this.links == null || this.links.equals(links))) {
       this.links = links;
+      setChanged();
       return true;
     }
     return false;

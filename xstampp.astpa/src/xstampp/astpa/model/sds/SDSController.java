@@ -610,7 +610,7 @@ public class SDSController extends ATableModelController implements ISDSControll
   public void syncContent(SDSController controller) {
     for (SystemGoal other : controller.getSystemGoals()) {
       ITableModel own = getSystemGoal(other.getId());
-      if (own == null) {
+      if (own instanceof BadReferenceModel) {
         addSystemGoal(other);
       } else {
         setSystemGoalTitle(other.getId(), other.getTitle());
@@ -619,27 +619,27 @@ public class SDSController extends ATableModelController implements ISDSControll
     }
     for (SafetyConstraint other : controller.getSafetyConstraints()) {
       ITableModel own = getSafetyConstraint(other.getId());
-      if (own == null) {
+      if (own instanceof BadReferenceModel) {
         addSafetyConstraint(other);
-      } else {
+      } else if(other.hasChanged()){
         setSafetyConstraintTitle(other.getId(), other.getTitle());
         setSafetyConstraintDescription(other.getId(), other.getDescription());
       }
     }
     for (DesignRequirement otherReq : controller.getDesignRequirements()) {
       ITableModel ownReq = getDesignRequirement(otherReq.getId(), ObserverValue.DESIGN_REQUIREMENT);
-      if (ownReq == null) {
+      if (ownReq instanceof BadReferenceModel) {
         addDesignRequirement(otherReq, ObserverValue.DESIGN_REQUIREMENT);
-      } else {
+      } else if(otherReq.hasChanged()){
         setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT, otherReq.getId(), otherReq.getTitle());
         setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT, otherReq.getId(), otherReq.getDescription());
       }
     }
     for (DesignRequirementStep1 otherReq : controller.getDesignRequirementsStep1()) {
       ITableModel ownReq = getDesignRequirement(otherReq.getId(), ObserverValue.DESIGN_REQUIREMENT_STEP1);
-      if (ownReq == null) {
+      if (ownReq instanceof BadReferenceModel) {
         addDesignRequirement(otherReq, ObserverValue.DESIGN_REQUIREMENT_STEP1);
-      } else {
+      } else if(otherReq.hasChanged()){
         setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT_STEP1, otherReq.getId(), otherReq.getTitle());
         setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT_STEP1, otherReq.getId(),
             otherReq.getDescription());
@@ -647,9 +647,9 @@ public class SDSController extends ATableModelController implements ISDSControll
     }
     for (DesignRequirementStep2 otherReq : controller.getDesignRequirementsStep2()) {
       ITableModel ownReq = getDesignRequirement(otherReq.getId(), ObserverValue.DESIGN_REQUIREMENT_STEP2);
-      if (ownReq == null) {
+      if (ownReq instanceof BadReferenceModel) {
         addDesignRequirement(otherReq, ObserverValue.DESIGN_REQUIREMENT_STEP2);
-      } else {
+      } else if(otherReq.hasChanged()){
         setDesignRequirementTitle(ObserverValue.DESIGN_REQUIREMENT_STEP2, otherReq.getId(), otherReq.getTitle());
         setDesignRequirementDescription(ObserverValue.DESIGN_REQUIREMENT_STEP2, otherReq.getId(),
             otherReq.getDescription());

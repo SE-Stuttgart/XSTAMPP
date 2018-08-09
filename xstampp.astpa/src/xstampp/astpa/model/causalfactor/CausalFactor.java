@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import xstampp.astpa.model.causalfactor.interfaces.ICausalFactor;
+import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
@@ -40,7 +40,7 @@ import xstampp.model.AbstractNumberedEntry;
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor, IEntryWithNameId {
+public class CausalFactor extends AbstractNumberedEntry implements ITableModel, IEntryWithNameId {
 
   @XmlElement(name = "id")
   private UUID id;
@@ -141,11 +141,6 @@ public class CausalFactor extends AbstractNumberedEntry implements ICausalFactor
       this.entries = new ArrayList<>();
     }
     return this.entries;
-  }
-
-  @Override
-  public String getNote() {
-    return null;
   }
 
   @Override
