@@ -5,7 +5,7 @@
  * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors: Lukas Balzer - initial API and implementation
+ * Contributors: Jaqueline Patzek, Fabian Toth, Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.model.sds;
 
@@ -77,8 +77,7 @@ public interface ISDSController {
    * 
    * @param safetyConstraintId
    *          the id of the safety constraint
-   * @return safety constraint object or a {@link BadReferenceModel} if no safety constraint for the
-   *         given id exists
+   * @return safety constraint object or a singleton instance of {@link BadReferenceModel} if the given UUID doesn't exist
    * 
    * @author Fabian Toth
    */
@@ -124,7 +123,7 @@ public interface ISDSController {
    * 
    * @param systemGoalId
    *          the id of the system goal
-   * @return system goal object
+   * @return system goal object or a singleton instance of {@link BadReferenceModel} if the given UUID doesn't exist
    * 
    * @author Jaqueline Patzek, Fabian Toth
    */
@@ -188,9 +187,8 @@ public interface ISDSController {
    * 
    * @param designRequirementId
    *          ID of the design requirement
-   * @return design requirement object
+   * @return design requirement object or a singleton instance of {@link BadReferenceModel} if the given UUID doesn't exist
    * 
-   * @author Jaqueline Patzek, Fabian Toth
    * @deprecated Use {@link #getDesignRequirement(UUID,ObserverValue)} instead
    */
   ITableModel getDesignRequirement(UUID designRequirementId);
@@ -202,7 +200,7 @@ public interface ISDSController {
    *          ID of the design requirement
    * @param type
    *          TODO
-   * @return design requirement object
+   * @return design requirement object or a singleton instance of {@link BadReferenceModel} if the given UUID doesn't exist
    * 
    * @author Jaqueline Patzek, Fabian Toth
    */

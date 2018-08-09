@@ -1,11 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package xstampp.astpa.util.jobs;
@@ -118,12 +116,12 @@ public class CSExportJob extends XstamppJob {
    * @see SWT#IMAGE_PNG
    * @see SWT#IMAGE_JPEG
    */
-  public CSExportJob(String path, int imgOffset, String editorId,
-      UUID projectId, boolean showPreview, boolean decorate) {
+  public CSExportJob(String path, int imgOffset, String editorId, UUID projectId,
+      boolean showPreview, boolean decorate) {
     super(Messages.ExportCS);
     this.projectID = projectId;
-    this.model = (IControlStructureEditorDataModel) ProjectManager
-        .getContainerInstance().getDataModel(projectId);
+    this.model = (IControlStructureEditorDataModel) ProjectManager.getContainerInstance()
+        .getDataModel(projectId);
     this.path = path;
     this.imgOffset = imgOffset;
     this.showPreview = showPreview;
@@ -142,8 +140,8 @@ public class CSExportJob extends XstamppJob {
     }
   }
 
-  public CSExportJob(ByteArrayOutputStream stream, int imgOffset, String editorId,
-      UUID projectId, boolean decorate) {
+  public CSExportJob(ByteArrayOutputStream stream, int imgOffset, String editorId, UUID projectId,
+      boolean decorate) {
     this((String) null, imgOffset, editorId, projectId, false, decorate);
     this.outputStream = stream;
     this.imageType = SWT.IMAGE_PNG;
@@ -162,15 +160,14 @@ public class CSExportJob extends XstamppJob {
    * @param imgOffset
    *          the amount of pixels which are added as Border
    * @param forcedDeco
-   *          this bool can be set if a decoration in the next Image is
-   *          wished
+   *          this bool can be set if a decoration in the next Image is wished
    * @see GC
    * @see ImageLoader
    * @see SWT#IMAGE_PNG
    * @see SWT#IMAGE_JPEG
    */
-  public CSExportJob(String path, String editorId, UUID projectId,
-      int imgOffset, boolean forcedDeco) {
+  public CSExportJob(String path, String editorId, UUID projectId, int imgOffset,
+      boolean forcedDeco) {
     this(path, imgOffset, editorId, projectId, false, forcedDeco);
   }
 
@@ -205,18 +202,14 @@ public class CSExportJob extends XstamppJob {
 
     // this additional Image is created with the actual Bounds
     // and the first one is clipped inside the scaled image
-    Image scaledImage = new Image(null, clipRectangle.width
-        + (2 * this.imgOffset),
-        clipRectangle.height
-            + (2 * this.imgOffset));
+    Image scaledImage = new Image(null, clipRectangle.width + (2 * this.imgOffset),
+        clipRectangle.height + (2 * this.imgOffset));
     GC imageGC = new GC(scaledImage);
     Graphics graphics = new SWTGraphics(imageGC);
 
-    if ((this.srcImage.getBounds().width >= 0)
-        && (scaledImage.getBounds().width >= 0)) {
-      graphics.drawImage(this.srcImage, clipRectangle, new Rectangle(
-          this.imgOffset, this.imgOffset, clipRectangle.width,
-          clipRectangle.height));
+    if ((this.srcImage.getBounds().width >= 0) && (scaledImage.getBounds().width >= 0)) {
+      graphics.drawImage(this.srcImage, clipRectangle,
+          new Rectangle(this.imgOffset, this.imgOffset, clipRectangle.width, clipRectangle.height));
     }
     ratio = (float) scaledImage.getBounds().width / scaledImage.getBounds().height;
     ImageLoader imgLoader = new ImageLoader();
@@ -275,8 +268,7 @@ public class CSExportJob extends XstamppJob {
               // added
               // as starting Point for the rectangle
               isFirst = false;
-              clipRectangle = new Rectangle(
-                  ((IFigure) child).getBounds());
+              clipRectangle = new Rectangle(((IFigure) child).getBounds());
             } else {
               clipRectangle.union(((IFigure) child).getBounds());
             }
@@ -288,22 +280,17 @@ public class CSExportJob extends XstamppJob {
 
     }
     // cut off negative x-/y-parts
-    clipRectangle.width = clipRectangle.width
-        + Math.min(0, clipRectangle.x);
-    clipRectangle.height = clipRectangle.height
-        + Math.min(0, clipRectangle.y);
+    clipRectangle.width = clipRectangle.width + Math.min(0, clipRectangle.x);
+    clipRectangle.height = clipRectangle.height + Math.min(0, clipRectangle.y);
     // the clipRectangle is minimally located at (0,0)
     clipRectangle.x = Math.max(0, clipRectangle.x);
     clipRectangle.y = Math.max(0, clipRectangle.y);
     clipRectangle.scale(this.factor);
-    if ((clipRectangle.height + clipRectangle.y) > this.srcImage
-        .getBounds().height) {
-      clipRectangle.height = this.srcImage.getBounds().height
-          - clipRectangle.y;
+    if ((clipRectangle.height + clipRectangle.y) > this.srcImage.getBounds().height) {
+      clipRectangle.height = this.srcImage.getBounds().height - clipRectangle.y;
     }
     if ((clipRectangle.width + clipRectangle.x) > this.srcImage.getBounds().width) {
-      clipRectangle.width = this.srcImage.getBounds().width
-          - clipRectangle.x;
+      clipRectangle.width = this.srcImage.getBounds().width - clipRectangle.x;
     }
     return clipRectangle;
   }
@@ -322,11 +309,9 @@ public class CSExportJob extends XstamppJob {
       }
 
       viewer.createControl(canvas);
-      viewer.setEditPartFactory(new CSEditPartFactory(
-          CSExportJob.this.model, CSExportJob.this.editorId,
-          Activator.getDefault().getPreferenceStore()));
-      viewer.setProperty(IControlStructureEditor.STEP_EDITOR,
-          CSExportJob.this.editorId);
+      viewer.setEditPartFactory(new CSEditPartFactory(CSExportJob.this.model,
+          CSExportJob.this.editorId, Activator.getDefault().getPreferenceStore()));
+      viewer.setProperty(IControlStructureEditor.STEP_EDITOR, CSExportJob.this.editorId);
       viewer.setProperty(CSAbstractEditor.IS_DECORATED, deco);
       ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 
@@ -334,15 +319,13 @@ public class CSExportJob extends XstamppJob {
       IRectangleComponent root = CSExportJob.this.model.getRoot();
 
       if (root == null) {
-        CSExportJob.this.model.setRoot(new Rectangle(),
-            new String());
+        CSExportJob.this.model.setRoot(new Rectangle(), new String());
         root = CSExportJob.this.model.getRoot();
       }
       viewer.setProperty("ignore_dirty", true);
       viewer.setContents(root);
       viewer.getContents().refresh();
-      IFigure tmpFigure = rootEditPart
-          .getLayer(LayerConstants.PRINTABLE_LAYERS);
+      IFigure tmpFigure = rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS);
 
       // a plain Image is created on which we can draw any graphics
       double width;
@@ -353,7 +336,8 @@ public class CSExportJob extends XstamppJob {
         width = CSExportJob.this.factor * tmpFigure.getBounds().width;
         height = CSExportJob.this.factor * tmpFigure.getBounds().height;
       } while (width > 20000 || height > 20000);
-      CSExportJob.this.srcImage = new Image(null, (int) width, (int) height);
+      CSExportJob.this.srcImage = new Image(null, Math.max(1, (int) width),
+          Math.max(1, (int) height));
       GC imageGC = new GC(CSExportJob.this.srcImage);
       Graphics graphics = new SWTGraphics(imageGC);
       graphics.scale(CSExportJob.this.factor);

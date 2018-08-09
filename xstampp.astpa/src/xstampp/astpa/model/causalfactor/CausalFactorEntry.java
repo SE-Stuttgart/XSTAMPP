@@ -20,10 +20,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.extendedData.interfaces.IExtendedDataController;
-import xstampp.astpa.model.hazacc.Hazard;
 import xstampp.astpa.model.hazacc.IHazAccController;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkController;
@@ -133,7 +133,7 @@ public class CausalFactorEntry {
         } else {
           for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
               causalEntryLink.getId())) {
-            Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());
+            ATableModel hazard = hazAccController.getHazard(causalHazLink.getLinkB());
             Optional<UUID> causalSCoption = linkController
                 .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream()
                 .findFirst();
@@ -153,7 +153,7 @@ public class CausalFactorEntry {
         hazardLinks = "";
         for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
             causalEntryLink.getId())) {
-          Hazard hazard = hazAccController.getHazard(causalHazLink.getLinkB());
+          ATableModel hazard = hazAccController.getHazard(causalHazLink.getLinkB());
           hazardLinks += hazardLinks.isEmpty() ? "" : ",";
           hazardLinks += hazard.getIdString();
         }

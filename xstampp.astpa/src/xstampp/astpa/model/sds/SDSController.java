@@ -216,7 +216,7 @@ public class SDSController extends ATableModelController implements ISDSControll
         return s;
       }
     }
-    return null;
+    return BadReferenceModel.getBadReference();
   }
 
   /*
@@ -372,7 +372,7 @@ public class SDSController extends ATableModelController implements ISDSControll
       }
     }
 
-    return null;
+    return BadReferenceModel.getBadReference();
   }
 
   private List<? extends ITableModel> getDesignReqList(ObserverValue type) {
@@ -513,12 +513,16 @@ public class SDSController extends ATableModelController implements ISDSControll
       String linkString = ""; //$NON-NLS-1$
       if (hazacc.isUseHazardConstraints()) {
         for (UUID id : linkController.getLinksFor(LinkingType.HAZ_S0_LINK, safetyConstraint.getId())) {
-          linkString += hazacc.getHazard(id).getIdString() + ", "; //$NON-NLS-1$
+          if(!BadReferenceModel.getBadReference().getId().equals(id)) {
+            linkString += hazacc.getHazard(id).getIdString() + ", "; //$NON-NLS-1$
+          }
         }
       } else {
         for (UUID id : linkController.getLinksFor(LinkingType.ACC_S0_LINK,
             safetyConstraint.getId())) {
-          linkString += hazacc.getAccident(id).getIdString() + ", "; //$NON-NLS-1$
+          if(!BadReferenceModel.getBadReference().getId().equals(id)) {
+            linkString += hazacc.getAccident(id).getIdString() + ", "; //$NON-NLS-1$
+          }
         }
       }
       for (UUID id : linkController.getLinksFor(LinkingType.DR0_SC_LINK,

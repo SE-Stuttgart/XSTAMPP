@@ -278,7 +278,7 @@ public class VulLossController extends HazAccController {
    *
    * @author Fabian Toth
    */
-  public Vulnerability getHazard(UUID hazardId) {
+  public ATableModel getHazard(UUID hazardId) {
     for (Vulnerability hazard : this.vulnerabilities) {
       if (hazard.getId().equals(hazardId)) {
         return hazard;

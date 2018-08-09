@@ -66,8 +66,7 @@ public class LinkController extends Observable {
    * exists, than its' id is returned and nothing is added.
    * 
    * @param linkType
-   *          an {@link LinkingType} for which links have been created in the
-   *          {@link LinkController}
+   *          an {@link LinkingType} for which links have been created in the {@link LinkController}
    * @param linkA
    *          the part whose {@link UUID} is the first part of the {@link Link}
    * @param linkB
@@ -544,8 +543,13 @@ public class LinkController extends Observable {
     for (Entry<LinkingType, List<Link>> entry : linkMap.entrySet()) {
       ArrayList<Link> links = new ArrayList<>();
       for (Link link : entry.getValue()) {
-        if ((link.isLinkAPresent() || link.isLinkBPresent()) && !links.contains(link)) {
-          links.add(link);
+        if (links.contains(link)) {
+          if (entry.getKey().isAcceptingNullLinks()
+              && (link.isLinkAPresent() || link.isLinkBPresent())) {
+            links.add(link);
+          } else if (link.isLinkAPresent() && link.isLinkBPresent()) {
+            links.add(link);
+          }
         }
       }
       entry.setValue(links);

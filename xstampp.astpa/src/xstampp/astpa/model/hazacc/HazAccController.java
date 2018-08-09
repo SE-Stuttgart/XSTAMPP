@@ -15,6 +15,7 @@ package xstampp.astpa.model.hazacc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,6 +26,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.ATableModelController;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
@@ -137,8 +139,12 @@ public class HazAccController extends ATableModelController implements IHazAccCo
    */
   @Override
   public ITableModel getAccident(UUID accidentID) {
-    return getAccidents().stream().filter(x -> x.getId().equals(accidentID)).findFirst()
-        .orElse(null);
+    Optional<Accident> first = getAccidents().stream().filter(x -> x.getId().equals(accidentID)).findFirst();
+    if(first.isPresent()) {
+      return first.get();
+    } else {
+      return BadReferenceModel.getBadReference();
+    }
   }
 
   /*
@@ -148,7 +154,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   @Override
   public List<ITableModel> getAllAccidents() {
     List<ITableModel> result = new ArrayList<>();
-    for (Accident accident : this.getAccidents()) {
+    for (ATableModel accident : this.getAccidents()) {
       result.add(accident);
     }
     return result;
@@ -195,7 +201,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
    */
   @Override
   public boolean removeHazard(UUID id) {
-    Hazard hazard = this.getHazard(id);
+    ATableModel hazard = this.getHazard(id);
     if (this.getHazards().remove(hazard)) {
       setChanged();
       notifyObservers(new UndoRemoveHazard(this, hazard, getLinkController()));
@@ -239,7 +245,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   @Override
   public List<ITableModel> getAllHazards() {
     List<ITableModel> result = new ArrayList<>();
-    for (Hazard hazard : this.getHazards()) {
+    for (ATableModel hazard : this.getHazards()) {
       result.add(hazard);
     }
     return result;
@@ -266,9 +272,13 @@ public class HazAccController extends ATableModelController implements IHazAccCo
    * @see xstampp.astpa.model.hazacc.IHazAccController#getHazard(java.util.UUID)
    */
   @Override
-  public Hazard getHazard(UUID hazardId) {
-    return getHazards().stream().filter(x -> x.getId().equals(hazardId)).findFirst()
-        .orElse(null);
+  public ATableModel getHazard(UUID hazardId) {
+    Optional<Hazard> first = getHazards().stream().filter(x -> x.getId().equals(hazardId)).findFirst();
+    if(first.isPresent()) {
+      return first.get();
+    } else {
+      return BadReferenceModel.getBadReference();
+    }
   }
 
   /*
@@ -278,7 +288,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
    */
   @Override
   public void prepareForExport(LinkController linkController, ISDSController sdsController) {
-    for (Accident accident : this.getAccidents()) {
+    for (ATableModel accident : this.getAccidents()) {
       accident.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(LinkingType.HAZ_ACC_LINK, accident.getId())) {
@@ -293,7 +303,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
         accident.setLinks(linkString.substring(0, linkString.length() - 2));
       }
     }
-    for (Hazard hazard : this.getHazards()) {
+    for (ATableModel hazard : this.getHazards()) {
       hazard.prepareForExport();
       String linkString = ""; //$NON-NLS-1$
       for (UUID id : linkController.getLinksFor(LinkingType.HAZ_ACC_LINK, hazard.getId())) {
@@ -318,14 +328,14 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   @Override
   public boolean prepareForSave(LinkController linkController) {
     boolean isUsed = false;
-    for (Accident accident : this.getAccidents()) {
+    for (ATableModel accident : this.getAccidents()) {
       accident.prepareForSave();
     }
     if (accidents != null && accidents.isEmpty()) {
       accidents = null;
     }
     isUsed |= accidents != null;
-    for (Hazard hazard : this.getHazards()) {
+    for (ATableModel hazard : this.getHazards()) {
       hazard.prepareForSave();
     }
     if (hazards != null && hazards.isEmpty()) {
@@ -416,7 +426,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   }
 
   public void syncContent(HazAccController controller) {
-    for (Accident other : controller.accidents) {
+    for (ATableModel other : controller.accidents) {
       ITableModel own = getAccident(other.getId());
       if (own == null) {
         addAccident(other);
@@ -426,7 +436,7 @@ public class HazAccController extends ATableModelController implements IHazAccCo
         ((Accident) own).setSeverity(other.getSeverity());
       }
     }
-    for (Hazard other : controller.hazards) {
+    for (ATableModel other : controller.hazards) {
       ITableModel own = getHazard(other.getId());
       if (own == null) {
         addHazard(other);

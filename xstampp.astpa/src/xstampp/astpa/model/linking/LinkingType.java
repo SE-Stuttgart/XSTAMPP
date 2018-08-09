@@ -19,27 +19,27 @@ public enum LinkingType {
   /**
    * @deprecated This is a legacy entry UCA_HAZ_LINK
    */
-  UNSAFE_CONTROL_ACTION,
+  UNSAFE_CONTROL_ACTION(false),
   /**
    * Enum for changes in linking between hazards and accidents.
    * 
    * @author Fabian Toth
    */
-  HAZ_ACC_LINK,
+  HAZ_ACC_LINK(false),
   /**
    * <ol>
    * <li>A should be the UUID of an Accident in STPA Step 1
    * <li>B should be the UUID of a Safety Constraint in STPA Step 1
    * </ol>
    */
-  ACC_S0_LINK,
+  ACC_S0_LINK(false),
   /**
    * <ol>
    * <li>A should be the UUID of an Hazard in STPA Step 1
    * <li>B should be the UUID of a Safety Constraint in STPA Step 1
    * </ol>
    */
-  HAZ_S0_LINK,
+  HAZ_S0_LINK(false),
 
   /**
    * <ol>
@@ -47,7 +47,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA
    * </ol>
    */
-  DR_SC_LINK,
+  DR_SC_LINK(false),
 
   /**
    * <ol>
@@ -55,7 +55,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA Step 0
    * </ol>
    */
-  DR0_SC_LINK,
+  DR0_SC_LINK(false),
 
   /**
    * <ol>
@@ -63,7 +63,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA Step 1
    * </ol>
    */
-  DR1_CSC_LINK,
+  DR1_CSC_LINK(false),
 
   /**
    * <ol>
@@ -71,7 +71,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA Step 2
    * </ol>
    */
-  DR2_CausalSC_LINK,
+  DR2_CausalSC_LINK(false),
 
   /**
    * <ol>
@@ -79,7 +79,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Causal Scenario in STPA Step 2
    * </ol>
    */
-  DR2_CausalScenarioSC_LINK,
+  DR2_CausalScenarioSC_LINK(false),
 
   /**
    * <ol>
@@ -87,7 +87,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Hazard
    * </ol>
    */
-  UCA_HAZ_LINK,
+  UCA_HAZ_LINK(false),
 
   /**
    * enum for a link<A,B> between a unsafe control action and a causal factor in a stpa analysis.
@@ -96,7 +96,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a CF
    * </ol>
    */
-  UCA_CausalFactor_LINK,
+  UCA_CausalFactor_LINK(true),
 
   /**
    * A Link that is Labeled with this constant should describe an entry in the causal factors table.
@@ -105,7 +105,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Control Structure Component
    * </ol>
    */
-  UcaCfLink_Component_LINK,
+  UcaCfLink_Component_LINK(true),
 
   /**
    * <ol>
@@ -113,7 +113,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Hazard that is linked to the UCA
    * </ol>
    */
-  CausalEntryLink_HAZ_LINK,
+  CausalEntryLink_HAZ_LINK(true),
 
   /**
    * A link of this type is set instead of multiple {@link LinkingType#CausalEntryLink_HAZ_LINK}'s
@@ -123,7 +123,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA Step 2
    * </ol>
    */
-  CausalEntryLink_SC2_LINK,
+  CausalEntryLink_SC2_LINK(true),
 
   /**
    * A link of this type is set instead of multiple {@link LinkingType#CausalEntryLink_HAZ_LINK}'s
@@ -133,7 +133,7 @@ public enum LinkingType {
    * <li>B is not used by this
    * </ol>
    */
-  CausalEntryLink_ANCHOR,
+  CausalEntryLink_ANCHOR(true),
 
   /**
    * <ol>
@@ -141,7 +141,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA Step 2
    * </ol>
    */
-  CausalHazLink_SC2_LINK,
+  CausalHazLink_SC2_LINK(true),
 
   /**
    * <ol>
@@ -149,7 +149,7 @@ public enum LinkingType {
    * <li>B should be the UUID of a Hazardous Scenario that is linked to the UCA
    * </ol>
    */
-  CausalEntryLink_Scenario_LINK,
+  CausalEntryLink_Scenario_LINK(true),
 
   /**
    * <ol>
@@ -157,5 +157,15 @@ public enum LinkingType {
    * <li>B should be the UUID of a Safety Constraint in STPA Step 1
    * </ol>
    */
-  SC2_SC1_LINK;
+  SC2_SC1_LINK(false);
+  
+  private boolean acceptNullLinks;
+
+  private LinkingType(boolean acceptNullLinks) {
+    this.acceptNullLinks = acceptNullLinks;
+  }
+  
+  public boolean isAcceptingNullLinks() {
+    return acceptNullLinks;
+  }
 }

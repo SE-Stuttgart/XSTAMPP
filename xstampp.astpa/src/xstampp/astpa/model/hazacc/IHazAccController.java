@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- * Lukas Balzer - initial API and implementation
+ * Fabian Toth, Lukas Balzer - initial API and implementation
  ******************************************************************************/
 package xstampp.astpa.model.hazacc;
 
@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
 
+import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.sds.ISDSController;
@@ -55,7 +57,7 @@ public interface IHazAccController {
    *
    * @param accidentID
    *          the id of the accident
-   * @return found accident
+   * @return found accident or a singleton instance of {@link BadReferenceModel} if the given UUID doesn't exist
    *
    * @author Fabian Toth
    */
@@ -158,11 +160,11 @@ public interface IHazAccController {
    *
    * @param hazardId
    *          the id of the hazard
-   * @return found hazard
+   * @return found hazard or a singleton instance of {@link BadReferenceModel} if the given UUID doesn't exist
    *
    * @author Fabian Toth
    */
-  Hazard getHazard(UUID hazardId);
+  ATableModel getHazard(UUID hazardId);
 
   /**
    * Prepares the accidents and hazards for the export
