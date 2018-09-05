@@ -61,10 +61,9 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
 
   protected class DemoCanvas extends Canvas implements PaintListener {
     private String title;
-    public static final int labelFormOffset = 15;
-    private Font normalFont = new Font(null, "normalfont", 10, SWT.NORMAL); //$NON-NLS-1$
-    private Font headerFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
-    private Font titleFont = new Font(null, "font", 14, SWT.NORMAL); //$NON-NLS-1$
+    private Font normalFont = new Font(null, "normalfont", getContentSize(), SWT.NORMAL); //$NON-NLS-1$
+    private Font headerFont = new Font(null, "font", getHeadSize(), SWT.NORMAL); //$NON-NLS-1$
+    private Font titleFont = new Font(null, "font", getTitleSize(), SWT.NORMAL); //$NON-NLS-1$
     private Color fontColor;
     private Color bgColor;
     private UUID projectId;
@@ -191,9 +190,9 @@ public abstract class AbstractExportPage extends AbstractWizardPage implements I
     this.pluginID = pluginID;
     this.pageFormat = A4_LANDSCAPE;
     this.needProjectID = true;
-    contentSize = 10;
-    headSize = 12;
-    titleSize = 14;
+    contentSize = 8;
+    headSize = 10;
+    titleSize = 12;
     this.needsPath = true;
   }
 

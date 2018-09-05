@@ -13,7 +13,7 @@
 	xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<!-- author: Lukas Balzer -->
 
-	<xsl:import href="ucaTableTemp.xsl" />
+	<xsl:import href="fopStpaPdfExports.xsl" />
 	<xsl:param name="title.size" select="24" />
 	<xsl:param name="table.head.size" select="14" />
 	<xsl:param name="text.size" select="12" />
@@ -32,12 +32,15 @@
 				<fo:static-content flow-name="xsl-region-before">
 					<xsl:call-template name="astpaHead">
 						<xsl:with-param name="pdfTitle" select="$page.title" />
+						<xsl:with-param name="titleSize" select="$title.size" />
 					</xsl:call-template>
 				</fo:static-content>
 
 				<!-- Footer-Block -->
 				<fo:static-content flow-name="xsl-region-after">
-					<xsl:call-template name="astpaFooter" />
+					<xsl:call-template name="astpaFooter">
+						<xsl:with-param name="titleSize" select="$title.size" />
+					</xsl:call-template>
 				</fo:static-content>
 
 				<fo:flow flow-name="xsl-region-body">

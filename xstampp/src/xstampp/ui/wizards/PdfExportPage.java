@@ -13,15 +13,12 @@
 
 package xstampp.ui.wizards;
 
-import java.io.NotActiveException;
 import java.util.UUID;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -45,6 +42,7 @@ import xstampp.preferences.IPreferenceConstants;
  */
 public class PdfExportPage extends AbstractExportPage implements ModifyListener {
 
+  private static final String[] textSizes = new String[] { "2","4","6", "8", "10", "12", "14", "16", "18", "20", "24" }; 
   private Composite container;
   private Text textCompany;
   private ColorChooser bgChooser, fontChooser;
@@ -255,14 +253,18 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       text.setLayoutData(textData);
 
       Combo textCombo = new Combo(fontComposite, SWT.None);
-      textCombo.setItems(new String[] { "6", "8", "10", "12", "14", "16", "18", "20", "24" });
-      textCombo.setText("12");
+      textCombo.setItems(textSizes);
+      textCombo.setText(Integer.toString(getTitleSize()));
       textCombo.setLayoutData(gData);
-      textCombo.addSelectionListener(new SelectionAdapter() {
-
+      textCombo.addModifyListener(new ModifyListener() {
+        
         @Override
-        public void widgetSelected(SelectionEvent e) {
-          setTitleSize(Integer.parseInt(((Combo) e.getSource()).getText()));
+        public void modifyText(ModifyEvent e) {
+          try {
+            setTitleSize(Integer.parseInt(((Combo) e.getSource()).getText()));
+          }catch(Exception exc) {
+            exc.printStackTrace();
+          }
         }
       });
 
@@ -270,30 +272,38 @@ public class PdfExportPage extends AbstractExportPage implements ModifyListener 
       text.setText("Header size:");
       text.setLayoutData(textData);
       textCombo = new Combo(fontComposite, SWT.None);
-      textCombo.setItems(new String[] { "6", "8", "10", "12", "14", "16", "18" });
-      textCombo.setText("10");
+      textCombo.setItems(textSizes);
+      textCombo.setText(Integer.toString(getHeadSize()));
       textCombo.setLayoutData(gData);
-      textCombo.addSelectionListener(new SelectionAdapter() {
-
+      textCombo.addModifyListener(new ModifyListener() {
+        
         @Override
-        public void widgetSelected(SelectionEvent e) {
-          setHeadSize(Integer.parseInt(((Combo) e.getSource()).getText()));
-        }
+        public void modifyText(ModifyEvent e) {
+          try {
+            setHeadSize(Integer.parseInt(((Combo) e.getSource()).getText()));
+          }catch(Exception exc) {
+            exc.printStackTrace();
+          }
+         }
       });
 
       text = new Label(fontComposite, SWT.READ_ONLY);
       text.setText("Text size:");
       text.setLayoutData(textData);
       textCombo = new Combo(fontComposite, SWT.DROP_DOWN);
-      textCombo.setItems(new String[] { "6", "8", "10", "12", "14" });
-      textCombo.setText("8");
+      textCombo.setItems(textSizes);
+      textCombo.setText(Integer.toString(getContentSize()));
       textCombo.setLayoutData(gData);
-      textCombo.addSelectionListener(new SelectionAdapter() {
-
+      textCombo.addModifyListener(new ModifyListener() {
+        
         @Override
-        public void widgetSelected(SelectionEvent e) {
-          setContentSize(Integer.parseInt(((Combo) e.getSource()).getText()));
-        }
+        public void modifyText(ModifyEvent e) {
+          try {
+            setContentSize(Integer.parseInt(((Combo) e.getSource()).getText()));
+          }catch(Exception exc) {
+            exc.printStackTrace();
+          }
+         }
       });
 
       topElement = fontComposite;

@@ -140,9 +140,9 @@ public abstract class JAXBExportJob extends XstamppJob implements IJobChangeList
       try (OutputStream out = new BufferedOutputStream(new FileOutputStream(pdfFile));
           FileOutputStream pdfStream = new FileOutputStream(pdfFile);) {
         if (this.fileType.equals(org.apache.xmlgraphics.util.MimeConstants.MIME_PNG)) {
-          exportData.setTitleSize(exportData.getTitleSize() * 2);
-          exportData.setTextSize(exportData.getTextSize() * 2);
-          exportData.setTableHeadSize(exportData.getTableHeadSize() * 2);
+          exportData.setTitleSize(exportData.getTitleSize());
+          exportData.setTextSize(exportData.getTextSize());
+          exportData.setTableHeadSize(exportData.getTableHeadSize());
 
           float width = 2 * Float.parseFloat(fopFactory.getPageWidth().replace("in", ""));
           float height = 2 * Float.parseFloat(fopFactory.getPageHeight().replace("in", ""));
