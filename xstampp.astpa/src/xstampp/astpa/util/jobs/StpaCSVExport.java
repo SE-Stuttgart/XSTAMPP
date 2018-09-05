@@ -1,11 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner
- * Institute of Software Technology, Software Engineering Group
- * University of Stuttgart, Germany
+ * Copyright (c) 2013, 2017 Lukas Balzer, Asim Abdulkhaleq, Stefan Wagner Institute of Software
+ * Technology, Software Engineering Group University of Stuttgart, Germany
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package xstampp.astpa.util.jobs;
@@ -15,7 +13,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +25,11 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import messages.Messages;
 import xstampp.astpa.model.DataModelController;
+import xstampp.astpa.model.causalfactor.CausalCSComponent;
+import xstampp.astpa.model.causalfactor.CausalFactor;
+import xstampp.astpa.model.causalfactor.CausalFactorEntry;
+import xstampp.astpa.model.causalfactor.CausalHazardEntry;
+import xstampp.astpa.model.causalfactor.CausalScenarioEntry;
 import xstampp.astpa.model.controlaction.interfaces.IControlAction;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.interfaces.UnsafeControlActionType;
@@ -40,7 +45,7 @@ import xstampp.util.BufferedCSVWriter;
  * @since version 2.0.0
  * 
  */
-public class StpaCSVExport extends Job {
+public class StpaCSVExport extends Job implements IProjectExport{
 
   private final char seperator;
   private final String path;
@@ -63,8 +68,8 @@ public class StpaCSVExport extends Job {
    * @param types
    *          the type of the export
    */
-  public StpaCSVExport(String name, String filePath, char seperator,
-      IDataModel controller, int types) {
+  public StpaCSVExport(String name, String filePath, char seperator, IDataModel controller,
+      int types) {
     super(name);
     this.path = filePath;
     this.seperator = seperator;
@@ -82,35 +87,31 @@ public class StpaCSVExport extends Job {
     monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
     File tableCSV = new File(this.path);
 
-    try (BufferedCSVWriter csvWriter = new BufferedCSVWriter(
-        new FileWriter(tableCSV), this.seperator);) {
+    try (BufferedCSVWriter csvWriter = new BufferedCSVWriter(new FileWriter(tableCSV),
+        this.seperator);) {
 
       if ((type & ICSVExportConstants.PROJECT_DESCRIPTION) != 0) {
         this.writeSystemDescCSV(csvWriter, Messages.SystemDescription);
       }
       if ((type & ICSVExportConstants.ACCIDENT) != 0) {
-        this.exportAsCSV(this.model.getAllAccidents(), csvWriter,
-            Messages.Accidents);
+        this.exportAsCSV(this.model.getAllAccidents(), csvWriter, Messages.Accidents);
       }
       if ((type & ICSVExportConstants.HAZARD) != 0) {
-        this.exportAsCSV(this.model.getAllHazards(), csvWriter,
-            Messages.Hazards);
+        this.exportAsCSV(this.model.getAllHazards(), csvWriter, Messages.Hazards);
       }
       if ((type & ICSVExportConstants.SAFETY_CONSTRAINT) != 0) {
         this.exportAsCSV(this.model.getAllSafetyConstraints(), csvWriter,
             Messages.SafetyConstraints);
       }
       if ((type & ICSVExportConstants.SYSTEM_GOAL) != 0) {
-        this.exportAsCSV(this.model.getAllSystemGoals(), csvWriter,
-            Messages.SystemGoals);
+        this.exportAsCSV(this.model.getAllSystemGoals(), csvWriter, Messages.SystemGoals);
       }
       if ((type & ICSVExportConstants.DESIGN_REQUIREMENT) != 0) {
-        this.exportAsCSV(this.model.getAllDesignRequirements(),
-            csvWriter, Messages.DesignRequirements);
+        this.exportAsCSV(this.model.getAllDesignRequirements(), csvWriter,
+            Messages.DesignRequirements);
       }
       if ((type & ICSVExportConstants.CONTROL_ACTION) != 0) {
-        this.exportAsCSV(this.model.getAllControlActions(), csvWriter,
-            Messages.ControlActions);
+        this.exportAsCSV(this.model.getAllControlActions(), csvWriter, Messages.ControlActions);
       }
       if ((type & ICSVExportConstants.CORRESPONDING_SAFETY_CONSTRAINTS) != 0) {
         this.writeCscCSV(csvWriter, Messages.CorrespondingSafetyConstraints);
@@ -119,8 +120,7 @@ public class StpaCSVExport extends Job {
         this.writeUCACSV(csvWriter, Messages.UnsafeControlActionsTable);
       }
       if ((type & ICSVExportConstants.CAUSAL_FACTOR) != 0) {
-        this.writeCausalFactorsCSV(csvWriter,
-            Messages.CausalFactorsTable);
+        this.writeCausalFactorsCSV(csvWriter, Messages.CausalFactorsTable);
       }
       if ((type & ICSVExportConstants.CAUSAL_FACTOR_SafetyConstraints) != 0) {
         this.exportAsCSV(this.model.getCausalFactorController().getSafetyConstraints(), csvWriter,
@@ -131,13 +131,13 @@ public class StpaCSVExport extends Job {
         Desktop.getDesktop().open(tableCSV);
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return Status.CANCEL_STATUS;
     }
 
     return Status.OK_STATUS;
 
   }
-
 
   /**
    * 
@@ -164,8 +164,7 @@ public class StpaCSVExport extends Job {
     }
   }
 
-  private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title)
-      throws IOException {
+  private void writeCausalFactorsCSV(BufferedCSVWriter writer, String title) throws IOException {
 
     // the First two Rows are filled with the view- and the Column-titles
     writer.newLine();
@@ -176,66 +175,62 @@ public class StpaCSVExport extends Job {
     writer.writeCell(Messages.CausalFactors);
     writer.writeCell(Messages.UnsafeControlActions);
     writer.writeCell(Messages.HazardLinks);
-    writer.writeCell("Scenario");
+    if (this.model.getCausalFactorController().isUseScenarios()) {
+      writer.writeCell("Scenario");
+    }
     writer.writeCell(Messages.SafetyConstraints);
+    if (!this.model.getCausalFactorController().isUseScenarios()) {
+      writer.writeCell("DesignHint");
+    }
     writer.write(Messages.NotesSlashRationale);
     writer.newLine();
 
-//    for (ICausalComponent component : this.model.getCausalComponents()) {
-//      // this loop writes two lines
-//      for (ITableModel factor : component.getCausalFactors()) {
-//        Map<UUID, String> ucaDescMap = new HashMap<>();
-//        for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
-//          ucaDescMap.put(uca.getId(), "UCA1." + uca.getNumber() + ": " + uca.getDescription());
-//        }
-//        for (ITableModelEntry entry : factor.getAllEntries()) {
-//          String ucaCell = ""; //$NON-NLS-1$
-//          String hazCell = ""; //$NON-NLS-1$
-//          String scenarioCell = ""; //$NON-NLS-1$
-//          String safetyCell = ""; //$NON-NLS-1$
-//
-//          if (entry.getUcaLink() != null) {
-//            ucaCell = ucaDescMap.get(entry.getUcaLink());
-//            for (ITableModel haz : model.getLinkedHazardsOfUCA(entry.getUcaLink())) {
-//              hazCell += "H-" + haz.getNumber() + ",";
-//            }
-//          } else {
-//            String hazString = new String();
-//            if (entry.getHazardIds() != null) {
-//              for (UUID hazardId : entry.getHazardIds()) {
-//                hazString += "H-" + model.getHazard(hazardId).getNumber() + ",";
-//              }
-//            }
-//          }
-//          hazCell = hazCell.substring(0, hazCell.length() - 1);
-//
-//          writer.writeCell(component.getText());
-//          writer.writeCell(factor.getText());
-//          writer.writeCell(ucaCell);
-//          writer.writeCell(hazCell);
-//          writer.writeCell();
-//          writer.writeCell(model.getCausalFactorController().getConstraintTextFor(entry.getId()));
-//          writer.writeCell(factor.getNote());
-//          writer.newLine();
-//
-//          for (UUID provider : entry.getScenarioLinks()) {
-//
-//            writer.writeCell(component.getText());
-//            writer.writeCell(factor.getText());
-//            writer.writeCell(ucaCell);
-//            writer.writeCell(hazCell);
-//            writer.writeCell(model.getRefinedScenario(provider).getSafetyRule());
-//            writer.writeCell(model.getRefinedScenario(provider).getRefinedSafetyConstraint());
-//            writer.writeCell(factor.getNote());
-//            writer.newLine();
-//          }
-//        }
-//      }
-//    }
+    for (CausalCSComponent component : this.model.getCausalFactorController()
+        .getCausalComponents()) {
+      // this loop writes two lines
+      for (CausalFactor factor : component.getFactors()) {
+        Map<UUID, String> ucaDescMap = new HashMap<>();
+        for (ICorrespondingUnsafeControlAction uca : model.getAllUnsafeControlActions()) {
+          ucaDescMap.put(uca.getId(), uca.getIdString() + ": " + uca.getDescription()); ////$NON-NLS-1$
+        }
+        for (CausalFactorEntry entry : factor.getEntries()) {
+          writer.writeCell(component.getText());
+          writer.writeCell(factor.getText());
+          writer.writeCell(entry.getUcaDescription());
+
+          writer.newLine();
+          if (this.model.getCausalFactorController().isUseScenarios()) {
+            
+            for (CausalScenarioEntry scenarioEntry : entry.getScenarioEntries()) {
+              writer.writeCell();
+              writer.writeCell();
+              writer.writeCell();
+              writer.writeCell(entry.getHazardLinks());
+              writer.writeCell(scenarioEntry.getDescription());
+              writer.writeCell(scenarioEntry.getConstraint());
+              writer.writeCell(scenarioEntry.getNote());
+              writer.newLine();
+            }
+          } else {
+            // if Scenarios analysis is not used than all safety constraints are stored as entries
+            // for the respective hazards
+            for (CausalHazardEntry hazardEntry : entry.getHazardEntries()) {
+              writer.writeCell();
+              writer.writeCell();
+              writer.writeCell();
+              writer.writeCell(hazardEntry.getText());
+              writer.writeCell(hazardEntry.getConstraint());
+              writer.writeCell(hazardEntry.getDesignHint());
+              writer.writeCell(hazardEntry.getNote());
+              writer.newLine();
+            }
+          }
+        }
+      }
+    }
   }
 
-  private void writeSystemDescCSV(BufferedCSVWriter writer, String title)
-      throws IOException {
+  private void writeSystemDescCSV(BufferedCSVWriter writer, String title) throws IOException {
 
     writer.newLine();
     writer.write(title + " - "); ////$NON-NLS-1$
@@ -244,14 +239,12 @@ public class StpaCSVExport extends Job {
     String description = this.model.getProjectDescription();
     for (int length = 0; length < description.length(); length += 200) {
       writer.writeCell();
-      writer.writeCell(description.substring(length,
-          Math.min(description.length(), length + 199)));
+      writer.writeCell(description.substring(length, Math.min(description.length(), length + 199)));
       writer.newLine();
     }
   }
 
-  private void writeUCACSV(BufferedCSVWriter writer, String title)
-      throws IOException {
+  private void writeUCACSV(BufferedCSVWriter writer, String title) throws IOException {
     int length;
 
     WriterList notGiven = new WriterList();
@@ -273,16 +266,11 @@ public class StpaCSVExport extends Job {
     writer.newLine();
     for (IControlAction action : this.model.getAllControlActionsU()) {
       // for each controlAction the lists are filled with its uca's
-      notGiven.setList(action
-          .getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN));
-      givenInc.setList(action
-          .getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY));
-      wrongTiming
-          .setList(action
-              .getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING));
+      notGiven.setList(action.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN));
+      givenInc.setList(action.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY));
+      wrongTiming.setList(action.getUnsafeControlActions(UnsafeControlActionType.WRONG_TIMING));
       stoppedTooSoon
-          .setList(action
-              .getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON));
+          .setList(action.getUnsafeControlActions(UnsafeControlActionType.STOPPED_TOO_SOON));
 
       length = Math.max(notGiven.size(), givenInc.size());
       length = Math.max(length, wrongTiming.size());
@@ -319,23 +307,19 @@ public class StpaCSVExport extends Job {
 
         // the hazard line starting with an empty cell
         writer.writeCell();
-        for (ITableModel haz : this.model
-            .getLinkedHazardsOfUCA(notGiven.getUCAId(i))) {
+        for (ITableModel haz : this.model.getLinkedHazardsOfUCA(notGiven.getUCAId(i))) {
           writer.write("[" + haz.getIdString() + "]");
         }
         writer.writeCell();
-        for (ITableModel haz : this.model
-            .getLinkedHazardsOfUCA(givenInc.getUCAId(i))) {
+        for (ITableModel haz : this.model.getLinkedHazardsOfUCA(givenInc.getUCAId(i))) {
           writer.write("[" + haz.getIdString() + "]");
         }
         writer.writeCell();
-        for (ITableModel haz : this.model
-            .getLinkedHazardsOfUCA(wrongTiming.getUCAId(i))) {
+        for (ITableModel haz : this.model.getLinkedHazardsOfUCA(wrongTiming.getUCAId(i))) {
           writer.write("[" + haz.getIdString() + "]");
         }
         writer.writeCell();
-        for (ITableModel haz : this.model
-            .getLinkedHazardsOfUCA(stoppedTooSoon.getUCAId(i))) {
+        for (ITableModel haz : this.model.getLinkedHazardsOfUCA(stoppedTooSoon.getUCAId(i))) {
           writer.write("[" + haz.getIdString() + "]");
         }
         writer.newLine();
@@ -383,11 +367,15 @@ public class StpaCSVExport extends Job {
     csvWriter.writeCell(Messages.ID);
     csvWriter.writeCell(Messages.CorrespondingSafetyConstraints);
     csvWriter.newLine();
-    for (ICorrespondingUnsafeControlAction data : this.model
-        .getAllUnsafeControlActions()) {
+    for (ICorrespondingUnsafeControlAction data : this.model.getAllUnsafeControlActions()) {
       csvWriter.writeCell(data.getCorrespondingSafetyConstraint().getIdString());
       csvWriter.writeCell(data.getCorrespondingSafetyConstraint().getText());
       csvWriter.newLine();
     }
+  }
+
+  @Override
+  public UUID getProjectId() {
+    return this.model.getProjectId();
   }
 }
