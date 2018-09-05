@@ -28,6 +28,7 @@ import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.ExportJob;
+import xstampp.astpa.util.jobs.IProjectExport;
 import xstampp.astpa.util.jobs.StpaCSVExport;
 import xstampp.model.IDataModel;
 import xstampp.model.ObserverValue;
@@ -95,6 +96,8 @@ public abstract class AbstractExportWizard extends Wizard implements
         StpaCSVExport export = new StpaCSVExport("Export CSV", filePath,
             ((CSVExportPage) this.exportPage).getSeperator(),
             model, data);
+        model.prepareForExport();
+        export.addJobChangeListener(new ExportJobChangeAdapter());
         export.schedule();
       } else {
         return false;
@@ -302,7 +305,7 @@ public abstract class AbstractExportWizard extends Wizard implements
             ProjectManager.getContainerInstance().callObserverValue(
                 ObserverValue.EXPORT_FINISHED);
             ProjectManager.getContainerInstance()
-                .getDataModel(((ExportJob) event.getJob()).getProjectId())
+                .getDataModel(((IProjectExport) event.getJob()).getProjectId())
                 .prepareForSave();
           }
         });

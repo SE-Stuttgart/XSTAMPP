@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.model.interfaces.ITableModel;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -48,15 +49,17 @@ public class CausalCSComponent implements Comparable<CausalCSComponent> {
 
   public void prepareForExport(CausalFactorController controller,
       IHazAccController hazAccController, IRectangleComponent child,
-      IExtendedDataController extendedDataController,
-      IControlActionController caController,
+      IExtendedDataController extendedDataController, IControlActionController caController,
       LinkController linkController, ISDSController sdsController) {
     this.text = child.getText();
-    Map<ITableModel, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child, linkController);
+    Map<ITableModel, List<Link>> factorBasedMap = controller.getCausalFactorBasedMap(child,
+        linkController);
     for (Entry<ITableModel, List<Link>> entry : factorBasedMap.entrySet()) {
-      ((CausalFactor) entry.getKey()).prepareForExport(hazAccController, extendedDataController, caController,
-          controller, entry.getValue(), linkController, sdsController);
-      getFactors().add(((CausalFactor) entry.getKey()));
+      if (!(entry.getKey() instanceof BadReferenceModel)) {
+        ((CausalFactor) entry.getKey()).prepareForExport(hazAccController, extendedDataController,
+            caController, controller, entry.getValue(), linkController, sdsController);
+        getFactors().add(((CausalFactor) entry.getKey()));
+      }
     }
 
   }

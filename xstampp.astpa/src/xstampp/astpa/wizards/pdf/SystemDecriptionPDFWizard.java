@@ -33,12 +33,6 @@ public class SystemDecriptionPDFWizard extends AbstractExportWizard {
     String[] filters = new String[] { "*.pdf" }; //$NON-NLS-1$
     TableExportPage exportPage = new TableExportPage(filters,
         Messages.SystemDescription + Messages.AsPDF, Activator.PLUGIN_ID);
-    exportPage.setShowFormatChooser(false);
-    exportPage.setShowCompanyFields(false);
-    exportPage.setShowTextConfig(false);
-    exportPage.setShowPreviewCanvas(false);
-    exportPage.setShowDecorateCSButton(false);
-    exportPage.setShowColorChooser(false);
     this.setExportPage(exportPage);
   }
 

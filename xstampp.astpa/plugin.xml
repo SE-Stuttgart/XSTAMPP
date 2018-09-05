@@ -284,6 +284,13 @@
             %wizard.description
          </description>
       </wizard>
+      <wizard
+            category="xstampp.astpa.export.main/astpa.pdf.mainCategory"
+            class="xstampp.astpa.wizards.pdf.CausalSafetyConstraintsPDFWizard"
+            icon="icons/buttons/navigation/STEP1_5(16).png"
+            id="xstampp.astpa.export.pdf.2_5"
+            name="Causal Safety Constraints">
+      </wizard>
    </extension>
    <extension
          id="astpa.export"

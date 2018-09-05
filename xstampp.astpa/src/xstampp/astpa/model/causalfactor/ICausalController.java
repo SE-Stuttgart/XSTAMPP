@@ -34,8 +34,8 @@ import xstampp.model.ObserverValue;
 public interface ICausalController {
 
   /**
-   * Adds a simple {@link ITableModel} that is not linked to a {@link ICausalComponent} but which
-   * is can be used to create a Entry in the causal analysis. Notifies all observers with
+   * Adds a simple {@link ITableModel} that is not linked to a {@link ICausalComponent} but which is
+   * can be used to create a Entry in the causal analysis. Notifies all observers with
    * {@link ObserverValue#CAUSAL_FACTOR}.
    * 
    * @return the {@link UUID} of the {@link ITableModel}
@@ -105,8 +105,8 @@ public interface ICausalController {
    * 
    * @param causalFactorId
    *          the {@link UUID} that was given to a causal factor by creation
-   * @return the {@link ITableModel} for the given id or a singleton instance of {@link BadReferenceModel} if no {@link ITableModel}
-   *         was found with the given id
+   * @return the {@link ITableModel} for the given id or a singleton instance of
+   *         {@link BadReferenceModel} if no {@link ITableModel} was found with the given id
    */
   ITableModel getCausalFactor(UUID causalFactorId);
 
@@ -125,6 +125,13 @@ public interface ICausalController {
    *         valid for the causal analysis or null
    */
   ICausalComponent getCausalComponent(IRectangleComponent csComp);
+
+  /**
+   * @return a list of {@link CausalCSComponent} that is populated when the method
+   *         {@link CausalFactorController#prepareForExport(IHazAccController, IRectangleComponent, IExtendedDataController, IControlActionController, LinkController, ISDSController)}
+   *         is called<br> NOTE: This method might return <b>null<b> when called outside of an export context
+   */
+  List<CausalCSComponent> getCausalComponents();
 
   boolean setSafetyConstraintText(UUID linkB, String newText);
 

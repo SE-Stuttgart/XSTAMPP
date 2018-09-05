@@ -110,6 +110,7 @@ public final class Messages extends NLS {
   public static String CausalFactors;
   @SuppressWarnings("javadoc")
   public static String CausalFactorsView;
+  public static String CausalSafetyConstraints;
   @SuppressWarnings("javadoc")
   public static String ChangeColorsAnd;
   @SuppressWarnings("javadoc")

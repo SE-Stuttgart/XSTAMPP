@@ -113,16 +113,17 @@ public class CausalFactorEntry {
         causalEntryLink.getLinkA());
     IUnsafeControlAction uca = ucaCfLink.isLinkAPresent() ? caController.getUnsafeControlAction(ucaCfLink.getLinkA())
         : null;
+    hazardEntries = new ArrayList<>();
+    hazardLinks = "";
+    scenarioEntries = new ArrayList<>();
     if (uca != null) {
       ucaDescription = uca.getIdString() + "\n" + uca.getDescription();
-      hazardLinks = "";
       if (!controller.isUseScenarios()) {
         // If scenarios are not used than either the CausalEntryLink_HAZ_LINK
-        hazardEntries = new ArrayList<>();
         Optional<Link> singleConstraintLink = linkController.getRawLinksFor(LinkingType.CausalEntryLink_SC2_LINK,
             causalEntryLink.getId()).stream().findFirst();
         if (singleConstraintLink.isPresent()) {
-
+          
           Optional<UUID> sCoption = Optional.ofNullable(singleConstraintLink.get().getLinkB());
           List<UUID> hazIds = linkController.getLinksFor(LinkingType.UCA_HAZ_LINK, uca.getId());
           CausalHazardEntry hazEntry = new CausalHazardEntry(controller, linkController, sdsController, caController,
@@ -149,22 +150,22 @@ public class CausalFactorEntry {
           }
         }
       } else {
-        scenarioEntries = new ArrayList<>();
-        hazardLinks = "";
+        //if scenarios are used 
         for (Link causalHazLink : linkController.getRawLinksFor(LinkingType.CausalEntryLink_HAZ_LINK,
             causalEntryLink.getId())) {
           ATableModel hazard = hazAccController.getHazard(causalHazLink.getLinkB());
           hazardLinks += hazardLinks.isEmpty() ? "" : ",";
           hazardLinks += hazard.getIdString();
         }
-        for (Link causalHazLink : linkController.getRawLinksFor(
+        for (Link causalScenarioLink : linkController.getRawLinksFor(
             LinkingType.CausalEntryLink_Scenario_LINK,
             causalEntryLink.getId())) {
           AbstractLTLProvider refinedScenario = extendedDataController
-              .getRefinedScenario(causalHazLink.getLinkB());
+              .getRefinedScenario(causalScenarioLink.getLinkB());
 
           String constraintText = refinedScenario.getRefinedSafetyConstraint();
           CausalScenarioEntry entry = new CausalScenarioEntry(refinedScenario.getDescription(), constraintText);
+          entry.setNote(causalScenarioLink.getNote());
           scenarioEntries.add(entry);
         }
       }

@@ -42,7 +42,7 @@ import xstampp.util.JAXBExportJob;
  * @see IControlStructureDataModel
  * 
  */
-public class ExportJob extends JAXBExportJob {
+public class ExportJob extends JAXBExportJob implements IProjectExport {
 
   private final boolean decorate;
   private String imgPath;

@@ -328,7 +328,7 @@ public class CausalFactorController extends ATableModelController implements ICa
       return new ArrayList<>();
     }
     Collections.sort(componentsList);
-    return componentsList;
+    return new ArrayList<>(componentsList);
   }
 
   @Override
