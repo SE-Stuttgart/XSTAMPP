@@ -226,6 +226,10 @@ public class CSExportJob extends XstamppJob {
             Desktop.getDesktop().open(imageFile);
           } catch (IOException e) {
             return Status.CANCEL_STATUS;
+          } finally {
+            graphics.dispose();
+            imageGC.dispose();
+            scaledImage.dispose();
           }
         }
       }
