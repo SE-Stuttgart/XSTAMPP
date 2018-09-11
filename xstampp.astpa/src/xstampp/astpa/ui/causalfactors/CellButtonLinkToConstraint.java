@@ -63,7 +63,7 @@ public class CellButtonLinkToConstraint extends CellButton {
       if (tmp != null && tmp.length() >= 1) {
         LinkProposal proposal = new LinkProposal();
         proposal.setLabel(
-            safetyConstraints.get(i).getIdString() + " - " + tmp.substring(0, Math.min(tmp.length(), 20)) + "..."); //$NON-NLS-1$ //$NON-NLS-2$
+            safetyConstraints.get(i).getIdString() + " - " + tmp); //$NON-NLS-1$ //$NON-NLS-2$
         proposal.setDescription(tmp);
         proposal.setProposalId(safetyConstraints.get(i).getId());
         proposals.add(proposal);

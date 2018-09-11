@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.eclipse.swt.widgets.Composite;
 
 import messages.Messages;
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -647,6 +648,12 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     public void addSecondaryFactor(GridRow factorRow, Link factorComponentLink, Link ucaCFLink,
         ITableModel factor) {
 
+      if (ucaCFLink.getLinkB() != null && getDataModel().getCausalFactorController()
+          .getCausalFactor(ucaCFLink.getLinkB()) instanceof BadReferenceModel) {
+        getDataModel().getLinkController().deleteLink(factorComponentLink.getLinkType(),
+            factorComponentLink.getId());
+        getDataModel().getLinkController().deleteLink(ucaCFLink.getLinkType(), ucaCFLink.getId());
+        return;
       GridRow entryRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
       CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(), factor.getId(),
           factorComponentLink);

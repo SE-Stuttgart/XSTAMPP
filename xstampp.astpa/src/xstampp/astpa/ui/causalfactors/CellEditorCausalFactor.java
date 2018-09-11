@@ -90,7 +90,6 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
   @Override
   public void updateDataModel(String newText) {
     dataInterface.getCausalFactorController().setCausalFactorText(factorId, newText);
-
   }
 
   @Override
@@ -108,6 +107,10 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
     if (MessageDialog.openConfirm(null, "Delete Causal Factor?",
         "Do you really want to delete this Causal Factor\n"
             + "and all its child entries?")) {
+      for (UUID uuid : dataInterface.getLinkController().getLinksFor(LinkingType.UCA_CausalFactor_LINK, factorId)) {
+        dataInterface.getLinkController().deleteAllFor(LinkingType.UcaCfLink_Component_LINK, uuid);
+      }
+      dataInterface.getLinkController().deleteAllFor(LinkingType.UCA_CausalFactor_LINK, factorId);
       dataInterface.getCausalFactorController().removeCausalFactor(factorId);
     }
   }
