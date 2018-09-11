@@ -107,7 +107,7 @@
                         <fo:table-cell padding="4px">
                             <xsl:choose>
                                 <xsl:when test="projectdata/rangeObjects/range">
-                                    <fo:block font-size="12pt" linefeed-treatment="preserve">
+                                    <fo:block font-size="12pt" linefeed-treatment="preserve" white-space="pre">
                                         <xsl:for-each select="projectdata/rangeObjects/range">
                                             <xsl:choose>
                                                 <xsl:when test="linebreak='true'">
@@ -135,6 +135,7 @@
                                                         <xsl:attribute name="font-style"><xsl:value-of
                                                             select="style" /></xsl:attribute>
                                                         <xsl:value-of select="descriptionPart" />
+                                                        A      B
                                                     </fo:inline>
                                                 </xsl:otherwise>
                                             </xsl:choose>
