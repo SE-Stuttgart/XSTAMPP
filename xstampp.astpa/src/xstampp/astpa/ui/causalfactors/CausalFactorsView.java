@@ -654,6 +654,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
             factorComponentLink.getId());
         getDataModel().getLinkController().deleteLink(ucaCFLink.getLinkType(), ucaCFLink.getId());
         return;
+      }
       GridRow entryRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
       CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(), factor.getId(),
           factorComponentLink);

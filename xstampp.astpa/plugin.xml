@@ -142,7 +142,7 @@
                   editorId="astpa.steps.step3_4"
                   icon="icons/buttons/navigation/STEP1_5(16).png"
                   id="xstampp.astpa.step3_4"
-                  name="Safety Constraints Step 2">
+                  name="Safety Constraints Step 4">
             </step>
             <step
                   default_editor="true"

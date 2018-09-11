@@ -9,9 +9,9 @@
 	<parent>
 		<groupId>xstampp.group</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.2</version>
+		<version>3.1.0</version>
 		<relativePath>../xstampp.parent</relativePath>
 	</parent>
 
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 </project>

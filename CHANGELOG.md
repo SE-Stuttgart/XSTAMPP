@@ -4,10 +4,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## XSTAMPP [3.1.0] - 2018-09-12
 
 - Refactors documentation generation (README and CHANGELOG)
 - Updates documentation for working on XSTAMPP
+- Updated step images to the new STPA steps given by the STPA_Handbook by Leveson
+
+### A-STPA Features:
+
+*  Add option in the project settings to switch causal Analysis to UCA -> Causal Factor
+*  Add A-STPA project setting for linking hazards to safety constraints
+*  Add ToolTips for control actions in UCA table
+*  Add ToolTips for Severity in common Table and Grid
+*  Add option to edit UCA text from the Corresponding SC View
+*  Add delete buttons to the second column in Causal Factors table in UCA centered view
+*  Add Button in CausalFactor Table to add links to existing safety constraints
+*  Add causal factor link labels to safety constraint view in step 4
+*  Add ability to remove safety constraints in step 4 if they are not linked to a causal factor
+*  Add export for pdf and data of Causal Safety Constraints
+*  Add csv export for safety constraints of step 4
+
+### A-STPA Bugfixes:
+
+*  Fix Bug in List of Control Actions that resize/rename does not work properly
+*  Fix Bug in Causal Factors Table that sometimes not editable Causal Factors are Displayed
+*  Fix bug in ASTPA Collaboration that uca severity would not sync
+*  Fix Bug that the font size setting for the export was not adopted
+*  Fix Bug that caused the causal factor table data export to be always empty
+*  Fix Bug in STPA Collaboration system that changes from one user could be overwritten by an other
+*  Fix Bug that export of word/pdf sometimes can't be started
+*  Fix Bug in control structure copy&paste that pasted components are placed incorrect
+*  Fix Bug that connection Anchors are always synchronized between step 2&4
+*  Fix NullPointer when using the CorrespondingSafetyConstraints Filter on empty safety constraints
+*  Fix Bug when that copied components are not placed correct in control structure
+*  Fix NullPointer in Causal Factor safety Constraints View for scenarios
+*  Fix names of the Progress sheets exported in the statistics export to new step naming
+*  Fix Bug in Control Structure that an existing Control Action can not be added to a List
+*  Fix Bug that in UCA Table Severity is not updated when a Hazard link is added
+*  Fix wrong placement of the Linking Pop-up of Display
 
 ## XSTAMPP [3.0.2] - 2018-04-10
 
