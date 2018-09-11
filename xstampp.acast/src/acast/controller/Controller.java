@@ -718,13 +718,6 @@ public class Controller extends AbstractDataModel implements IDataModel,
 
   @Override
   public ITableModel getSafetyConstraint(UUID safetyConstraintId) {
-    if (safetyConstraintId == null) {
-      return null;
-    }
-    if (!(this.sdsController.getSafetyConstraint(safetyConstraintId) instanceof SafetyConstraint)) {
-      return null;
-    }
-
     return this.sdsController.getSafetyConstraint(safetyConstraintId);
   }
 

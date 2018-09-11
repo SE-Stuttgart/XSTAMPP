@@ -8,7 +8,7 @@
 	<name>A-STPA Plugin</name>
 
 	<parent>
-		<version>3.0.2</version>
+		<version>3.1.0</version>
 		<groupId>xstampp.group</groupId>
 		<artifactId>parent</artifactId>
 		<relativePath>../xstampp.parent</relativePath>

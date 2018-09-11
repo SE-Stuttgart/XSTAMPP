@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="STAMP For STPA Platform" uid="xstampp_for_STPA" id="xstampp.xstampp_for_STPA" application="xstampp.application" version="3.0.2" useFeatures="true" includeLaunchers="true">
+<product name="STAMP For STPA Platform" uid="xstampp_for_STPA" id="xstampp.xstampp_for_STPA" application="xstampp.application" version="3.1.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/xstampp/icons/xstampp/logox128.png"/>
@@ -58,6 +58,7 @@ jre/bin
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
