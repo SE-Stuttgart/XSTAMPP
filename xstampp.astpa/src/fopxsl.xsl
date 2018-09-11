@@ -100,14 +100,14 @@
 				<fo:static-content flow-name="xsl-region-before">
 					<xsl:call-template name="astpaHead">
 						<xsl:with-param name="pdfTitle" select="$page.title" />
-						<xsl:with-param name="titleSize" select="$title.size" />
+						<xsl:with-param name="titleSize" select="$table.head.size" />
 					</xsl:call-template>
 				</fo:static-content>
 
 				<!-- Footer-Block -->
 				<fo:static-content flow-name="xsl-region-after">
 					<xsl:call-template name="astpaFooter">
-						<xsl:with-param name="titleSize" select="$title.size" />
+						<xsl:with-param name="titleSize" select="$table.head.size" />
 					</xsl:call-template>
 				</fo:static-content>
 
@@ -186,6 +186,11 @@
 
 					<!-- *************** Control Structure Diagram *************** -->
 					<fo:block page-break-after="always">
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Control Structure
+    	</fo:marker>
+      </fo:block>
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
 							Control Structure Diagram
@@ -222,7 +227,7 @@
 
 
 					<!-- *************** Control Actions table *************** -->
-					<fo:block>
+					<fo:block page-break-after="always">
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
 							Control Actions
@@ -236,7 +241,7 @@
 					</fo:block>
 
 					<!-- *************** Unsafe Control Actions *************** -->
-					<fo:block>
+					<fo:block page-break-after="always">
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
 							Unsafe Control Actions
@@ -250,7 +255,7 @@
 					</fo:block>
 
 					<!-- *************** Corresponding Safety Constraints *************** -->
-					<fo:block page-break-after="always">
+					<fo:block>
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
 							Corresponding Safety
@@ -268,7 +273,7 @@
 					<fo:block page-break-after="always">
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
-							Design Requirements Step 1
+							Design Requirements Step 3
 						</fo:block>
 						<!-- Unsafe Control Actions-Table-Template -->
 						<xsl:call-template name="designRequirementsStep1Table">
@@ -281,6 +286,11 @@
 					<!-- *************** Control Structure Diagram with Process Model *************** -->
 					<fo:block page-break-after="always">
 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Control Structure with Process Model
+    	</fo:marker>
+      </fo:block>
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
 							Control Structure Diagram
@@ -316,7 +326,7 @@
 					<fo:block>
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
-							Causal Factors
+							Causal Factors Table
 						</fo:block>
 						<!-- Causal Factors-Table-Template -->
 						<xsl:call-template name="causalFactorsTable">
@@ -330,7 +340,7 @@
                     <fo:block page-break-after="always">
                         <fo:block space-after="5pt"
                             page-break-after="avoid">
-                            Design Requirements Step 2
+                            Design Requirements Step 4
                         </fo:block>
                         <!-- Unsafe Control Actions-Table-Template -->
                         <xsl:call-template name="designRequirementsStep2Table">

@@ -61,7 +61,7 @@
                             </fo:block>
                         </fo:table-cell>
                         <fo:table-cell padding="4px">
-           				<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+           				<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
                             <fo:block>
                                 <xsl:value-of select="projectdata/projectName" />
                             </fo:block>
@@ -70,12 +70,12 @@
                     <fo:table-row border="1pt solid black">
                         <fo:table-cell padding="4px">
            				<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
-                            <fo:block font-size="12pt" font-weight="bold">
+                            <fo:block font-weight="bold">
                                 Date and Time
                             </fo:block>
                         </fo:table-cell>
                         <fo:table-cell padding="4px">
-           				<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
+           				<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
                             <fo:block>
                                 <xsl:value-of select="exportinformation/date" />
                             </fo:block>
@@ -135,7 +135,6 @@
                                                         <xsl:attribute name="font-style"><xsl:value-of
                                                             select="style" /></xsl:attribute>
                                                         <xsl:value-of select="descriptionPart" />
-                                                        A      B
                                                     </fo:inline>
                                                 </xsl:otherwise>
                                             </xsl:choose>

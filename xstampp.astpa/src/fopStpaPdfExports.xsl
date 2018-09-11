@@ -61,10 +61,12 @@
 								</fo:block>
 					</fo:table-cell>
 					
-							<fo:table-cell padding="4px">
+							<fo:table-cell padding="4px" text-align="center">
 								<fo:block>
-									<xsl:value-of select="$pdfTitle" />
+									<xsl:value-of select="$pdfTitle" /> - 
+									<fo:retrieve-marker retrieve-class-name="header_value"/>
 								</fo:block>
+								
 							</fo:table-cell>
 							
 					
@@ -85,21 +87,29 @@
       <xsl:param name="titleSize" select="14"/> 
 		<fo:table>
 			<fo:table-body>
-				<fo:table-row>
+				<fo:table-row font-size="6pt">
+					<fo:table-cell padding="4px">
+						<fo:block text-align="left">
+							<fo:retrieve-marker retrieve-class-name="note"/>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+				<fo:table-row background-color="#DEDEDE">
            <xsl:attribute name="font-size"><xsl:value-of select="$titleSize" />pt</xsl:attribute>
-					<fo:table-cell background-color="#DEDEDE" padding="4px">
+					<fo:table-cell padding="4px">
+						<fo:block>Created with A-STPA 3.1.0</fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding="4px">
 						<!-- Page Numbering -->
-						<fo:block font-size="10pt" text-align="center">
+						<fo:block text-align="center">
 							Page &#x0020;
 							<fo:page-number />
 							of
 							<fo:page-number-citation-last ref-id="total"/>
 						</fo:block>
 					</fo:table-cell>
-				</fo:table-row>
-				<fo:table-row>
 					<fo:table-cell padding="2px">
-						<fo:block font-size="8pt">Created with A-STPA</fo:block>
+						<fo:block></fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 			</fo:table-body>
@@ -144,6 +154,15 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Accidents
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+       	*Severity
+    	</fo:marker>
+      </fo:block>
+      
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="7%"
@@ -172,7 +191,7 @@
 						<fo:block font-weight="bold">Description</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Severity</fo:block>
+						<fo:block font-weight="bold">SEV*</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Links</fo:block>
@@ -254,6 +273,14 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Hazards
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+       	*Severity
+    	</fo:marker>
+      </fo:block>
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -284,7 +311,7 @@
 						<fo:block font-weight="bold">Description</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
-						<fo:block font-weight="bold">Severity</fo:block>
+						<fo:block font-weight="bold">SEV*</fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding="3px">
 						<fo:block font-weight="bold">Links</fo:block>
@@ -364,6 +391,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Safety Constraints
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -464,6 +498,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Safety Constraints Step 4
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -564,6 +605,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	System Goals
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 	<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -650,6 +698,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Design Requirements
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -750,6 +805,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Design Requirements Step 3
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -850,6 +912,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Design Requirements Step 4
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 		<fo:table-column column-number="1" column-width="7%"
@@ -950,6 +1019,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Control Actions
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="7%"
@@ -1038,6 +1114,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+        Corresponding Safety Constraints
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="10%"
@@ -1170,6 +1253,13 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/> 
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Causal Factors Table
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="15%"
@@ -1634,6 +1724,14 @@
       <xsl:param name="varSize" select="12"/> 
       <xsl:param name="headSize" select="14"/> 
       <xsl:param name="omitHeader" select="false"/>
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Unsafe Control Actions Table
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+       	*Severity
+    	</fo:marker>
+      </fo:block>
 		<fo:table border="none" space-after="30pt">
            <xsl:attribute name="table-omit-header-at-break"><xsl:value-of select="$omitHeader" /></xsl:attribute>
 			<fo:table-column column-number="1" column-width="20%"
@@ -1668,8 +1766,9 @@
 										<fo:block font-weight="bold">Not providing causes hazard </fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
-							            <fo:block-container reference-orientation="270" font-size="8pt">
-							              <fo:block>Severity</fo:block>
+							            <fo:block-container reference-orientation="270">
+           									<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+							              <fo:block>SEV*</fo:block>
 							            </fo:block-container>
 									</fo:table-cell>
 								</fo:table-row>
@@ -1688,8 +1787,9 @@
 										<fo:block font-weight="bold">Providing causes hazard</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
-							            <fo:block-container reference-orientation="270" font-size="8pt">
-							              <fo:block>Severity</fo:block>
+							            <fo:block-container reference-orientation="270">
+           									<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+							              <fo:block>SEV*</fo:block>
 							            </fo:block-container>
 									</fo:table-cell>
 								</fo:table-row>
@@ -1708,8 +1808,9 @@
 										<fo:block font-weight="bold">Wrong timing or order causes hazard</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
-							            <fo:block-container reference-orientation="270" font-size="8pt">
-							              <fo:block>Severity</fo:block>
+							            <fo:block-container reference-orientation="270">
+           									<xsl:attribute name="font-size"><xsl:value-of select="$headSize" />pt</xsl:attribute>
+							              <fo:block>SEV*</fo:block>
 							            </fo:block-container>
 									</fo:table-cell>
 								</fo:table-row>
@@ -1729,7 +1830,7 @@
 									</fo:table-cell>
 									<fo:table-cell>
 							            <fo:block-container reference-orientation="270" font-size="8pt">
-							              <fo:block>Severity</fo:block>
+							              <fo:block>SEV*</fo:block>
 							            </fo:block-container>
 									</fo:table-cell>
 								</fo:table-row>
@@ -2002,6 +2103,13 @@
 	</xsl:template>
     
     <xsl:template name="glossary">
+      <fo:block>
+      	<fo:marker marker-class-name="header_value">
+       	Glossary
+    	</fo:marker>
+      	<fo:marker marker-class-name="note">
+    	</fo:marker>
+      </fo:block>
     <fo:block space-before="10pt" font-size="9pt" page-break-after="avoid">
         ACCIDENT
     </fo:block>
