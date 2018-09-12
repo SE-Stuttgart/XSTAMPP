@@ -272,11 +272,11 @@ public class STPAWordJob extends XstamppJob {
 
       if (config.exports(ReportType.SAFETY_CONSTRAINTS)) {
         addTableModel(controller.getCausalFactorController().getSafetyConstraints(),
-            Messages.SafetyConstraints + " of Step 2", document, false, true);
+            Messages.CausalSafetyConstraints, document, false, true);
       }
       if (config.exports(ReportType.DESIGN_REQUIREMENTS)) {
         addTableModel(controller.getSdsController().getAllDesignRequirements(ObserverValue.DESIGN_REQUIREMENT_STEP2),
-            Messages.DesignRequirements + " of Step 2",
+            Messages.DesignRequirements + " of Step 4",
             document, false, true);
       }
 

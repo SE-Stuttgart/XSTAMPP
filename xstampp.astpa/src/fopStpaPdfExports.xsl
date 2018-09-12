@@ -1463,7 +1463,7 @@
 						<fo:table-row border-bottom="2pt solid black">
            				<xsl:attribute name="font-size"><xsl:value-of select="$varSize" />pt</xsl:attribute>
 							<fo:table-cell>
-								<fo:block >
+								<fo:block page-break-inside="avoid">
 									<xsl:value-of select="text" />
 								</fo:block>
 							</fo:table-cell>	
@@ -1525,7 +1525,7 @@
 							</xsl:if>
 							<!-- Causal Factor -->
 							<fo:table-cell padding="3px">
-								<fo:block>
+								<fo:block page-break-inside="avoid">
 									<xsl:value-of select="ucaDescription" />
 								</fo:block>
 							</fo:table-cell>

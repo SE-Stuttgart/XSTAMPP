@@ -43,12 +43,12 @@
 				</fo:static-content>
 				<fo:flow flow-name="xsl-region-body">
 
-					<!-- *************** Causal Factors-Table *************** -->
+					<!-- *************** Causal Safety Constraints *************** -->
 					<fo:block>
 						<fo:block space-after="5pt" page-break-after="avoid">
 							<xsl:attribute name="font-size"><xsl:value-of
 								select="$title.size" />pt</xsl:attribute>
-							Safety Constraints
+							Safety Constraints Step 4
 						</fo:block>
 						<!-- ################### Safety Constraints Table ################### -->
 						<xsl:call-template name="causalSafetyConstraintsTable">

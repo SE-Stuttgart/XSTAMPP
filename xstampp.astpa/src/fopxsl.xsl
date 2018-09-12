@@ -114,9 +114,8 @@
 				<fo:flow flow-name="xsl-region-body">
 				<xsl:attribute name="font-size"><xsl:value-of select="$title.size" /></xsl:attribute>
 					<!-- *************** Accidents *************** -->
-					<fo:block>
-						<fo:block space-after="5pt"
-							page-break-after="avoid">
+					<fo:block page-break-after="always">
+						<fo:block space-after="5pt">
 							Accidents
 						</fo:block>
 						<!-- Accidents-Table-Template -->
@@ -129,9 +128,8 @@
 
 
 					<!-- *************** Hazard table *************** -->
-					<fo:block>
-						<fo:block space-after="5pt"
-							page-break-after="avoid">
+					<fo:block page-break-after="always">
+						<fo:block space-after="5pt">
 							Hazards
 						</fo:block>
 						<!-- Hazard-Table-Template -->
@@ -143,9 +141,8 @@
 					</fo:block>
 
 					<!-- *************** Safety Constraints table *************** -->
-					<fo:block>
-						<fo:block space-after="5pt"
-							page-break-after="avoid">
+					<fo:block page-break-after="always">
+						<fo:block space-after="5pt">
 							Safety Constraints
 						</fo:block>
 						<!-- Safety Constraint-Table-Template -->
@@ -157,9 +154,8 @@
 					</fo:block>
 
 					<!-- *************** System Goals table *************** -->
-					<fo:block>
-						<fo:block space-after="5pt"
-							page-break-after="avoid">
+					<fo:block page-break-after="always">
+						<fo:block space-after="5pt">
 							System Goals
 						</fo:block>
 						<!-- System Goals-Table-Template -->
@@ -255,7 +251,7 @@
 					</fo:block>
 
 					<!-- *************** Corresponding Safety Constraints *************** -->
-					<fo:block>
+					<fo:block page-break-after="always">
 						<fo:block space-after="5pt"
 							page-break-after="avoid">
 							Corresponding Safety
@@ -323,9 +319,8 @@
 					</fo:block>
 
 					<!-- *************** Causal Factors Table *************** -->
-					<fo:block>
-						<fo:block space-after="5pt"
-							page-break-after="avoid">
+					<fo:block page-break-after="always">
+						<fo:block space-after="5pt">
 							Causal Factors Table
 						</fo:block>
 						<!-- Causal Factors-Table-Template -->
@@ -335,8 +330,20 @@
 							<xsl:with-param name="omitHeader" select="$header.omit" />
 						</xsl:call-template>
 					</fo:block>
+					<!-- *************** Causal Safety Constraints *************** -->
+					<fo:block page-break-after="always">
+						<fo:block space-after="5pt">
+							Safety Constraints Step 4
+						</fo:block>
+						<!-- ################### Safety Constraints Table ################### -->
+						<xsl:call-template name="causalSafetyConstraintsTable">
+							<xsl:with-param name="varSize" select="$text.size" />
+							<xsl:with-param name="headSize" select="$table.head.size" />
+							<xsl:with-param name="omitHeader" select="$header.omit" />
+						</xsl:call-template>
 
-                    <!-- *************** Design Requirements Step 2 *************** -->
+					</fo:block>
+                    <!-- *************** Design Requirements Step 4 *************** -->
                     <fo:block page-break-after="always">
                         <fo:block space-after="5pt"
                             page-break-after="avoid">
