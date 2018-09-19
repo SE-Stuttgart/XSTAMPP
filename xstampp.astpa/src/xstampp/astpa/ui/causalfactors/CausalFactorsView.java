@@ -647,12 +647,17 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
      */
     public void addSecondaryFactor(GridRow factorRow, Link factorComponentLink, Link ucaCFLink,
         ITableModel factor) {
-
+      //if the link between uca and causal Factor contains a non existent uuid than it should be deleted,
+      //however if the value is null than the link is treated as the initial link that links the uca to the
+      //Component without linking it to a causal factor 
       if (ucaCFLink.getLinkB() != null && getDataModel().getCausalFactorController()
           .getCausalFactor(ucaCFLink.getLinkB()) instanceof BadReferenceModel) {
         getDataModel().getLinkController().deleteLink(factorComponentLink.getLinkType(),
             factorComponentLink.getId());
         getDataModel().getLinkController().deleteLink(ucaCFLink.getLinkType(), ucaCFLink.getId());
+        return;
+      }
+      if(ucaCFLink.getLinkB() == null) {
         return;
       }
       GridRow entryRow = new GridRow(getGridWrapper().getColumnLabels().length, 1, new int[] { 2 });
