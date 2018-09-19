@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### A-STPA Bugfixes:
 *  Fix Bug that when adding a new UCA in the Causal Factors Table it automatically adds a new Causal Factor which leads to save problems
+*  Fix Bug that exported images of the control structure would sometimes include black vertical lines on the left or right side
 ## XSTAMPP [3.1.0] - 2018-09-12
 
 - Refactors documentation generation (README and CHANGELOG)

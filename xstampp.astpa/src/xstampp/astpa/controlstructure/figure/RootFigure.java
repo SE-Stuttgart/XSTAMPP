@@ -63,6 +63,7 @@ public class RootFigure extends CSFigure implements MouseMotionListener {
   public RootFigure(UUID id) {
     super(id, false);
     this.useLocalCoordinates();
+    this.hideBorder();
     this.addMouseMotionListener(this);
   }
 
