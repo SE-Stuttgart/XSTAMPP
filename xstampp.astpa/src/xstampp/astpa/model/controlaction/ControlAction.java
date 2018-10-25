@@ -146,6 +146,10 @@ public class ControlAction extends ATableModel implements IControlAction {
   public ControlAction(ITableModel model) {
     super(model, -1);
     this.unsafeControlActions = new ArrayList<>();
+    if(model instanceof ControlAction) {
+      this.componentLink = ((ControlAction) model).componentLink;
+      this.isSafetyCritical = ((ControlAction) model).isSafetyCritical;
+    }
   }
 
   @Override
@@ -200,6 +204,7 @@ public class ControlAction extends ATableModel implements IControlAction {
   }
   public UUID addUnsafeControlAction(IUnsafeControlAction otherUca) {
     UnsafeControlAction unsafeControlAction = new UnsafeControlAction(otherUca);
+    setChanged(this.unsafeControlActions.add(unsafeControlAction));
     return unsafeControlAction.getId();
   }
 

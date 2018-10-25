@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Fix Bug that when adding a new UCA in the Causal Factors Table it automatically adds a new Causal Factor which leads to save problems
 *  Fix Bug that exported images of the control structure would sometimes include black vertical lines on the left or right side
 *  Fix Bug in Collaboration System that Severity of Table Entries would not be included in user Copy
+*  Fix Bug that when creating user copies for users with no responsibilities the uca table would be empty
+
 ## XSTAMPP [3.1.0] - 2018-09-12
 
 - Refactors documentation generation (README and CHANGELOG)

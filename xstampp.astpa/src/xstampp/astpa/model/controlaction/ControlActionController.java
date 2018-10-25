@@ -862,7 +862,7 @@ public class ControlActionController extends ATableModelController
         addControlAction(otherCa);
         ownCa = getInternalControlAction(otherCa.getId());
       }
-      if (ownCa != null && responsibilities.contains(otherCa.getId()) && otherCa.hasChanged()) {
+      if (ownCa != null && responsibilities.contains(otherCa.getId())) {
         setControlActionTitle(otherCa.getId(), otherCa.getTitle());
         setControlActionDescription(otherCa.getId(), otherCa.getDescription());
         // get all changes in the unsafe control actions defined for the current control action
@@ -872,22 +872,22 @@ public class ControlActionController extends ATableModelController
               .getUnsafeControlAction(otherUca.getId());
           if (ownUca == null) {
             addUnsafeControlAction(otherCa.getId(), otherUca);
-          } else if (((ATableModel) otherUca).hasChanged()) {
-            if (!getUnsafeControlAction(otherUca.getId()).getSeverity()
-                .equals(otherUca.getSeverity())) {
-              Severity oldSeverity = ((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()))
-                  .getSeverity();
-              ((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()))
-                  .setSeverity(otherUca.getSeverity());
-              setChanged();
-              notifyObservers(new UndoChangeSeverity(
-                  (EntryWithSeverity) getUnsafeControlAction(otherUca.getId()), oldSeverity,
-                  ObserverValue.UNSAFE_CONTROL_ACTION));
-            }
-            setUcaDescription(otherUca.getId(), otherUca.getDescription());
-            setCorrespondingSafetyConstraint(otherUca.getId(),
-                ((UnsafeControlAction) otherUca).getCorrespondingSafetyConstraint().getText());
           }
+          if (!getUnsafeControlAction(otherUca.getId()).getSeverity()
+              .equals(otherUca.getSeverity())) {
+            Severity oldSeverity = ((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()))
+                .getSeverity();
+            ((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()))
+                .setSeverity(otherUca.getSeverity());
+            setChanged();
+            notifyObservers(
+                new UndoChangeSeverity((EntryWithSeverity) getUnsafeControlAction(otherUca.getId()),
+                    oldSeverity, ObserverValue.UNSAFE_CONTROL_ACTION));
+          }
+          setUcaDescription(otherUca.getId(), otherUca.getDescription());
+          setCorrespondingSafetyConstraint(otherUca.getId(),
+              ((UnsafeControlAction) otherUca).getCorrespondingSafetyConstraint().getText());
+
         }
       }
     }

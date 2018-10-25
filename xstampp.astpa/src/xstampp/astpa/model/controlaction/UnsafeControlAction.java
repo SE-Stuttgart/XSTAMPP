@@ -85,6 +85,8 @@ public class UnsafeControlAction extends ATableModel
   public UnsafeControlAction(IUnsafeControlAction otherUca) {
     super(otherUca, otherUca.getNumber());
     this.type = otherUca.getType();
+    this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint();
+    setSeverity(Severity.S0);
   }
 
   @Override
