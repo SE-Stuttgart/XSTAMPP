@@ -88,7 +88,7 @@ public class AstpaCollaborationSystem extends CollaborationSystem {
     listener.handleEvent(event);
 
     ((HazAccController) controller.getHazAccController())
-        .syncContent((HazAccController) userController.getHazAccController());
+        .syncContent((HazAccController) userController.getHazAccController(), responsibilities);
 
     ((SDSController) controller.getSdsController()).syncContent((SDSController) userController.getSdsController());
     ((ControlStructureController) controller.getControlStructureController())

@@ -83,7 +83,11 @@ public abstract class ATableModel extends EntryWithSeverity
     this.description = model.getDescription();
     this.number = model.getNumber();
     this.changed = false;
-  }
+    if(model instanceof EntryWithSeverity) {
+      this.setSeverity(((EntryWithSeverity) model).getSeverity());
+    }
+ }
+  
 
   /**
    * Empty constructor used for JAXB. Do not use it!

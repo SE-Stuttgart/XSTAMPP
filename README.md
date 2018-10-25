@@ -58,6 +58,8 @@ Setting up the environment
     2.  In the import menu click *Git* —> *Projects from Git*
         and follow the steps of the import wizard
 
+    3.  To set up the run configuration to use a default workspace add *-data @noDefault* to the argument list
+
 -   To resolve any error messages refer to Known Issues Section
 
 Running XSTAMPP from Eclipse

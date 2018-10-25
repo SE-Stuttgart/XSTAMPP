@@ -34,6 +34,9 @@ public abstract class EntryWithSeverity implements ISeverityEntry {
    */
   @Override
   public Severity getSeverity() {
+    if(this.severityType == null) {
+      return Severity.S0;
+    }
     return severityType;
   }
 

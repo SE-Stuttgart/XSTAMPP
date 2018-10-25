@@ -14,8 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -59,7 +57,7 @@ public class LoadWorkspace extends Job {
 
         String[] fileSegments = f.getName().split("\\."); //$NON-NLS-1$
         if ((fileSegments.length > 1)
-            && ProjectManager.getContainerInstance().isRegistered(fileSegments[1])) {
+            && ProjectManager.getContainerInstance().isRegistered(fileSegments[1].toLowerCase())) {
           fileList.add(f);
         }
       }

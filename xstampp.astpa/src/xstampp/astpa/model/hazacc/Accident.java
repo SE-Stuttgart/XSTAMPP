@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.astpa.model.ATableModel;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.astpa.model.interfaces.Severity;
 
 /**
  * Class for accidents
@@ -42,7 +41,6 @@ public class Accident extends ATableModel {
    */
   public Accident(String title, String description, int number) {
     super(title, description, -1);
-    setSeverity(Severity.S0);
   }
 
   /**
@@ -52,7 +50,6 @@ public class Accident extends ATableModel {
    */
   public Accident() {
     this("", "", -1); //$NON-NLS-1$ //$NON-NLS-2$
-    setSeverity(Severity.S0);
     // empty constructor for JAXB
   }
 
@@ -62,7 +59,6 @@ public class Accident extends ATableModel {
 
   Accident(ITableModel model) {
     super(model, model.getNumber());
-    setSeverity(Severity.S0);
   }
 
   @Override
