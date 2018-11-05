@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-## XSTAMPP [3.1.1] - [Unreleased]
+## [Unreleased]
+
+## XSTAMPP [3.1.1] - 2018-11-05
 
 ### A-STPA Bugfixes:
 *  Fix Bug that when adding a new UCA in the Causal Factors Table it automatically adds a new Causal Factor which leads to save problems
