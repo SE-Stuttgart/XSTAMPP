@@ -64,7 +64,7 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
     super.createPartControl(parent);
     // the source column is for the unsafe control actions
     TableViewerColumn sourceColumn = new TableViewerColumn(this.getTableViewer(), SWT.CENTER);
-    sourceColumn.getColumn().setText("Source");
+    sourceColumn.getColumn().setText("Source"); //$NON-NLS-1$
     getTableColumnLayout().setColumnData(sourceColumn.getColumn(),
         new ColumnWeightData(10, 100, true));
 
@@ -119,6 +119,8 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
       }
     });
     this.updateTable();
+    getAddNewItemButton().setEnabled(false);
+    getAddNewItemButton().setToolTipText(Messages.ControlActionView_1);
   }
 
   @Override
@@ -173,7 +175,6 @@ public class ControlActionView extends CommonTableView<IControlActionViewDataMod
 
   @Override
   protected void addNewEntry() {
-    ControlActionView.this.getDataInterface().addControlAction("", ""); //$NON-NLS-1$
   }
 
   @Override

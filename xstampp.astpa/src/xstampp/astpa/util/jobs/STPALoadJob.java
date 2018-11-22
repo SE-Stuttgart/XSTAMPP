@@ -13,10 +13,12 @@ package xstampp.astpa.util.jobs;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 import javax.xml.XMLConstants;
@@ -65,7 +67,11 @@ public class STPALoadJob extends AbstractLoadJob {
     try (StringWriter writer = new StringWriter();
         FileInputStream inputStream = new FileInputStream(getFile());) {
       // validate the file
-      Schema schema = getSchema();
+      List<Source> sources = new ArrayList<>();
+      for (InputStream schemaStream : getSchema()) {
+        sources.add(new StreamSource(schemaStream));
+      }
+      Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(sources.toArray(new Source[0]));
       IOUtils.copy(inputStream, writer, "UTF-8");
       String line = writer.toString();
       // gt and lt are replaced by null chars for the time of unescaping
@@ -127,13 +133,9 @@ public class STPALoadJob extends AbstractLoadJob {
     return DataModelController.class;
   }
 
-  protected Schema getSchema() throws SAXException {
-    URL schemaFile;
-    schemaFile = getClass().getResource("/hazschema.xsd"); //$NON-NLS-1$
-    SchemaFactory schemaFactory = SchemaFactory
-        .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-    Schema schema = schemaFactory.newSchema(schemaFile);
-    return schema;
+  protected InputStream[] getSchema() throws SAXException {
+    InputStream schemaFile = xstampp.astpa.Activator.class.getResourceAsStream("/hazschema.xsd"); //$NON-NLS-1$
+    return new InputStream[] {schemaFile};
   }
 
   @Override

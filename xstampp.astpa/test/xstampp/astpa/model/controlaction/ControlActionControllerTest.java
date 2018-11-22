@@ -37,14 +37,14 @@ public class ControlActionControllerTest {
 	@Test
 	public void controlActionTest() {
 		IControlActionViewDataModel dataModel = new DataModelController();
-		
+		IControlActionController controller = dataModel.getControlActionController();
 		// fill the dataModel with control actions
 		Assert.assertTrue(dataModel.getAllControlActions().size() == 0);
-		UUID id1 = dataModel.addControlAction("Control Action 1", "Test control action 1");
-		UUID id2 = dataModel.addControlAction("Control Action 2", "Test control action 2");
-		UUID id3 = dataModel.addControlAction("Control Action 3", "Test control action 3");
-		UUID id4 = dataModel.addControlAction("Control Action 4", "Test control action 4");
-		UUID id5 = dataModel.addControlAction("Control Action 5", "Test control action 5");
+		UUID id1 = controller.addControlAction("Control Action 1", "Test control action 1");
+		UUID id2 = controller.addControlAction("Control Action 2", "Test control action 2");
+		UUID id3 = controller.addControlAction("Control Action 3", "Test control action 3");
+		UUID id4 = controller.addControlAction("Control Action 4", "Test control action 4");
+		UUID id5 = controller.addControlAction("Control Action 5", "Test control action 5");
 		Assert.assertTrue(dataModel.getAllControlActions().size() == 5);
 		
 		// delete control action 5
@@ -91,13 +91,14 @@ public class ControlActionControllerTest {
 	@Test
 	public void unsafeControlActionTest() {
 		DataModelController dataModel = new DataModelController();
+    IControlActionController controller = dataModel.getControlActionController();
 		
 		// fill the dataModel with control actions
-		UUID id1 = dataModel.addControlAction("Control Action 1", "Test control action 1");
-		UUID id2 = dataModel.addControlAction("Control Action 2", "Test control action 2");
-		UUID id3 = dataModel.addControlAction("Control Action 3", "Test control action 3");
-		UUID id4 = dataModel.addControlAction("Control Action 4", "Test control action 4");
-		UUID id5 = dataModel.addControlAction("Control Action 5", "Test control action 5");
+		UUID id1 = controller.addControlAction("Control Action 1", "Test control action 1");
+		UUID id2 = controller.addControlAction("Control Action 2", "Test control action 2");
+		UUID id3 = controller.addControlAction("Control Action 3", "Test control action 3");
+		UUID id4 = controller.addControlAction("Control Action 4", "Test control action 4");
+		UUID id5 = controller.addControlAction("Control Action 5", "Test control action 5");
 		
 		// check if all control actions were added
 		Assert.assertTrue(dataModel.getAllControlActionsU().size() == 5);
@@ -209,13 +210,14 @@ public class ControlActionControllerTest {
 	 */
 	@Test
 	public void testNotValid() {
-		DataModelController dataModel = new DataModelController();
+    DataModelController dataModel = new DataModelController();
+    IControlActionController controller = dataModel.getControlActionController();
 		
 		// Control Actions
 		Assert.assertNull(dataModel.getControlAction(null));
 		Assert.assertNull(dataModel.getControlActionU(null));
-		Assert.assertNull(dataModel.addControlAction("", null));
-		Assert.assertNull(dataModel.addControlAction(null, ""));
+		Assert.assertNull(controller.addControlAction("", null));
+		Assert.assertNull(controller.addControlAction(null, ""));
 		Assert.assertFalse(dataModel.removeControlAction(null));
 		Assert.assertFalse(dataModel.setControlActionDescription(null, ""));
 		Assert.assertFalse(dataModel.setControlActionDescription(UUID.randomUUID(), null));

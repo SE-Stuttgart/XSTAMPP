@@ -14,8 +14,6 @@ import java.util.UUID;
 
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.astpa.model.interfaces.ITableModel;
-import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;
 
 public class CausalFactorHazardLinksSupport extends LinkSupport<DataModelController> {

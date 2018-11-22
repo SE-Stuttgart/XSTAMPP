@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.util.jobs.word.ReportConfiguration;

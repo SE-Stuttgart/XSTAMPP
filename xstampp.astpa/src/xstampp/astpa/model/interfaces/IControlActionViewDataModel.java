@@ -40,20 +40,6 @@ public interface IControlActionViewDataModel extends IDataModel, ICommonTables {
   List<IControlAction> getAllControlActions();
 
   /**
-   * Adds a control action. <br>
-   * Triggers an update for {@link astpa.model.ObserverValue#CONTROL_ACTION}
-   * 
-   * @author Jarkko Heidenwag
-   * 
-   * @param description
-   *          The description of the new control action
-   * @param title
-   *          The title of the new control action
-   * @return String ID of the new control action
-   */
-  UUID addControlAction(String title, String description);
-
-  /**
    * {@link IUnsafeControlActionDataModel#getControlActionController()}
    */
   IControlActionController getControlActionController();

@@ -117,7 +117,6 @@ import xstampp.astpa.controlstructure.controller.editparts.CSConnectionEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.IControlStructureEditPart;
 import xstampp.astpa.controlstructure.controller.editparts.RootEditPart;
 import xstampp.astpa.controlstructure.controller.factorys.CSEditPartFactory;
-import xstampp.astpa.controlstructure.controller.factorys.CSPaletteEditPartFactory;
 import xstampp.astpa.controlstructure.figure.IControlStructureFigure;
 import xstampp.astpa.controlstructure.utilities.CSContextMenuProvider;
 import xstampp.astpa.controlstructure.utilities.CSPalettePage;
@@ -788,7 +787,6 @@ public abstract class CSAbstractEditor extends StandartEditorPart implements
       super.configurePaletteViewer(viewer);
       viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
       viewer.addPaletteListener(CSAbstractEditor.this);
-      viewer.setEditPartFactory(new CSPaletteEditPartFactory(getModelInterface(), viewer));
     }
   }
 

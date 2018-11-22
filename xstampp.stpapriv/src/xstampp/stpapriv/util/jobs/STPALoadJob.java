@@ -12,12 +12,6 @@ package xstampp.stpapriv.util.jobs;
 
 import java.io.InputStream;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.xml.sax.SAXException;
 
 import xstampp.stpapriv.model.PrivacyController;
@@ -30,17 +24,10 @@ import xstampp.stpapriv.model.PrivacyController;
 public class STPALoadJob extends xstampp.astpa.util.jobs.STPALoadJob {
 
   @Override
-  protected Schema getSchema() throws SAXException {
-    InputStream schemaFile;
-    schemaFile = getClass().getResourceAsStream("/secschema.xsd"); //$NON-NLS-1$
+  protected InputStream[] getSchema() throws SAXException {
+    InputStream schemaFile = getClass().getResourceAsStream("/secschema.xsd"); //$NON-NLS-1$
     InputStream mainSchemaFile = xstampp.astpa.Activator.class.getResourceAsStream("/hazschema.xsd"); //$NON-NLS-1$
-    Source imp = new StreamSource(schemaFile);
-    Source main = new StreamSource(mainSchemaFile);
-    Source[] schemaFiles = new Source[] { main, imp };
-    SchemaFactory schemaFactory = SchemaFactory
-        .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-    return schemaFactory.newSchema(schemaFiles);
+    return new InputStream[] { mainSchemaFile, schemaFile };
   }
 
   @Override

@@ -36,7 +36,6 @@ import org.eclipse.ui.contexts.IContextService;
 import messages.Messages;
 import xstampp.astpa.Activator;
 import xstampp.astpa.controlstructure.controller.factorys.CSModelCreationFactory;
-import xstampp.astpa.controlstructure.controller.factorys.CSPaletteEditPartFactory.ToolProperty;
 import xstampp.astpa.controlstructure.controller.factorys.ConnectionCreationFactory;
 import xstampp.astpa.controlstructure.utilities.DragSelectionToolEntry;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
@@ -164,7 +163,6 @@ public class CSEditor extends CSAbstractEditor {
         ComponentType.CONTROLACTION,
         new CSModelCreationFactory(ComponentType.CONTROLACTION, this.getRoot()), imgDesc,
         imgDescLarge);
-		entry.setToolProperty(ToolProperty.CHOOSE_ID_FROM, ComponentType.CONTROLACTION);
 		componentElements.add(entry);
     this.toolEntryToComponentType.put(ComponentType.CONTROLACTION, entry);
 

@@ -373,7 +373,6 @@ public class Controller extends AbstractDataModel implements IDataModel,
     return result;
   }
 
-  @Override
   public UUID addControlAction(String title, String description) {
     if ((title == null) || (description == null)) {
       return null;

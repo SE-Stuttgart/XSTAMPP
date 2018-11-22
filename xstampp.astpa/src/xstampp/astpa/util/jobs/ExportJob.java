@@ -118,10 +118,8 @@ public class ExportJob extends JAXBExportJob implements IProjectExport {
       this.csPmPath = new File(this.imgPath + File.separator + getThread().getId() + "cspm.png");
       CSExportJob csExport = new CSExportJob(this.csPath.getPath(), CSEditor.ID, projectId, 10,
           this.decorate);
-      csExport.setConstraint(getPageFormat());
       CSExportJob csPmExport = new CSExportJob(this.csPmPath.getPath(), CSEditorWithPM.ID,
           projectId, 10, this.decorate);
-      csPmExport.setConstraint(getPageFormat());
 
       csExport.getPrintableRoot();
       csPmExport.getPrintableRoot();

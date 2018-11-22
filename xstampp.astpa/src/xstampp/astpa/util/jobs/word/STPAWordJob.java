@@ -148,7 +148,6 @@ public class STPAWordJob extends XstamppJob {
       ByteArrayOutputStream controlStructureStream = new ByteArrayOutputStream();
       CSExportJob csExport = new CSExportJob(controlStructureStream, 10, CSEditor.ID, projectID,
           config.getDecoChoice());
-      csExport.setConstraint(config.getPageFormat());
       csExport.getPrintableRoot();
       byte[] normalCSArray = controlStructureStream.toByteArray();
       controlStructureStream.close();
@@ -157,7 +156,6 @@ public class STPAWordJob extends XstamppJob {
       controlStructureStream = new ByteArrayOutputStream();
       csExport = new CSExportJob(controlStructureStream, 10, CSEditorWithPM.ID, projectID,
           config.getDecoChoice());
-      csExport.setConstraint(config.getPageFormat());
       csExport.getPrintableRoot();
       byte[] pmCSArray = controlStructureStream.toByteArray();
       csPmRatio = csExport.getRatio();

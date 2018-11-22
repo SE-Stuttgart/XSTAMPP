@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
+*  Adding of new Control Actions is now only possible in the Control Structure to prevent inconsistencies between step 2 and 3
+
 ## XSTAMPP [3.1.1] - 2018-11-05
 
 ### A-STPA Bugfixes:

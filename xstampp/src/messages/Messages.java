@@ -139,6 +139,7 @@ public final class Messages extends NLS {
   public static String ControlAction;
   @SuppressWarnings("javadoc")
   public static String ControlActions;
+  public static String ControlActionView_1;
   @SuppressWarnings("javadoc")
   public static String ControlledProcess;
   @SuppressWarnings("javadoc")

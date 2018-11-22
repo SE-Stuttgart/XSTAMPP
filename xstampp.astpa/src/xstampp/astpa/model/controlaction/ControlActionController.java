@@ -107,6 +107,9 @@ public class ControlActionController extends ATableModelController
   public UUID addControlAction(String title, String description) {
     ControlAction controlAction = new ControlAction(title, description);
     this.getControlActions().add(controlAction);
+    if(title.isEmpty()) {
+      controlAction.setTitle(Messages.ControlAction + " " + controlAction.getNumber());
+    }
     return controlAction.getId();
   }
 

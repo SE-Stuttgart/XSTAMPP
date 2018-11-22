@@ -7,7 +7,7 @@
    <name>A-Cast Plugin</name>
 
    <parent>
-      <version>3.1.1</version>
+      <version>3.1.2</version>
       <groupId>xstampp.group</groupId>
       <artifactId>parent</artifactId>
       <relativePath>../xstampp.parent</relativePath>

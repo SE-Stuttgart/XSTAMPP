@@ -184,8 +184,7 @@ public class DataModelController extends AbstractDataModel
   /**
    * When this boolean is true than all {@link IUndoCallback}s that are pushed to the
    * {@link UndoRedoService} are recorded and added as one {@link IUndoCallback} when pushRecord is
-   * set to
-   * false.
+   * set to false.
    */
   private boolean recordCallbacks;
   private List<ObserverValue> blockedUpdates;
@@ -257,8 +256,9 @@ public class DataModelController extends AbstractDataModel
         getControlActionController(), getCausalFactorController());
     this.extendedDataController.prepareForExport(getControlActionController(), getLinkController());
     this.getControlActionController().prepareForExport(this, ignoreLtlValue.getText());
-    this.causalFactorController.prepareForExport(getHazAccController(), getRoot(), getExtendedDataController(),
-        getControlActionController(), getLinkController(), getSdsController());
+    this.causalFactorController.prepareForExport(getHazAccController(), getRoot(),
+        getExtendedDataController(), getControlActionController(), getLinkController(),
+        getSdsController());
     this.projectDataManager.prepareForExport();
     this.exportInformation = new ExportInformation();
     ProjectManager.getLOGGER().debug("Project: " + getProjectName() + " prepared for export");
@@ -269,15 +269,14 @@ public class DataModelController extends AbstractDataModel
   public void prepareForSave() {
     lockUpdate();
     this.extendedDataController.prepareForSave(getControlActionController(), getLinkController());
-    if (!this.getControlActionController().prepareForSave(getLinkController(),
-        hazAccController)) {
+    if (!this.getControlActionController().prepareForSave(getLinkController(), hazAccController)) {
       this.controlActionController = null;
     }
 
     this.causalFactorController.prepareForSave(this.getHazAccController(),
         controlStructureController.getInternalComponents(),
-        this.extendedDataController.getAllScenarios(true, true, true),
-        getAllUnsafeControlActions(), getLinkController());
+        this.extendedDataController.getAllScenarios(true, true, true), getAllUnsafeControlActions(),
+        getLinkController());
     if (!this.getHazAccController().prepareForSave(linkController)) {
       this.hazAccController = null;
     }
@@ -349,9 +348,11 @@ public class DataModelController extends AbstractDataModel
       lockUpdate();
       factorId = addCausalFactor();
       UUID linkId = getLinkController().addLink(LinkingType.UCA_CausalFactor_LINK, ucaID, factorId);
-      UUID causalEntryLink = getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK, linkId, componentId);
+      UUID causalEntryLink = getLinkController().addLink(LinkingType.UcaCfLink_Component_LINK,
+          linkId, componentId);
       getLinkController().addLink(LinkingType.CausalEntryLink_SC2_LINK, causalEntryLink, null);
-      releaseLockAndUpdate(new ObserverValue[] { ObserverValue.CAUSAL_FACTOR, ObserverValue.LINKING });
+      releaseLockAndUpdate(
+          new ObserverValue[] { ObserverValue.CAUSAL_FACTOR, ObserverValue.LINKING });
     }
     return factorId;
 
@@ -374,13 +375,14 @@ public class DataModelController extends AbstractDataModel
     }
     UUID result;
     if (controlActionId == null && type.equals(ComponentType.CONTROLACTION)) {
-      controlActionId = addControlAction(text, "");
+      controlActionId = this.getControlActionController().addControlAction("","");
+      getControlActionController().setControlActionTitle(controlActionId, Messages.ControlAction
+          + " " + getControlActionController().getControlAction(controlActionId).getNumber());
     }
     if (type.equals(ComponentType.CONTROLACTION)) {
       String caTitle = getControlAction(controlActionId).getText();
       result = this.controlStructureController.addComponent(controlActionId, parentId, layout,
-          caTitle, type,
-          index);
+          caTitle, type, index);
       this.getControlActionController().setComponentLink(result, controlActionId);
     } else {
       result = this.controlStructureController.addComponent(parentId, layout, text, type, index);
@@ -404,19 +406,6 @@ public class DataModelController extends AbstractDataModel
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
     }
     return result;
-  }
-
-  @Override
-  public UUID addControlAction(String title, String description) {
-    if ((title == null) || (description == null)) {
-      return null;
-    }
-
-    UUID id = this.getControlActionController().addControlAction(title, description);
-    if (id != null) {
-      this.setUnsavedAndChanged(ObserverValue.CONTROL_ACTION);
-    }
-    return id;
   }
 
   @Override
@@ -625,7 +614,8 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.controlStructureController.changeConnectionSource(connectionId, sourceAnchor, withPm)) {
+    if (this.controlStructureController.changeConnectionSource(connectionId, sourceAnchor,
+        withPm)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
       return true;
     }
@@ -638,7 +628,8 @@ public class DataModelController extends AbstractDataModel
       return false;
     }
 
-    if (this.controlStructureController.changeConnectionTarget(connectionId, targetAnchor, withPm)) {
+    if (this.controlStructureController.changeConnectionTarget(connectionId, targetAnchor,
+        withPm)) {
       this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
       return true;
     }
@@ -878,8 +869,8 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public ITableModel getDesignRequirement(UUID designRequirementId) {
-    return this.getSdsController()
-        .getDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
+    return this.getSdsController().getDesignRequirement(designRequirementId,
+        ObserverValue.DESIGN_REQUIREMENT);
   }
 
   public ExportInformation getExportInfo() {
@@ -1039,9 +1030,10 @@ public class DataModelController extends AbstractDataModel
     }
     ITableModel constraint = this.getSdsController().getSafetyConstraint(safetyConstraintId);
     if (constraint instanceof BadReferenceModel) {
-      constraint = this.getControlActionController().getCorrespondingSafetyConstraint(safetyConstraintId);
+      constraint = this.getControlActionController()
+          .getCorrespondingSafetyConstraint(safetyConstraintId);
     }
-    if(constraint instanceof BadReferenceModel) {
+    if (constraint instanceof BadReferenceModel) {
       constraint = this.getCausalFactorController().getSafetyConstraint(safetyConstraintId);
     }
 
@@ -1284,7 +1276,7 @@ public class DataModelController extends AbstractDataModel
     provider.pushRecord();
     this.refreshLock = false;
     this.recordCallbacks = false;
-    blockedUpdates = blockedUpdates == null?new ArrayList<>(): blockedUpdates;
+    blockedUpdates = blockedUpdates == null ? new ArrayList<>() : blockedUpdates;
     if (values != null) {
       for (int i = 0; i < values.length; i++) {
         if (!blockedUpdates.contains(values[i])) {
@@ -1386,8 +1378,7 @@ public class DataModelController extends AbstractDataModel
 
   @Override
   public boolean removeDesignRequirement(UUID designRequirementId) {
-    return removeDesignRequirement(designRequirementId,
-        ObserverValue.DESIGN_REQUIREMENT);
+    return removeDesignRequirement(designRequirementId, ObserverValue.DESIGN_REQUIREMENT);
   }
 
   @Override
@@ -1395,8 +1386,7 @@ public class DataModelController extends AbstractDataModel
     if (designRequirementId == null) {
       return false;
     }
-    return this.getSdsController().removeDesignRequirement(designRequirementId,
-        type);
+    return this.getSdsController().removeDesignRequirement(designRequirementId, type);
   }
 
   @Override
@@ -1541,8 +1531,7 @@ public class DataModelController extends AbstractDataModel
   }
 
   @Override
-  public boolean setCausalFactorText(UUID causalFactorId,
-      String causalFactorText) {
+  public boolean setCausalFactorText(UUID causalFactorId, String causalFactorText) {
     if ((causalFactorId == null) || (causalFactorText == null)) {
       return false;
     }
@@ -1566,7 +1555,8 @@ public class DataModelController extends AbstractDataModel
       ITableModel controlAction = getControlActionController().getControlAction(controlActionId);
       // if the control action is linked with a component in the control structure than the title is
       // also synchronized with the components' text
-      if (result && changeComponentText(((ControlAction) controlAction).getComponentLink(), title)) {
+      if (result
+          && changeComponentText(((ControlAction) controlAction).getComponentLink(), title)) {
         this.setUnsavedAndChanged(ObserverValue.CONTROL_STRUCTURE);
         result = true;
       }

@@ -13,6 +13,8 @@
 
 package xstampp.astpa.model.controlstructure.components;
 
+import messages.Messages;
+
 /**
  * Enum for the type of components
  * 
@@ -24,57 +26,59 @@ public enum ComponentType {
   /**
    * This enum represents a container component
    */
-  CONTAINER,
+  CONTAINER("?"), 
   /**
    * This constant is used to create Text Fields
    */
-  TEXTFIELD,
+  TEXTFIELD(Messages.TextBox),
 
   /**
    * This constant is used to create Dashed Boxes
    */
-  DASHEDBOX,
+  DASHEDBOX(Messages.DashedBox),
 
   /**
    * This type is used to create/store a visualization of a cointroloAction
    */
-  CONTROLACTION,
+  CONTROLACTION(Messages.ControlAction),
 
   /**
    * This constant is used to create Controller
    */
-  CONTROLLER,
+  CONTROLLER(Messages.Controller),
 
   /**
    * This constant is used to create Actuator
    */
-  ACTUATOR,
+  ACTUATOR(Messages.Actuator),
 
-  FEEDBACK, UNDEFINED,
+  FEEDBACK("Feedback"),
+  
+  UNDEFINED("Component"),
   /**
    * This constant is used to create a new Process
    */
-  CONTROLLED_PROCESS,
+  CONTROLLED_PROCESS(Messages.ControlledProcess),
 
   /**
    * This constant is used to create a new Process Model
    */
-  PROCESS_MODEL,
+  PROCESS_MODEL(Messages.ProcessModel),
 
   /**
    * This constant is used to create a new Process Variable
    */
-  PROCESS_VARIABLE,
+  PROCESS_VARIABLE(Messages.ProcessVariable),
 
   /**
    * This constant is used to create a new Process State
    */
-  PROCESS_VALUE,
+  PROCESS_VALUE(Messages.ProcessValue),
 
   /**
    * This constant is used to create a new Sensor
    */
-  SENSOR,
+  SENSOR(Messages.Sensor),
 
   OTHER_COMPONENT,
   /**
@@ -87,4 +91,16 @@ public enum ComponentType {
    */
   CONNECTION;
 
+  private String title;
+
+  private ComponentType() {
+    this.title = "";
+  }
+  private ComponentType(String title) {
+    this.title = title;
+  }
+  
+  public String getTitle() {
+    return title;
+  }
 }

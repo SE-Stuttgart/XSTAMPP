@@ -14,7 +14,6 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.causalfactor.ICausalController;
 import xstampp.astpa.model.controlaction.IControlActionController;
 import xstampp.astpa.model.controlaction.UCAHazLink;

@@ -28,7 +28,7 @@ public class ExtendedDataModelTest {
   @Before
   public void setUp() throws Exception {
     DataModelController controller = new DataModelController();
-    controlAction = controller.addControlAction("Control Action 1", "");
+    controlAction = controller.getControlActionController().addControlAction("Control Action 1", "");
     dataModel = controller;
   }
 

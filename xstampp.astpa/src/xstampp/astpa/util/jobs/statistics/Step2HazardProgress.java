@@ -28,7 +28,6 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.EntryWithSeverity;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.interfaces.IUnsafeControlAction;
-import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;

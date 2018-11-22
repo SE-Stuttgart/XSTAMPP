@@ -428,7 +428,6 @@ public class HazAccController extends ATableModelController implements IHazAccCo
   public void syncContent(HazAccController controller, List<UUID> responsibilities) {
     this.useHazardConstraints = controller.useHazardConstraints; 
     this.useSeverity = controller.useSeverity;
-    List<ATableModel> hazAcc = new ArrayList<>();
     for (ATableModel other : controller.accidents) {
       ITableModel own = getAccident(other.getId());
       if (own instanceof BadReferenceModel) {

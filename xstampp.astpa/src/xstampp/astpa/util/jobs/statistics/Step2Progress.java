@@ -23,7 +23,6 @@ import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.controlaction.safetyconstraint.ICorrespondingUnsafeControlAction;
-import xstampp.astpa.model.interfaces.ITableModel;
 import xstampp.astpa.model.interfaces.Severity;
 import xstampp.astpa.model.linking.Link;
 import xstampp.astpa.model.linking.LinkingType;

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package xstampp.astpa.model.linking;
 
-import java.util.List;
 import java.util.UUID;
 
 import xstampp.model.ObserverValue;
@@ -19,13 +18,8 @@ import xstampp.util.IUndoCallback;
 public abstract class UndoAddLinkedComponent implements IUndoCallback {
 
   private LinkController linkController;
-  private UUID componentId;
-  private List<Link> deleteLinksFor;
-  private int linkDepth;
 
   public UndoAddLinkedComponent(LinkController linkController, UUID componentId, int linkDepth) {
-    this.componentId = componentId;
-    this.linkDepth = linkDepth;
     this.linkController = linkController;
   }
 

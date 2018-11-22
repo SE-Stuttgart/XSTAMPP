@@ -122,7 +122,7 @@ public class ObserverTest implements Observer {
 		this.initialize();
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
-		UUID controlAction = this.dataModel.addControlAction("", "");
+		UUID controlAction = this.dataModel.getControlActionController().addControlAction("", "");
 		this.addToNominal(ObserverValue.CONTROL_ACTION);
 		this.dataModel.getAllControlActions();
 		this.dataModel.getAllControlActionsU();
@@ -210,7 +210,7 @@ public class ObserverTest implements Observer {
 		this.initialize();
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
-		UUID controlAction = this.dataModel.addControlAction("", "");
+		UUID controlAction = this.dataModel.getControlActionController().addControlAction("", "");
 		this.addToNominal(ObserverValue.CONTROL_ACTION);
 		UUID unsafeControlAction =
 			this.dataModel.addUnsafeControlAction(controlAction, "", UnsafeControlActionType.GIVEN_INCORRECTLY);
@@ -434,7 +434,7 @@ public class ObserverTest implements Observer {
 		this.initialize();
 		
 		Assert.assertFalse(this.dataModel.hasUnsavedChanges());
-		UUID controlAction = this.dataModel.addControlAction("", "");
+		UUID controlAction = this.dataModel.getControlActionController().addControlAction("", "");
 		this.addToNominal(ObserverValue.CONTROL_ACTION);
 		this.dataModel.getAllControlActions();
 		this.dataModel.getControlActionU(controlAction);

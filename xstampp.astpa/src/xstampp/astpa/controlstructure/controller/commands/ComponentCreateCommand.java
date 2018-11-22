@@ -17,7 +17,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import xstampp.astpa.controlstructure.CSEditor;
 import xstampp.astpa.controlstructure.controller.policys.CSEditPolicy;
-import xstampp.astpa.model.controlstructure.components.Component;
 import xstampp.astpa.model.controlstructure.components.ComponentType;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
@@ -36,7 +35,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
 
   private IRectangleComponent parentModel;
   private IRectangleComponent compModel;
-  private IRectangleComponent constraintModel;
   private UUID componentId;
   private UUID parentId;
   private Rectangle layout;
@@ -58,7 +56,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
   public ComponentCreateCommand(UUID rootId, IControlStructureEditorDataModel model,
       String stepID) {
     super(rootId, model, stepID);
-    this.constraintModel = new Component();
     this.parentLayout = new Rectangle();
     this.oldParentLayout = new Rectangle();
     this.compModel = null;
@@ -102,7 +99,6 @@ public class ComponentCreateCommand extends ControlStructureAbstractCommand {
    *          the layout constraint
    */
   public void addConstraint(Object model) {
-    this.constraintModel = (IRectangleComponent) model;
   }
 
   /**

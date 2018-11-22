@@ -47,7 +47,6 @@ import xstampp.astpa.model.DataModelController;
 import xstampp.astpa.model.controlstructure.interfaces.IRectangleComponent;
 import xstampp.astpa.model.interfaces.IControlStructureEditorDataModel;
 import xstampp.ui.common.ProjectManager;
-import xstampp.ui.wizards.AbstractExportPage;
 import xstampp.util.XstamppJob;
 
 /**
@@ -61,9 +60,6 @@ public class CSExportJob extends XstamppJob {
   public enum ImageConstraint {
     A4_LANDSCAPE(29.4f, 16), A4_PORTRAIT(16, 29.4f), DEFAULT(30, 30);
 
-    private float cmToPixel = 1 / 2.54f * 72;
-    private float width;
-    private float height;
 
     /**
      * 
@@ -73,10 +69,6 @@ public class CSExportJob extends XstamppJob {
      *          the height in centimeters
      */
     private ImageConstraint(float width, float height) {
-
-      this.width = width * cmToPixel;
-      this.height = height * cmToPixel;
-
     }
   }
 
@@ -93,7 +85,6 @@ public class CSExportJob extends XstamppJob {
   private UUID projectID;
   private ByteArrayOutputStream outputStream;
   private float ratio;
-  private ImageConstraint constraint = ImageConstraint.DEFAULT;
 
   /**
    * this constructor creates a new Job to print the current Control Structure
@@ -349,14 +340,6 @@ public class CSExportJob extends XstamppJob {
       CSExportJob.this.printableFigure = tmpFigure;
     }
 
-  }
-
-  public void setConstraint(String type) {
-    if (type.equals(AbstractExportPage.A4_LANDSCAPE)) {
-      this.constraint = ImageConstraint.A4_LANDSCAPE;
-    } else {
-      this.constraint = ImageConstraint.A4_PORTRAIT;
-    }
   }
 
   @Override
