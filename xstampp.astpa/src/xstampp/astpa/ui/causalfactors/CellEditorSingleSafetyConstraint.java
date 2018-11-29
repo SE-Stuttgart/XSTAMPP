@@ -77,11 +77,8 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
           linkAction));
       addCellButton(new CellButtonLinkToConstraint(getGridWrapper().getGrid(), causalDataInterface,
           linkAction));
-    } else if (safetyOption.getIdString().startsWith("SC2")) {
-      setReadOnly(false);
-      setShowDelete(true);
     } else {
-      setReadOnly(true);
+      setReadOnly(false);
       setShowDelete(true);
     }
     super.paint(renderer, gc, item);
@@ -90,8 +87,20 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
 
   @Override
   public void updateDataModel(String newText) {
-    causalDataInterface.getCausalFactorController()
-        .setSafetyConstraintText(causalEntrySc2Link.getLinkB(), newText);
+    // the change is made in one of the three safety responsible controllers depending on the ID of
+    // the safety constraint
+    if (!(safetyOption instanceof BadReferenceModel)) {
+      ObserverValue value = ObserverValue.SAFETY_CONSTRAINT;
+      switch (safetyOption.getIdString().charAt(2)) {
+      case ('1'):
+        value = ObserverValue.UNSAFE_CONTROL_ACTION;
+        break;
+      case ('2'):
+        value = ObserverValue.CAUSAL_FACTOR;
+        break;
+      }
+      causalDataInterface.setModelTitle(safetyOption, newText, value);
+    }
   }
 
   @Override
@@ -101,9 +110,9 @@ public class CellEditorSingleSafetyConstraint extends GridCellTextEditor {
           .removeSafetyConstraint(safetyOption.getId())) {
         causalDataInterface.getLinkController().changeLink(this.causalEntrySc2Link,
             this.causalEntrySc2Link.getLinkA(), null);
-        this.safetyOption = BadReferenceModel.getBadReference();
       }
     }
+    this.safetyOption = BadReferenceModel.getBadReference();
   }
 
   @Override

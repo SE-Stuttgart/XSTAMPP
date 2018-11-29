@@ -31,7 +31,7 @@ import xstampp.model.IEntryFilter;
  * @author Fabian Toth, Benedikt Markt
  * 
  */
-public interface ICausalFactorDataModel extends IDataModel {
+public interface ICausalFactorDataModel extends IDataModel,ITableModelController {
 
   /**
    * @return a list of {@link xstampp.astpa.model.controlaction.UCAHazLink}

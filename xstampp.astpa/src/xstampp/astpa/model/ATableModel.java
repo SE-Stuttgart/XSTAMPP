@@ -149,10 +149,11 @@ public abstract class ATableModel extends EntryWithSeverity
    * Setter for the description
    * 
    * @param description
-   *          the new description
+   *          the new description, if <b>null</b> or the current text is given the method returns with <b>null</b>
    * 
    * @author Fabian Toth
-   * @return TODO
+   * @author Lukas Balzer
+   * @return  The old description if the description has been changed null otherwise
    */
   public String setDescription(String description) {
     if (this.description == null || !this.description.equals(description)) {
@@ -173,7 +174,7 @@ public abstract class ATableModel extends EntryWithSeverity
    * Setter for the title
    * 
    * @param title
-   *          the new title
+   *          the new title, if <b>null</b> or the current text is given the method returns with <b>null</b> 
    * 
    * @author Fabian Toth
    * @author Lukas Balzer

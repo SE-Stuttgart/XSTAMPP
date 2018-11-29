@@ -39,6 +39,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.junit.Assert;
 import org.osgi.framework.Bundle;
 
 import messages.Messages;
@@ -95,6 +96,7 @@ import xstampp.astpa.model.projectdata.ProjectDataController;
 import xstampp.astpa.model.sds.ISDSController;
 import xstampp.astpa.model.sds.SDSController;
 import xstampp.astpa.model.sds.SystemGoal;
+import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.astpa.usermanagement.AstpaCollaborationSystem;
 import xstampp.astpa.util.jobs.SaveJob;
 import xstampp.model.AbstractDataModel;
@@ -375,7 +377,7 @@ public class DataModelController extends AbstractDataModel
     }
     UUID result;
     if (controlActionId == null && type.equals(ComponentType.CONTROLACTION)) {
-      controlActionId = this.getControlActionController().addControlAction("","");
+      controlActionId = this.getControlActionController().addControlAction("", "");
       getControlActionController().setControlActionTitle(controlActionId, Messages.ControlAction
           + " " + getControlActionController().getControlAction(controlActionId).getNumber());
     }
@@ -1720,6 +1722,41 @@ public class DataModelController extends AbstractDataModel
   @Override
   public boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title) {
     return getSdsController().setSafetyConstraintTitle(safetyConstraintId, title);
+  }
+
+  private boolean setModelText(ITableModel model, String input, ObserverValue value,
+      boolean changeTitle) {
+    Assert.assertNotNull(value);
+    if (!(model instanceof BadReferenceModel)) {
+      boolean changed;
+      String oldText;
+      String newText = input.replaceAll("\r", "");
+      if (changeTitle) {
+        changed = !newText.equals(((ATableModel) model).getTitle());
+        oldText = ((ATableModel) model).setTitle(newText);
+      } else {
+        changed = !newText.equals(((ATableModel) model).getDescription());
+        oldText = ((ATableModel) model).setDescription(newText);
+      }
+      if (changed) {
+        UndoTextChange textChange = new UndoTextChange(oldText, newText, value);
+        textChange.setConsumer((text) -> setModelText(model, text, value, changeTitle));
+        setChanged();
+        update(null,textChange);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean setModelTitle(ITableModel model, String newText, ObserverValue value) {
+    return setModelText(model, newText, value, true);
+  }
+
+  @Override
+  public boolean setModelDescription(ITableModel model, String newText, ObserverValue value) {
+    return setModelText(model, newText, value, false);
   }
 
   @Override
