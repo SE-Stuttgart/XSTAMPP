@@ -10,9 +10,9 @@ package xstampp.astpa.ui.causalfactors;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 
 import xstampp.astpa.model.BadReferenceModel;
 import xstampp.astpa.model.interfaces.ICausalFactorDataModel;
@@ -29,50 +29,59 @@ import xstampp.ui.common.grid.GridWrapper.NebulaGridRowWrapper;
 public class CellEditorSafetyConstraint extends GridCellTextEditor {
 
   private ICausalFactorDataModel causalDataInterface;
-  private Link ucaHazLink;
-  private ITableModel safetyOption;
+  private Link causalEntryHazLink;
+  private ITableModel scModel;
 
   /**
    * 
    * @param gridWrapper
    * @param dataInterface
    * @param causalHazLink
-   *          a Link of type {@link ObserverValue#CausalEntryLink_HAZ_LINK}
+   *          a Link of type {@link LinkingType#CausalEntryLink_SC2_LINK}
    */
   public CellEditorSafetyConstraint(GridWrapper gridWrapper, ICausalFactorDataModel dataInterface,
-      Link causalHazLink) {
-    super(gridWrapper,
-        dataInterface.getCausalFactorController().getConstraintTextFor(causalHazLink.getLinkB()),
-        causalHazLink.getId());
+      Link causalEntryHazLink) {
+    super(gridWrapper, "", causalEntryHazLink.getId());
     setShowDelete(true);
     this.causalDataInterface = dataInterface;
-    this.ucaHazLink = causalHazLink;
-    Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalHazLink.getId()).stream().findFirst();
-    this.safetyOption = causalDataInterface.getCausalFactorController().getSafetyConstraint(safetyOption.orElse(null));
+    this.causalEntryHazLink = causalEntryHazLink;
+    Optional<UUID> scOptional = dataInterface.getLinkController()
+        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, causalEntryHazLink.getId()).stream().findFirst();
+    this.scModel = causalDataInterface.getSafetyConstraint(scOptional.orElse(null));
+    if(scModel instanceof BadReferenceModel && scOptional.isPresent()) {
+      causalDataInterface.getLinkController().deleteAllFor(LinkingType.CausalHazLink_SC2_LINK, this.causalEntryHazLink.getId());
+    }
+    setToolTip(scModel.getIdString());
   }
 
   @Override
   public String getCurrentText() {
-    return this.safetyOption.getText();
+    return scModel.getText();
+  }
+
+  @Override
+  public String getCurrentTitle() {
+    return scModel.getIdString();
   }
 
   @Override
   public void paint(GridCellRenderer renderer, GC gc, NebulaGridRowWrapper item) {
     clearCellButtons();
-    if (this.safetyOption.getId() == BadReferenceModel.getBadReference().getId()) {
+    if (scModel instanceof BadReferenceModel) {
       setReadOnly(true);
       setShowDelete(false);
+      Consumer<UUID> linkAction = (id) -> causalDataInterface.getLinkController()
+          .addLink(LinkingType.CausalHazLink_SC2_LINK, causalEntryHazLink.getId(), id);
       CellButtonAdd addButton = new CellButtonAdd(() -> {
         UUID constraintId = causalDataInterface.getCausalFactorController().addSafetyConstraint("");
-        causalDataInterface.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK, this.ucaHazLink.getId(),
-            constraintId);
+        linkAction.accept(constraintId);
       });
       addButton.setToolTip("Add a new Safety Constraint");
       addCellButton(addButton);
       addCellButton(new CellButtonImportConstraint(getGridWrapper().getGrid(), causalDataInterface,
-          (id) -> causalDataInterface.getLinkController().addLink(LinkingType.CausalHazLink_SC2_LINK,
-              ucaHazLink.getId(), id)));
+          linkAction));
+      addCellButton(new CellButtonLinkToConstraint(getGridWrapper().getGrid(), causalDataInterface,
+          linkAction));
     } else {
       setReadOnly(false);
       setShowDelete(true);
@@ -82,31 +91,32 @@ public class CellEditorSafetyConstraint extends GridCellTextEditor {
   }
 
   @Override
-  public String getToolTip(Point point) {
-    if (!(safetyOption instanceof BadReferenceModel)) {
-      return safetyOption.getIdString();
-    }
-    return super.getToolTip(point);
-  }
-
-  @Override
   public void updateDataModel(String newText) {
-    Optional<UUID> safetyOption = this.causalDataInterface.getLinkController()
-        .getLinksFor(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId()).stream().findFirst();
-    if (safetyOption.isPresent()) {
-      causalDataInterface.getCausalFactorController().setSafetyConstraintText(safetyOption.get(), newText);
+    // the change is made in one of the three safety responsible controllers depending on the ID of
+    // the safety constraint
+    if (!(scModel instanceof BadReferenceModel)) {
+      ObserverValue value = ObserverValue.SAFETY_CONSTRAINT;
+      switch (scModel.getIdString().charAt(2)) {
+      case ('1'):
+        value = ObserverValue.UNSAFE_CONTROL_ACTION;
+        break;
+      case ('2'):
+        value = ObserverValue.CAUSAL_FACTOR;
+        break;
+      }
+      causalDataInterface.setModelTitle(scModel, newText, value);
     }
   }
 
   @Override
   public void delete() {
-    if (this.safetyOption.getId() != BadReferenceModel.getBadReference().getId()) {
-      if (this.causalDataInterface.getCausalFactorController().removeSafetyConstraint(safetyOption.getId())) {
-        causalDataInterface.getLinkController().deleteLink(LinkingType.CausalHazLink_SC2_LINK, ucaHazLink.getId(),
-            safetyOption.getId());
-        this.safetyOption = BadReferenceModel.getBadReference();
-      }
+    if (!(scModel instanceof BadReferenceModel)) {
+      this.causalDataInterface.getCausalFactorController()
+          .removeSafetyConstraint(scModel.getId());
+        causalDataInterface.getLinkController().deleteAllFor(LinkingType.CausalHazLink_SC2_LINK, this.causalEntryHazLink.getId());
+      
     }
+    this.scModel = BadReferenceModel.getBadReference();
   }
 
   @Override

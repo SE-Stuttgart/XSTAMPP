@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam
- * Grahovac, Jarkko Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian
- * Sieber, Fabian Toth, Patrick Wickenhäuser, Aliaksei Babkovich, Aleksander
- * Zotov).
+ * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  *******************************************************************************/
@@ -16,6 +14,7 @@ package xstampp.astpa.model.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import xstampp.astpa.model.BadReferenceModel;
 import xstampp.model.IDataModel;
 
 /**
@@ -36,8 +35,7 @@ public interface ISafetyConstraintViewDataModel extends IDataModel, ICommonTable
   List<ITableModel> getAllSafetyConstraints();
 
   /**
-   * Adds an safety constraint. <br>
-   * Triggers an update for
+   * Adds an safety constraint. <br> Triggers an update for
    * {@link astpa.model.ObserverValue#SAFETY_CONSTRAINT}
    * 
    * @author Jarkko Heidenwag
@@ -51,8 +49,7 @@ public interface ISafetyConstraintViewDataModel extends IDataModel, ICommonTable
   UUID addSafetyConstraint(String title, String description);
 
   /**
-   * Deletes an safety constraint. <br>
-   * Triggers an update for
+   * Deletes an safety constraint. <br> Triggers an update for
    * {@link astpa.model.ObserverValue#SAFETY_CONSTRAINT}
    * 
    * @author Jarkko Heidenwag
@@ -64,8 +61,7 @@ public interface ISafetyConstraintViewDataModel extends IDataModel, ICommonTable
   boolean removeSafetyConstraint(UUID safetyConstraintId);
 
   /**
-   * Setter for the title of an safety constraint. <br>
-   * Triggers an update for
+   * Setter for the title of an safety constraint. <br> Triggers an update for
    * {@link astpa.model.ObserverValue#SAFETY_CONSTRAINT}
    * 
    * @author Jarkko Heidenwag
@@ -79,8 +75,7 @@ public interface ISafetyConstraintViewDataModel extends IDataModel, ICommonTable
   boolean setSafetyConstraintTitle(UUID safetyConstraintId, String title);
 
   /**
-   * Setter for the description of an safety constraint. <br>
-   * Triggers an update for
+   * Setter for the description of an safety constraint. <br> Triggers an update for
    * {@link astpa.model.ObserverValue#SAFETY_CONSTRAINT}
    * 
    * @author Jarkko Heidenwag
@@ -91,17 +86,17 @@ public interface ISafetyConstraintViewDataModel extends IDataModel, ICommonTable
    *          The safety constraint's new description
    * @return true if the description has been set
    */
-  boolean setSafetyConstraintDescription(UUID safetyConstraintId,
-      String description);
+  boolean setSafetyConstraintDescription(UUID safetyConstraintId, String description);
 
   /**
-   * Get an safety constraint by it's ID.
+   * Get a safety constraint by it's ID. if no safety constraint is registered for the given id than
+   * a {@link BadReferenceModel} is returned to prevent null checks.
    * 
    * @author Jarkko Heidenwag, Patrick Wickenhaeuser
    * @param safetyConstraintId
    *          the ID of the safety constraint.
    * 
-   * @return the safety constraint.
+   * @return the safety constraint, or a {@link BadReferenceModel} if no safety constraint could be found or the given id is null.
    */
   ITableModel getSafetyConstraint(UUID safetyConstraintId);
 

@@ -59,7 +59,7 @@ public class CellEditorCausalEntry extends GridCellTextEditor {
    * @param gridWrapper
    * @param dataInterface
    * @param factorComponentLink
-   *          a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}
+   *          a List of Links, of type {@link ObserverValue#UcaCfLink_Component_LINK}, which are deleted
    * @param uca
    * @param entryId
    *          the id of a Link of type {@link ObserverValue#UcaCfLink_Component_LINK}

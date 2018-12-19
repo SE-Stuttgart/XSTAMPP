@@ -107,6 +107,9 @@ public class CellEditorCausalFactor extends GridCellTextEditor {
     if (MessageDialog.openConfirm(null, "Delete Causal Factor?",
         "Do you really want to delete this Causal Factor\n"
             + "and all its child entries?")) {
+      for (Link link : dataInterface.getLinkController().getRawLinksFor(LinkingType.UCA_CausalFactor_LINK, factorId)) {
+        dataInterface.getLinkController().deleteAllFor(LinkingType.UcaCfLink_Component_LINK, link.getId());
+      }
       for (UUID uuid : dataInterface.getLinkController().getLinksFor(LinkingType.UCA_CausalFactor_LINK, factorId)) {
         dataInterface.getLinkController().deleteAllFor(LinkingType.UcaCfLink_Component_LINK, uuid);
       }

@@ -35,8 +35,11 @@ public class LinkController extends Observable {
   @XmlJavaTypeAdapter(Adapter.class)
   private Map<LinkingType, List<Link>> linkMap;
 
+  private List<UUID> deletedIds;
+
   public LinkController() {
     this.linkMap = new TreeMap<>();
+    this.deletedIds = new ArrayList<>();
   }
 
   /**
@@ -56,13 +59,10 @@ public class LinkController extends Observable {
   }
 
   /**
-   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
-   * <p>
-   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
-   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
-   * <code>linkA</code>
-   * <p>
-   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType <p> if a
+   * Link for the given linkType and <b>null</b> either <code>linkA</code> or <code>linkB</code>
+   * already exists it is updated with the given <code>linkB</code> or <code>linkA</code> <p> if a
+   * Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
    * exists, than its' id is returned and nothing is added.
    * 
    * @param linkType
@@ -71,8 +71,7 @@ public class LinkController extends Observable {
    *          the part whose {@link UUID} is the first part of the {@link Link}
    * @param linkB
    *          the part whose {@link UUID} is the second part of the {@link Link}
-   * @return
-   *         The id of the Link which was either added, updated or which already existed
+   * @return The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB) {
     return addLink(linkType, linkA, linkB, true);
@@ -88,44 +87,35 @@ public class LinkController extends Observable {
   }
 
   /**
-   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
-   * <p>
-   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
-   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
-   * <code>linkA</code>
-   * <p>
-   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType <p> if a
+   * Link for the given linkType and <b>null</b> either <code>linkA</code> or <code>linkB</code>
+   * already exists it is updated with the given <code>linkB</code> or <code>linkA</code> <p> if a
+   * Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
    * exists, than its' id is returned and nothing is added.
    * 
    * @param linkType
-   *          an {@link LinkingType} for which links have been created in the
-   *          {@link LinkController}
+   *          an {@link LinkingType} for which links have been created in the {@link LinkController}
    * @param linkA
    *          the part whose {@link UUID} is the first part of the {@link Link}
    * @param linkB
    *          the part whose {@link UUID} is the second part of the {@link Link}
    * @param canUndo
    *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
-   * @return
-   *         The id of the Link which was either added, updated or which already existed
+   * @return The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo) {
     return this.addLink(linkType, linkA, linkB, canUndo, UUID.randomUUID(), "");
   }
 
   /**
-   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
-   * <p>
-   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
-   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
-   * <code>linkA</code>
-   * <p>
-   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType <p> if a
+   * Link for the given linkType and <b>null</b> either <code>linkA</code> or <code>linkB</code>
+   * already exists it is updated with the given <code>linkB</code> or <code>linkA</code> <p> if a
+   * Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
    * exists, than its' id is returned and nothing is added.
    * 
    * @param linkType
-   *          an {@link LinkingType} for which links have been created in the
-   *          {@link LinkController}
+   *          an {@link LinkingType} for which links have been created in the {@link LinkController}
    * @param linkA
    *          the part whose {@link UUID} is the first part of the {@link Link}
    * @param linkB
@@ -134,26 +124,21 @@ public class LinkController extends Observable {
    *          if this call should push a {@link IUndoCallback} to the Undo Stack or not
    * @param id
    *          the {@link UUID} that should be assigned to a new link, if one is created
-   * @return
-   *         The id of the Link which was either added, updated or which already existed
+   * @return The id of the Link which was either added, updated or which already existed
    */
   public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo, UUID id) {
     return addLink(linkType, linkA, linkB, canUndo, id, "");
   }
 
   /**
-   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType
-   * <p>
-   * if a Link for the given linkType and <b>null</b> either <code>linkA</code> or
-   * <code>linkB</code> already exists it is updated with the given <code>linkB</code> or
-   * <code>linkA</code>
-   * <p>
-   * if a Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
+   * Adds a new {@link Link} to the List of {@link Link}'s mapped to the given linkType <p> if a
+   * Link for the given linkType and <b>null</b> either <code>linkA</code> or <code>linkB</code>
+   * already exists it is updated with the given <code>linkB</code> or <code>linkA</code> <p> if a
+   * Link with the same information for both <code>linkA</code> <b>and</b> <code>linkB</code>
    * exists, than its' id is returned and nothing is added.
    * 
    * @param linkType
-   *          an {@link LinkingType} for which links have been created in the
-   *          {@link LinkController}
+   *          an {@link LinkingType} for which links have been created in the {@link LinkController}
    * @param linkA
    *          the part whose {@link UUID} is the first part of the {@link Link}
    * @param linkB
@@ -164,13 +149,12 @@ public class LinkController extends Observable {
    *          the {@link UUID} that should be assigned to a new link, if one is created
    * @param note
    *          n optional note that can be added to the link, can be a design hint or a rational for
-   *          the relationship this link represents
-   *          <p>
-   *          see <i>xstampp.astpa/docs/architecture/causalFactors.png</i> for more details
-   * @return
-   *         The id of the Link which was either added, updated or which already existed
+   *          the relationship this link represents <p> see
+   *          <i>xstampp.astpa/docs/architecture/causalFactors.png</i> for more details
+   * @return The id of the Link which was either added, updated or which already existed
    */
-  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo, UUID id, String note) {
+  public UUID addLink(LinkingType linkType, UUID linkA, UUID linkB, boolean canUndo, UUID id,
+      String note) {
     if (!this.linkMap.containsKey(linkType)) {
       assert (linkType != null);
       this.linkMap.put(linkType, new ArrayList<Link>());
@@ -221,8 +205,7 @@ public class LinkController extends Observable {
    * <b>null</b> is given as linkType than the returned list is filled with all linked ids.
    * 
    * @param linkType
-   *          an {@link LinkingType} for which links have been created in the
-   *          {@link LinkController}
+   *          an {@link LinkingType} for which links have been created in the {@link LinkController}
    * @param part
    *          the ID of the part for which all available links are returned
    * @return a {@link List} of {@link UUID}'s of all linked items, or an empty {@link List} if part
@@ -251,6 +234,7 @@ public class LinkController extends Observable {
    */
   public List<Link> getRawLinksFor(LinkingType linkType, UUID partId) {
     List<Link> links = new ArrayList<>();
+    clearLinkType(linkType);
     for (Link link : getLinkObjectsFor(linkType)) {
       if (link.links(partId)) {
         links.add(link);
@@ -261,14 +245,12 @@ public class LinkController extends Observable {
 
   /**
    * Returns and removes all matching {@link Link} that contain the given partId as link component.
-   * <p>
-   * <b>This method does not trigger an update and thus is not part of the API</b>
+   * <p> <b>This method does not trigger an update and thus is not part of the API</b>
    * 
    * @param partId
    *          the {@link UUID} of a {@link Link}
    * @param depth
-   *          the amount of recursions that are used to find {@link Link} Objects,<br>
-   *          e.g. if depth
+   *          the amount of recursions that are used to find {@link Link} Objects,<br> e.g. if depth
    *          is 2 than also the links are included that contain a {@link UUID} of a Link found in
    *          the first recursion
    * @return a {@link List} of {@link Link}'s that contain the given partId as link component.
@@ -372,9 +354,7 @@ public class LinkController extends Observable {
    */
   public Link getLinkObjectFor(LinkingType linkType, UUID linkId) {
     if (this.linkMap.containsKey(linkType)) {
-      this.linkMap.get(linkType).removeIf((t) -> {
-        return t.getLinkA() == null && t.getLinkB() == null;
-      });
+      clearLinkType(linkType);
       return this.linkMap.get(linkType).stream().filter((link) -> link.getId().equals(linkId))
           .findFirst().orElse(null);
     }
@@ -415,12 +395,18 @@ public class LinkController extends Observable {
 
   private List<Link> getLinkObjectsFor(LinkingType linkType) {
     if (this.linkMap.containsKey(linkType)) {
-      this.linkMap.get(linkType).removeIf((t) -> {
-        return t.getLinkA() == null && t.getLinkB() == null;
-      });
+      clearLinkType(linkType);
       return this.linkMap.get(linkType);
     }
     return new ArrayList<>();
+  }
+
+  private void clearLinkType(LinkingType linkType) {
+    if (this.linkMap.containsKey(linkType)) {
+      this.linkMap.get(linkType).removeIf((t) -> {
+        return (t.getLinkA() == null && t.getLinkB() == null) || !checkLink(t);
+      });
+    }
   }
 
   /**
@@ -435,8 +421,8 @@ public class LinkController extends Observable {
     if (!isLinked(linkType, part, Optional.empty())) {
       // if the part itself is not part of a link stored under that type than maybe it is part of a
       // link that itself is linked
-      Optional<Link> optional = this.linkMap.getOrDefault(linkType, new ArrayList<>()).parallelStream()
-          .filter((link) -> {
+      Optional<Link> optional = this.linkMap.getOrDefault(linkType, new ArrayList<>())
+          .parallelStream().filter((link) -> {
             return link.links(part) && isLinked(linkType, link.getId());
           }).findFirst();
       return optional.isPresent();
@@ -497,6 +483,7 @@ public class LinkController extends Observable {
     if (this.linkMap.containsKey(linkType)) {
       Link o = new Link(linkA, linkB, linkType, null);
       if (this.linkMap.get(linkType).remove(o)) {
+        this.deletedIds.add(o.getId());
         setChanged();
         notifyObservers(new UndoRemoveLinkingCallback(this, linkType, o));
         return true;
@@ -510,8 +497,7 @@ public class LinkController extends Observable {
    * @param linkType
    *          the {@link LinkingType} of the link
    * @param part
-   *          the part that should be included in all links that are to to be deleted,<br>
-   *          or
+   *          the part that should be included in all links that are to to be deleted,<br> or
    *          <b><i>null</i></b> if all links for the given <b>type</b> should be deleted
    */
   public void deleteAllFor(LinkingType linkType, UUID part) {
@@ -529,10 +515,13 @@ public class LinkController extends Observable {
   }
 
   void deleteLinks(LinkingType linkType, List<Link> links) {
-    if (this.linkMap.containsKey(linkType) &&
-        this.linkMap.get(linkType).removeAll(links)) {
+
+    if (this.linkMap.containsKey(linkType) && this.linkMap.get(linkType).removeAll(links)) {
       if (this.linkMap.get(linkType).isEmpty()) {
         this.linkMap.remove(linkType);
+      }
+      for (Link link : links) {
+        this.deletedIds.add(link.getId());
       }
       setChanged();
       notifyObservers(ObserverValue.LINKING);
@@ -580,5 +569,14 @@ public class LinkController extends Observable {
 
   public int getLinkMapSize() {
     return this.linkMap.size();
+  }
+
+  private boolean checkLink(Link link) {
+    if((this.deletedIds.contains(link.getLinkA()) || this.deletedIds.contains(link.getLinkB())
+        || this.deletedIds.contains(link.getId()))) {
+      System.out.println("deleted " + link.getLinkType());
+    }
+    return !(this.deletedIds.contains(link.getLinkA()) || this.deletedIds.contains(link.getLinkB())
+        || this.deletedIds.contains(link.getId()));
   }
 }

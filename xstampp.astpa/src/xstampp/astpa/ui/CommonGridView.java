@@ -37,6 +37,7 @@ import xstampp.usermanagement.api.IUserProject;
  * with {@link CommonGridView#getDataModel()}.
  * It also registers the delete Action provided by {@link CommonGridView#getDeleteAction()} if not
  * null.
+ * This class provides the {@link CommonGridView#reloadTable()} method to update the grid whenever needed.
  * 
  * @author Lukas Balzer
  *
@@ -85,6 +86,7 @@ public abstract class CommonGridView<T extends IDataModel> extends AbstractFilte
 
   /**
    * Reload the whole table.
+   * by successively clearing all rows and calling {@link CommonGridView#fillTable()}
    * 
    * @author Patrick Wickenhaeuser
    * 

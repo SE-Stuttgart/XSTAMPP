@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### A-STPA Bugfixes:
 *  Fix bug in causal Factors table that links to safety constraints from step 3 could not be deleted
+*  Fix a bug in CF Table that when creating a safety constraint for every hazard of an uca the hazard title is changed to no hazard
+*  Fix a bug in CF Table if I link a SC to one from previous step and afterwards I want to delete it, the operation is not performed.
+*  Fix a bug in CF Table newly added SC aren't linked with any CF in CausalAnalysis:Safety Constraints Step 4
 
 ### Other Changes
 *  Adding of new Control Actions is now only possible in the Control Structure to prevent inconsistencies between step 2 and 3
