@@ -14,6 +14,7 @@ package xstampp.astpa.model.controlaction.safetyconstraint;
 import javax.xml.bind.annotation.XmlElement;
 
 import xstampp.astpa.model.ATableModel;
+import xstampp.astpa.model.interfaces.ITableModel;
 
 /**
  * A corresponding safety constraint
@@ -39,6 +40,9 @@ public class CorrespondingSafetyConstraint extends ATableModel {
     this.text = text;
   }
 
+  public CorrespondingSafetyConstraint(CorrespondingSafetyConstraint model) {
+    super(model, -1);
+  }
   /**
    * Empty constructor used for JAXB. Do not use it!
    * 

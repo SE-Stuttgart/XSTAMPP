@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
- * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
+ * Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -85,7 +85,12 @@ public class UnsafeControlAction extends ATableModel
   public UnsafeControlAction(IUnsafeControlAction otherUca) {
     super(otherUca, otherUca.getNumber());
     this.type = otherUca.getType();
-    this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint();
+    if (otherUca instanceof UnsafeControlAction) {
+      this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(
+          ((UnsafeControlAction) otherUca).getCorrespondingSafetyConstraint());
+    } else {
+      this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint();
+    }
     setSeverity(Severity.S0);
   }
 
@@ -154,7 +159,8 @@ public class UnsafeControlAction extends ATableModel
     String links = "";
     for (UUID uuid : dataModel.getLinkController().getLinksFor(LinkingType.SC2_SC1_LINK,
         correspondingSafetyConstraint.getId())) {
-      ITableModel constraint = dataModel.getControlActionController().getCorrespondingSafetyConstraint(uuid);
+      ITableModel constraint = dataModel.getControlActionController()
+          .getCorrespondingSafetyConstraint(uuid);
       if (constraint != null) {
         links += links.isEmpty() ? "" : ", ";
         links += constraint.getIdString();

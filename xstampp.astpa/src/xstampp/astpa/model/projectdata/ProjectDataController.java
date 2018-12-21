@@ -16,6 +16,7 @@ package xstampp.astpa.model.projectdata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -208,6 +209,11 @@ public class ProjectDataController extends Observable {
     }
   }
 
+  public void syncProject(ProjectDataController userController, List<UUID> responsibilities ) {
+    this.projectDescription = userController.projectDescription;
+    this.rangeObjects = userController.rangeObjects;
+    this.styleRanges = userController.styleRanges;
+  }
   public void prepareForSave() {
     this.rangeObjects = null;
   }
