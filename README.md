@@ -49,6 +49,11 @@ Setting up the environment
 
     ![gef installation](doc/images/eclipseInstallNewSoftwareNebula.png)
 
+-   On macOS you might need to additionally install Equinox Target Components
+    (*help* —> *install new software* —> The Eclipse Project Updates)
+
+    ![Equinox installation screen](doc/images/eclipseInstallNewSoftwareEquinox.png)
+
 -   Install Maven (should be included in Eclipse)
 
 -   Import/clone the XSTAMPP projects using the built-in git:
