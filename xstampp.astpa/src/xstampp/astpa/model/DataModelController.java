@@ -1943,6 +1943,8 @@ public class DataModelController extends AbstractDataModel
       this.sdsController = new SDSController();
     }
     this.sdsController.setLinkController(getLinkController());
+    this.sdsController.setUserSystem(getUserSystem());
+    this.sdsController.setExclusiveUserFile(this.exclusiveUserId != null);
     this.sdsController.addObserver(this);
     return sdsController;
   }

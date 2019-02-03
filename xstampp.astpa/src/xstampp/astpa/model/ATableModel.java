@@ -39,6 +39,9 @@ public abstract class ATableModel extends EntryWithSeverity
   @XmlAttribute
   private Boolean changed;
 
+  @XmlAttribute
+  private Boolean hasTemporaryId;
+
   @XmlElement
   private UUID id;
 
@@ -56,7 +59,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @XmlElement
   private String links;
-
+  
   /**
    * constructor of a table model
    * 
@@ -77,17 +80,23 @@ public abstract class ATableModel extends EntryWithSeverity
     this.changed = null;
   }
 
-  public ATableModel(ITableModel model, int i) {
-    this.id = model.getId();
-    this.title = model.getTitle();
-    this.description = model.getDescription();
-    this.number = model.getNumber();
-    this.changed = false;
-    if(model instanceof EntryWithSeverity) {
-      this.setSeverity(((EntryWithSeverity) model).getSeverity());
+  public ATableModel(String title, String description, int number, boolean createTempId) {
+    this(title, description, number);
+    if(createTempId ) {
+      this.hasTemporaryId = createTempId;
+    } else {
+      this.hasTemporaryId = null;
     }
- }
-  
+  }
+
+  public ATableModel(String title, String description, boolean createTempId) {
+    this(title, description);
+    if(createTempId ) {
+      this.hasTemporaryId = createTempId;
+    } else {
+      this.hasTemporaryId = null;
+    }
+  }
 
   /**
    * Empty constructor used for JAXB. Do not use it!
@@ -101,6 +110,36 @@ public abstract class ATableModel extends EntryWithSeverity
   public ATableModel(String title, String description) {
     this(title, description, -1);
   }
+
+  public ATableModel(ITableModel model, int i)
+  {
+    this.id = model.getId();
+    this.title = model.getTitle();
+    this.description = model.getDescription();
+    this.number = model.getNumber();
+    this.changed = false;
+    if(model instanceof EntryWithSeverity) {
+      this.setSeverity(((EntryWithSeverity) model).getSeverity());
+    }
+ }
+  
+  /**
+   * creates a table model that has the same title and description as the given model,
+   * the number of the model is either also copied if model.hasTemporaryId is false or reset otherwise
+   * 
+   * @param model
+   * @param i
+   * @param createTempId
+   */
+  public ATableModel(ITableModel model, int i, boolean createTempId) {
+    this(model, i);
+    if(model instanceof ATableModel && ((ATableModel) model).hasTemporaryId!= null && !createTempId) {
+      this.number = -1;
+    }
+    this.hasTemporaryId = createTempId;
+  }
+  
+
 
   public static <T> boolean move(boolean up, UUID id, List<T> list) {
     for (int i = 0; i < list.size(); i++) {
@@ -229,6 +268,9 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @Override
   public String getIdString() {
+    if(hasTemporaryId != null && hasTemporaryId) {
+      return "[" + Integer.toString(this.number) + "]";
+    }
     return Integer.toString(this.number);
   }
 
@@ -278,6 +320,10 @@ public abstract class ATableModel extends EntryWithSeverity
 
   public UUID getCreatedBy() {
     return createdBy;
+  }
+  
+  public Boolean getHasTemporaryId() {
+    return hasTemporaryId;
   }
 
   public void prepareForExport() {

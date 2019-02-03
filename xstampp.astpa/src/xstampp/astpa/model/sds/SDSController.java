@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -29,6 +31,8 @@ import xstampp.astpa.model.linking.LinkController;
 import xstampp.astpa.model.linking.LinkingType;
 import xstampp.model.NumberedArrayList;
 import xstampp.model.ObserverValue;
+import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserSystem;
 
 /**
  * Class for managing safety constraints, system goals and design requirements.
@@ -37,6 +41,7 @@ import xstampp.model.ObserverValue;
  * @since 2.0
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class SDSController extends ATableModelController implements ISDSController {
 
   @XmlElementWrapper(name = "safetyConstraints")
@@ -61,6 +66,8 @@ public class SDSController extends ATableModelController implements ISDSControll
 
   private LinkController linkController;
 
+  private IUserSystem userSystem;
+  private boolean isExclusiveUserFile;
   /**
    * 
    * Constructor of the SDSCotnroller
@@ -293,12 +300,13 @@ public class SDSController extends ATableModelController implements ISDSControll
   }
 
   private UUID addDesignRequirementStep0(String title, String description) {
-    DesignRequirement designRequirement = new DesignRequirement(title, description);
+    DesignRequirement designRequirement = new DesignRequirement(title, description, isExclusiveUserFile);
     return addDesignRequirementStep0(designRequirement);
   }
 
   private UUID addDesignRequirementStep0(ITableModel model) {
-    DesignRequirement designRequirement = new DesignRequirement(model);
+    DesignRequirement designRequirement = new DesignRequirement(model, isExclusiveUserFile);
+    designRequirement.setCreatedBy(userSystem.getCurrentUserId());
     getDesignRequirements().add(designRequirement);
     setChanged();
     notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT));
@@ -306,12 +314,13 @@ public class SDSController extends ATableModelController implements ISDSControll
   }
 
   private UUID addDesignRequirementStep1(String title, String description) {
-    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description);
+    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(title, description, isExclusiveUserFile);
     return addDesignRequirementStep1(designRequirement);
   }
 
   private UUID addDesignRequirementStep1(ITableModel model) {
-    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(model);
+    DesignRequirementStep1 designRequirement = new DesignRequirementStep1(model, isExclusiveUserFile);
+    designRequirement.setCreatedBy(userSystem.getCurrentUserId());
     getDesignRequirementsStep1().add(designRequirement);
     setChanged();
     notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT_STEP1));
@@ -319,12 +328,13 @@ public class SDSController extends ATableModelController implements ISDSControll
   }
 
   private UUID addDesignRequirementStep2(String title, String description) {
-    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description);
+    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(title, description, isExclusiveUserFile);
     return addDesignRequirementStep2(designRequirement);
   }
 
   private UUID addDesignRequirementStep2(ITableModel model) {
-    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(model);
+    DesignRequirementStep2 designRequirement = new DesignRequirementStep2(model, isExclusiveUserFile);
+    designRequirement.setCreatedBy(userSystem.getCurrentUserId());
     getDesignRequirementsStep2().add(designRequirement);
     setChanged();
     notifyObservers(new UndoAddDR(this, designRequirement, linkController, ObserverValue.DESIGN_REQUIREMENT_STEP2));
@@ -607,6 +617,14 @@ public class SDSController extends ATableModelController implements ISDSControll
     return designRequirementsStep2;
   }
 
+  public IUserSystem getUserSystem() {
+    return userSystem;
+  }
+
+  public void setUserSystem(IUserSystem userSystem) {
+    this.userSystem = userSystem;
+  }
+
   public void syncContent(SDSController controller) {
     for (SystemGoal other : controller.getSystemGoals()) {
       ITableModel own = getSystemGoal(other.getId());
@@ -655,5 +673,13 @@ public class SDSController extends ATableModelController implements ISDSControll
             otherReq.getDescription());
       }
     }
+  }
+
+  public boolean isExclusiveUserFile() {
+    return isExclusiveUserFile;
+  }
+
+  public void setExclusiveUserFile(boolean isExclusiveUserFile) {
+    this.isExclusiveUserFile = isExclusiveUserFile;
   }
 }

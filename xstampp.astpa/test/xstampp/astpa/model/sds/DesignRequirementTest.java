@@ -33,7 +33,7 @@ public class DesignRequirementTest {
 	 */
 	@Test
 	public void designRequirementTest() {
-		DesignRequirement designRequirement = new DesignRequirement("Test", "Test description", 1);
+		DesignRequirement designRequirement = new DesignRequirement("Test", "Test description");
 		Assert.assertEquals("Test", designRequirement.getTitle());
 		Assert.assertEquals("Test description", designRequirement.getDescription());
 		Assert.assertEquals(1, designRequirement.getNumber());

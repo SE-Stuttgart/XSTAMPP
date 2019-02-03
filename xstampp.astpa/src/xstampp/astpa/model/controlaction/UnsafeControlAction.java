@@ -133,7 +133,7 @@ public class UnsafeControlAction extends ATableModel
 
   @Override
   public String getTitle() {
-    return "UCA1." + getNumber();
+    return "UCA1." + super.getIdString();
   }
 
   @Override

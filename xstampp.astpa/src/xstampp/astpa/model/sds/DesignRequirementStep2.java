@@ -27,18 +27,26 @@ public class DesignRequirementStep2 extends ATableModel {
   /**
    * {@link ATableModel#ATableModel(String, String, int)}
    */
-  public DesignRequirementStep2(String title, String description, int number) {
-    super(title, description, number);
+  public DesignRequirementStep2(String title, String description, int number, boolean createTempId) {
+    super(title, description, number, createTempId);
   }
 
   /**
    * {@link ATableModel#ATableModel(String, String)}
    */
+  public DesignRequirementStep2(String title, String description, boolean createTempId) {
+    super(title, description,createTempId);
+  }
+
+
   public DesignRequirementStep2(String title, String description) {
     super(title, description);
   }
 
   public DesignRequirementStep2(ITableModel model) {
+    super(model, model.getNumber());
+  }
+  public DesignRequirementStep2(ITableModel model, boolean createTempId) {
     super(model, model.getNumber());
   }
 
@@ -51,6 +59,6 @@ public class DesignRequirementStep2 extends ATableModel {
 
   @Override
   public String getIdString() {
-    return "DR2." + getNumber();
+    return "DR2." + getIdString();
   }
 }

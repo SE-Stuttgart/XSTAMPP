@@ -22,16 +22,14 @@ import xstampp.astpa.model.interfaces.ITableModel;
  */
 public class DesignRequirement extends ATableModel {
 
-  /**
-   * {@link ATableModel#ATableModel(String, String, int)}
-   */
-  public DesignRequirement(String title, String description, int number) {
-    super(title, description, number);
+  public DesignRequirement(String title, String description, boolean createTempId) {
+    super(title, description, createTempId);
   }
 
-  /**
-   * {@link ATableModel#ATableModel(String, String)}
-   */
+  public DesignRequirement(ITableModel model, boolean createTempId) {
+    super(model, model.getNumber(), createTempId);
+  }
+
   public DesignRequirement(String title, String description) {
     super(title, description);
   }
@@ -49,6 +47,6 @@ public class DesignRequirement extends ATableModel {
 
   @Override
   public String getIdString() {
-    return "DR0." + getNumber();
+    return "DR0." + super.getIdString();
   }
 }

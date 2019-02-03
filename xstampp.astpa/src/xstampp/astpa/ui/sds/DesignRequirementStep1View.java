@@ -40,7 +40,7 @@ public class DesignRequirementStep1View extends CommonTableView<IDesignRequireme
    * 
    */
   public DesignRequirementStep1View() {
-    super();
+    super(Messages.DesignRequirements + "Step 3");
     setUpdateValues(EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP1, ObserverValue.LINKING));
   }
 

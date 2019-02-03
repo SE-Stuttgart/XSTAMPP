@@ -283,7 +283,7 @@ public class ExtendedDataController extends Observable implements IExtendedDataC
 
         @Override
         public String getIdString() {
-          return CONSTRAINT_ID + getNumber();
+          return CONSTRAINT_ID + super.getIdString();
         }
       };
       list.add(model);

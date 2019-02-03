@@ -58,6 +58,6 @@ class CausalSafetyConstraint extends ATableModel {
 
   @Override
   public String getIdString() {
-    return ID + getNumber();
+    return ID + super.getIdString();
   }
 }

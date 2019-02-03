@@ -66,7 +66,7 @@ public class Hazard extends ATableModel {
 
   @Override
   public String getIdString() {
-    return "H-" + this.getNumber();
+    return "H-" + super.getIdString();
   }
 
   @Override

@@ -63,6 +63,6 @@ public class Accident extends ATableModel {
 
   @Override
   public String getIdString() {
-    return "A-" + this.getNumber();
+    return "A-" + super.getIdString();
   }
 }

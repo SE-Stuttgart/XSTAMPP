@@ -429,6 +429,11 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
     this.tableHeader = tableHeader;
   }
 
+  public CommonTableView(String tableHeader) {
+    this();
+    this.tableHeader = tableHeader;
+  }
+
   public void setUpdateValues(EnumSet<ObserverValue> updateValues) {
     this.updateValues = updateValues;
   }
@@ -666,6 +671,13 @@ public abstract class CommonTableView<T extends IDataModel> extends StandartEdit
           return ((ATableModel) element).getIdString();
         }
         return null;
+      }
+      @Override
+      public String getToolTipText(Object element) {
+        if(((ATableModel) element).getHasTemporaryId()) {
+          return "The ID of this entry is not a final one and may be changed\n when this user file is merged in the main project";
+        }
+        return super.getToolTipText(element);
       }
     });
     this.titleColumn = new TableViewerColumn(this.getTableViewer(), SWT.None);

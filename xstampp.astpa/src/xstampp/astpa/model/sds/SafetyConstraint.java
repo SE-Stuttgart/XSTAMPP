@@ -65,6 +65,6 @@ public class SafetyConstraint extends ATableModel {
 
   @Override
   public String getIdString() {
-    return "SC0." + getNumber();
+    return "SC0." + super.getIdString();
   }
 }

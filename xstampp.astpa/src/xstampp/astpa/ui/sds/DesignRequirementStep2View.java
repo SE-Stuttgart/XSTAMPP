@@ -41,7 +41,7 @@ public class DesignRequirementStep2View extends CommonTableView<IDesignRequireme
    * 
    */
   public DesignRequirementStep2View() {
-    super(EnumSet.of(TableStyle.RESTRICTED), Messages.DesignRequirements);
+    super(Messages.DesignRequirements + "Step 4");
     setUpdateValues(
         EnumSet.of(ObserverValue.DESIGN_REQUIREMENT_STEP2, ObserverValue.LINKING, ObserverValue.CAUSAL_FACTOR));
   }
