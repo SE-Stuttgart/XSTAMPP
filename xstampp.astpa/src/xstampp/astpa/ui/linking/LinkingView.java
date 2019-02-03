@@ -57,8 +57,6 @@ import xstampp.preferences.IPreferenceConstants;
 import xstampp.ui.common.ProjectManager;
 import xstampp.ui.editors.StandartEditorPart;
 import xstampp.ui.editors.interfaces.IEditorBase;
-import xstampp.usermanagement.api.AccessRights;
-import xstampp.usermanagement.api.IUserProject;
 
 /**
  * Editor to create and delete links between hazards and accidents. There are two table modes:
@@ -421,33 +419,31 @@ public class LinkingView extends StandartEditorPart implements IPropertyChangeLi
    * @author Jarkko Heidenwag
    */
   private void addSelectedLinks() {
-    if (!(dataInterface instanceof IUserProject)
-        || ((IUserProject) dataInterface).getUserSystem().checkAccess(AccessRights.ADMIN)) {
 
-      List<UUID> accidentIDs = new ArrayList<UUID>();
-      List<UUID> hazardIDs = new ArrayList<UUID>();
+    List<UUID> accidentIDs = new ArrayList<UUID>();
+    List<UUID> hazardIDs = new ArrayList<UUID>();
 
-      Object[] selected = LinkingView.this.getSelectedAvailable();
+    Object[] selected = LinkingView.this.getSelectedAvailable();
 
-      if (selected != null) {
-        if (LinkingView.this.aToB_Mode) {
-          accidentIDs.add(this.selectedId);
-          for (Object element : selected) {
-            hazardIDs.add(((ITableModel) element).getId());
-          }
-        } else {
-          for (Object element : selected) {
-            accidentIDs.add(((ITableModel) element).getId());
-          }
-          hazardIDs.add(this.selectedId);
+    if (selected != null) {
+      if (LinkingView.this.aToB_Mode) {
+        accidentIDs.add(this.selectedId);
+        for (Object element : selected) {
+          hazardIDs.add(((ITableModel) element).getId());
         }
-        for (int i = 0; i < accidentIDs.size(); i++) {
-          for (int j = 0; j < hazardIDs.size(); j++) {
-            this.dataInterface.addLink(accidentIDs.get(i), hazardIDs.get(j));
-          }
+      } else {
+        for (Object element : selected) {
+          accidentIDs.add(((ITableModel) element).getId());
+        }
+        hazardIDs.add(this.selectedId);
+      }
+      for (int i = 0; i < accidentIDs.size(); i++) {
+        for (int j = 0; j < hazardIDs.size(); j++) {
+          this.dataInterface.addLink(accidentIDs.get(i), hazardIDs.get(j));
         }
       }
     }
+
   }
 
   @Override
