@@ -118,6 +118,9 @@ public abstract class ATableModel extends EntryWithSeverity
     this.description = model.getDescription();
     this.number = model.getNumber();
     this.changed = false;
+    if ( model instanceof ATableModel) {
+      this.createdBy = ((ATableModel) model).createdBy;
+    }
     if(model instanceof EntryWithSeverity) {
       this.setSeverity(((EntryWithSeverity) model).getSeverity());
     }
@@ -315,7 +318,9 @@ public abstract class ATableModel extends EntryWithSeverity
   }
 
   public void setCreatedBy(UUID createdBy) {
-    this.createdBy = createdBy;
+    if ( this.createdBy == null) {
+      this.createdBy = createdBy;
+    }
   }
 
   public UUID getCreatedBy() {

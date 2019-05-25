@@ -202,15 +202,22 @@
 
     <xs:complexType name="sdsType">
     				<xs:all>
-    								<xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="0" />
-    								<xs:element type="xs:string" name="text" maxOccurs="1" minOccurs="0" />
-    								<xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="0" />
-    								<xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="0" />
-    								<xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="0" />
-    								<xs:element name="idString" type="xs:string" maxOccurs="1" minOccurs="0" />
+    					<xs:element type="xs:int" name="number"
+    						maxOccurs="1" minOccurs="0" />
+    					<xs:element type="xs:string" name="text"
+    						maxOccurs="1" minOccurs="0" />
+    					<xs:element type="xs:string" name="title"
+    						maxOccurs="1" minOccurs="0" />
+    					<xs:element type="xs:string" name="description"
+    						maxOccurs="1" minOccurs="0" />
+    					<xs:element type="xs:string" name="id"
+    						maxOccurs="1" minOccurs="0" />
+    					<xs:element name="idString" type="xs:string"
+    						maxOccurs="1" minOccurs="0" />
     				</xs:all>
     				<xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
     				<xs:attribute name="changed" type="xs:boolean" use="optional"></xs:attribute>
+    				<xs:attribute name="hasTemporaryId" type="xs:boolean" use="optional"></xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="componentType">
@@ -401,99 +408,136 @@
     </xs:complexType>
 
     <xs:complexType name="caType">
-        <xs:all>
-            <xs:element type="xs:int" name="number" maxOccurs="1" minOccurs="1" />
-            <xs:element type="xs:string" name="title" maxOccurs="1" minOccurs="1" />
-            <xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="1" />
-            <xs:element type="xs:string" name="id" maxOccurs="1" minOccurs="1" />
-            <xs:element name="unsafecontrolactions" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="unsafecontrolaction" maxOccurs="unbounded" minOccurs="0">
-                            <xs:complexType>
-                                <xs:all>
-                                    <xs:element name="correspondingSafetyConstraint" maxOccurs="1" minOccurs="0" type="Q1:correspondingSafetyConstraintType"/>
-                                    <xs:element type="xs:string" name="description" />
-                                    <xs:element name="number" type="xs:int" maxOccurs="1" minOccurs="0">
-                                    </xs:element>
-                                    <xs:element type="xs:string" name="id" />
-                                    <xs:element type="xs:string" name="links" maxOccurs="1" minOccurs="0" />
-                                    <xs:element type="xs:string" name="type" />
-                                    <xs:element name="title" type="xs:string" maxOccurs="1" minOccurs="0">
-                                    </xs:element>
-                                </xs:all>
-    							<xs:attribute name="changed" type="xs:boolean" use="optional"></xs:attribute>
-                                <xs:attribute name="severityType" type="xs:string" use="optional">
-                                </xs:attribute>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element type="xs:boolean" name="isSafetyCritical" maxOccurs="1" minOccurs="0" />
-            <xs:element name="notProvidedPMVariables" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element type="xs:string" name="variableID" minOccurs="0" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="providedPMVariables" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element type="xs:string" name="variableID" minOccurs="0" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="PMCombisWhenNotProvided" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element type="Q1:combieType1" name="combinationOfPMValues" maxOccurs="unbounded"
-                            minOccurs="0" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="PMCombisWhenProvided" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element type="Q1:combieType2" name="combinationOfPMValues" maxOccurs="unbounded"
-                            minOccurs="0" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+    	<xs:all>
+    		<xs:element type="xs:int" name="number" maxOccurs="1"
+    			minOccurs="1" />
+    		<xs:element type="xs:string" name="title" maxOccurs="1"
+    			minOccurs="1" />
+    		<xs:element type="xs:string" name="description"
+    			maxOccurs="1" minOccurs="1" />
+    		<xs:element type="xs:string" name="id" maxOccurs="1"
+    			minOccurs="1" />
+    		<xs:element name="unsafecontrolactions" maxOccurs="1"
+    			minOccurs="0">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element name="unsafecontrolaction"
+    						maxOccurs="unbounded" minOccurs="0">
+    						<xs:complexType>
+    							<xs:all>
+    								<xs:element
+    									name="correspondingSafetyConstraint" maxOccurs="1"
+    									minOccurs="0" type="Q1:correspondingSafetyConstraintType" />
+    								<xs:element type="xs:string"
+    									name="description" />
+    								<xs:element name="number"
+    									type="xs:int" maxOccurs="1" minOccurs="0">
+    								</xs:element>
+    								<xs:element type="xs:string"
+    									name="id" />
+    								<xs:element type="xs:string"
+    									name="links" maxOccurs="1" minOccurs="0" />
+    								<xs:element type="xs:string"
+    									name="type" />
+    								<xs:element name="title"
+    									type="xs:string" maxOccurs="1" minOccurs="0">
+    								</xs:element>
+    							</xs:all>
+    							<xs:attribute name="changed"
+    								type="xs:boolean" use="optional">
+    							</xs:attribute>
+    							<xs:attribute name="severityType"
+    								type="xs:string" use="optional">
+    							</xs:attribute>
+    						</xs:complexType>
+    					</xs:element>
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element type="xs:boolean" name="isSafetyCritical"
+    			maxOccurs="1" minOccurs="0" />
+    		<xs:element name="notProvidedPMVariables" minOccurs="0"
+    			maxOccurs="1">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element type="xs:string" name="variableID"
+    						minOccurs="0" maxOccurs="unbounded" />
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element name="providedPMVariables" maxOccurs="1"
+    			minOccurs="0">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element type="xs:string" name="variableID"
+    						minOccurs="0" maxOccurs="unbounded" />
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element name="PMCombisWhenNotProvided" maxOccurs="1"
+    			minOccurs="0">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element type="Q1:combieType1"
+    						name="combinationOfPMValues" maxOccurs="unbounded"
+    						minOccurs="0" />
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element name="PMCombisWhenProvided" maxOccurs="1"
+    			minOccurs="0">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element type="Q1:combieType2"
+    						name="combinationOfPMValues" maxOccurs="unbounded"
+    						minOccurs="0" />
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
 
-            <xs:element name="dependenciesForNotProvided" maxOccurs="1" minOccurs="0">
+    		<xs:element name="dependenciesForNotProvided" maxOccurs="1"
+    			minOccurs="0">
 
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="variableName" type="xs:string" maxOccurs="unbounded" minOccurs="0">
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="dependenciesForProvided" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="variableName" type="xs:string" maxOccurs="unbounded" minOccurs="0">
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="rules" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="rule" type="Q1:rsrType" maxOccurs="unbounded" minOccurs="0">
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="ruleIds" maxOccurs="1" minOccurs="0" type="Q1:idList">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element name="variableName" type="xs:string"
+    						maxOccurs="unbounded" minOccurs="0">
+    					</xs:element>
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element name="dependenciesForProvided" maxOccurs="1"
+    			minOccurs="0">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element name="variableName" type="xs:string"
+    						maxOccurs="unbounded" minOccurs="0">
+    					</xs:element>
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element name="rules" maxOccurs="1" minOccurs="0">
+    			<xs:complexType>
+    				<xs:sequence>
+    					<xs:element name="rule" type="Q1:rsrType"
+    						maxOccurs="unbounded" minOccurs="0">
+    					</xs:element>
+    				</xs:sequence>
+    			</xs:complexType>
+    		</xs:element>
+    		<xs:element name="ruleIds" maxOccurs="1" minOccurs="0"
+    			type="Q1:idList">
 
-            </xs:element>
-            <xs:element type="xs:string" name="componentLink" maxOccurs="1" minOccurs="0" />
-        </xs:all>
+    		</xs:element>
+    		<xs:element type="xs:string" name="componentLink"
+    			maxOccurs="1" minOccurs="0" />
+
+    	</xs:all>
     	<xs:attribute name="changed" type="xs:boolean" use="optional"></xs:attribute>
-        <xs:attribute name="createdBy" type="xs:string" use="optional"></xs:attribute>
+    	<xs:attribute name="createdBy" type="xs:string"
+    		use="optional">
+    	</xs:attribute>
+    	<xs:attribute name="hasTemporaryId" type="xs:boolean" use="optional"></xs:attribute>
     </xs:complexType>
 
 
