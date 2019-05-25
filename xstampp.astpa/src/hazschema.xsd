@@ -143,43 +143,60 @@
 
     <xs:complexType name="linkController">
         <xs:sequence>
-            <xs:element name="linkMap" maxOccurs="1" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="linkList" maxOccurs="unbounded" minOccurs="0">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="links" maxOccurs="1" minOccurs="0">
-                                        <xs:complexType>
-                                            <xs:sequence>
-                                                <xs:element name="link" maxOccurs="unbounded" minOccurs="0">
-                                                    <xs:complexType>
-                                                        <xs:sequence>
-                                                            <xs:element name="linkNote" type="xs:string"
-                                                                maxOccurs="1" minOccurs="0">
-                                                            </xs:element>
-                                                        </xs:sequence>
-                                                        <xs:attribute name="linkA" type="xs:string">
-                                                        </xs:attribute>
-                                                        <xs:attribute name="linkB" type="xs:string" use="optional">
-                                                        </xs:attribute>
-                                                        <xs:attribute name="note" type="xs:string" use="optional">
-                                                        </xs:attribute>
-                                                        <xs:attribute name="id" type="xs:string">
-                                                        </xs:attribute>
-                                                    </xs:complexType>
-                                                </xs:element>
-                                            </xs:sequence>
-                                        </xs:complexType>
-                                    </xs:element>
-                                </xs:sequence>
-                                <xs:attribute name="key" use="required" type="xs:string">
-                                </xs:attribute>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+        	<xs:element name="linkMap" maxOccurs="1" minOccurs="0">
+        		<xs:complexType>
+        			<xs:sequence>
+        				<xs:element name="linkList"
+        					maxOccurs="unbounded" minOccurs="0">
+        					<xs:complexType>
+        						<xs:sequence>
+        							<xs:element name="links"
+        								maxOccurs="1" minOccurs="0">
+        								<xs:complexType>
+        									<xs:sequence>
+        										<xs:element name="link"
+        											maxOccurs="unbounded" minOccurs="0">
+        											<xs:complexType>
+        												<xs:sequence>
+        													<xs:element
+        														name="linkNote" type="xs:string" maxOccurs="1"
+        														minOccurs="0">
+        													</xs:element>
+        												</xs:sequence>
+        												<xs:attribute
+        													name="linkA" type="xs:string">
+        												</xs:attribute>
+        												<xs:attribute
+        													name="linkB" type="xs:string" use="optional">
+        												</xs:attribute>
+        												<xs:attribute
+        													name="note" type="xs:string" use="optional">
+        												</xs:attribute>
+        												<xs:attribute
+        													name="id" type="xs:string">
+        												</xs:attribute>
+        											</xs:complexType>
+        										</xs:element>
+        									</xs:sequence>
+        								</xs:complexType>
+        							</xs:element>
+        						</xs:sequence>
+        						<xs:attribute name="key" use="required"
+        							type="xs:string">
+        						</xs:attribute>
+        					</xs:complexType>
+        				</xs:element>
+        			</xs:sequence>
+        		</xs:complexType>
+        	</xs:element>
+        	<xs:element name="deletedIds" maxOccurs="1" minOccurs="0">
+        		<xs:complexType>
+        			<xs:sequence>
+        				<xs:element name="id"
+        					type="xs:string" maxOccurs="unbounded" minOccurs="0">
+        				</xs:element>
+        			</xs:sequence>
+        		</xs:complexType></xs:element>
         </xs:sequence>
     </xs:complexType>
 

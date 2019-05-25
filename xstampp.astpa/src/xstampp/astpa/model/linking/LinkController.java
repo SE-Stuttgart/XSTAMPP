@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import xstampp.astpa.model.service.UndoTextChange;
@@ -35,13 +36,21 @@ public class LinkController extends Observable {
   @XmlJavaTypeAdapter(Adapter.class)
   private Map<LinkingType, List<Link>> linkMap;
 
+  @XmlElementWrapper
+  @XmlElement(name="id")
   private List<UUID> deletedIds;
 
+  private boolean trackDeletes;
+  
   public LinkController() {
+    this.trackDeletes = false;
     this.linkMap = new TreeMap<>();
     this.deletedIds = new ArrayList<>();
   }
 
+  public void trackDeletes() {
+    this.trackDeletes = true;
+  }
   /**
    * Constructor for testing
    * 
@@ -461,7 +470,23 @@ public class LinkController extends Observable {
    */
   public boolean deleteLink(LinkingType linkType, UUID linkId) {
     if (this.linkMap.containsKey(linkType)) {
-      return this.linkMap.get(linkType).removeIf((t) -> {
+      if (this.linkMap.get(linkType).removeIf((t) -> { return t.getId().equals(linkId);}) &&  trackDeletes) {
+          this.deletedIds.add(linkId);
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Finds and removes the first matching {@link Link} stored under the given linkId
+   * 
+   * @param linkId
+   *          the {@link UUID} of a {@link Link}
+   * @return whether something has been deleted or not
+   */
+  private boolean deleteLink(UUID linkId) {
+    for (LinkingType linkingType : this.linkMap.keySet()) {
+      return this.linkMap.get(linkingType).removeIf((t) -> {
         return t.getId().equals(linkId);
       });
     }
@@ -514,14 +539,24 @@ public class LinkController extends Observable {
     }
   }
 
+  /**
+   * THis function deletes all links in the given list and additionally 
+   * adds them to the list of deleted links that is used if the file is later syncronised in a master file
+   * to delete any existing links in the master file
+   *  
+   * @param linkType
+   * @param links
+   */
   void deleteLinks(LinkingType linkType, List<Link> links) {
 
     if (this.linkMap.containsKey(linkType) && this.linkMap.get(linkType).removeAll(links)) {
       if (this.linkMap.get(linkType).isEmpty()) {
         this.linkMap.remove(linkType);
       }
-      for (Link link : links) {
-        this.deletedIds.add(link.getId());
+      if(trackDeletes) {
+        for (Link link : links) {
+          this.deletedIds.add(link.getId());
+        }
       }
       setChanged();
       notifyObservers(ObserverValue.LINKING);
@@ -553,15 +588,8 @@ public class LinkController extends Observable {
   }
 
   public void syncContent(LinkController controller) {
-    List<Link> removeList = new ArrayList<>();
-    for (Entry<LinkingType, List<Link>> ownEntry : linkMap.entrySet()) {
-      for (Link ownLink : ownEntry.getValue()) {
-        if (!controller.isLinked(ownLink)) {
-          removeList.add(ownLink);
-        }
-      }
-    }
-    removeList.forEach((link) -> deleteLink(link.getLinkType(), link.getLinkA(), link.getLinkB()));
+    controller.deletedIds.forEach((link) -> deleteLink(link));
+    controller.deletedIds.clear();
     for (Entry<LinkingType, List<Link>> foraignEntry : controller.linkMap.entrySet()) {
       addLinks(foraignEntry.getValue());
     }

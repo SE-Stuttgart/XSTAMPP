@@ -240,6 +240,7 @@ public class DataModelController extends AbstractDataModel
   @Override
   public void initializeProject(IDataModel original) {
     initializeProject();
+    getLinkController().trackDeletes();
     if (original instanceof DataModelController) {
       AstpaCollaborationSystem system = new AstpaCollaborationSystem(this);
       system.syncData(((DataModelController) original));
