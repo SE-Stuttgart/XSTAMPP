@@ -47,7 +47,7 @@ public class DesignRequirementStep2 extends ATableModel {
     super(model, model.getNumber());
   }
   public DesignRequirementStep2(ITableModel model, boolean createTempId) {
-    super(model, model.getNumber());
+    super(model, model.getNumber(), createTempId);
   }
 
   /**
@@ -59,6 +59,6 @@ public class DesignRequirementStep2 extends ATableModel {
 
   @Override
   public String getIdString() {
-    return "DR2." + getIdString();
+    return "DR2." + super.getIdString();
   }
 }
