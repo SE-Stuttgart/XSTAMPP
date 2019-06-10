@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserSystem;
 
 /**
  * A normal user which can be given certain responsibilities to access files.
@@ -67,5 +68,10 @@ public class User extends AbstractUser {
 
   public void giveAccessLevel(AccessRights accessLevel) {
     this.accessLevel.add(accessLevel);
+  }
+
+  @Override
+  public boolean deleteUser(IUserSystem system) {
+    return system.deleteUser(getUserId());
   }
 }

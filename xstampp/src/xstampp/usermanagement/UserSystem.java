@@ -291,6 +291,22 @@ public class UserSystem extends Observable implements IUserSystem {
     return false;
   }
 
+  @Override
+  public boolean deleteAdmin(UUID userId) {
+    if (canDeleteUser(userId)) {
+      for (int i = 0; i < adminRegistry.size(); i++) {
+        Admin user = this.adminRegistry.get(i);
+        if (user.getUserId().equals(userId) && this.adminRegistry.remove(user)) {
+          save();
+          setChanged();
+          notifyObservers(NOTIFY_USER);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public void logout() {
     this.currentUser = null;
     setChanged();

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Fix a bug in User file that in Accidents-Hazard Linking View the Add Button doesn`t work
 *  Fix a bug when a link is deleted in a User file it is not deleted in the master file after import
 *  Fix a bug that the password of an admin can't be reseted by either the admin or an other admin(THERE MUST ALWAYS BE ONE ADMIN WHO CAN STILL LOCK IN!)
+*  Fix a bug that that an admin can not be deleted by an other admin
+
 ### Other Changes
 *  Adding of new Control Actions is now only possible in the Control Structure to prevent inconsistencies between step 2 and 3
 

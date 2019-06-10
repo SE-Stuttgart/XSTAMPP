@@ -155,4 +155,9 @@ public class EmptyUserSystem implements IUserSystem {
     return false;
   }
 
+  @Override
+  public boolean deleteAdmin(UUID userId) {
+    return false;
+  }
+
 }

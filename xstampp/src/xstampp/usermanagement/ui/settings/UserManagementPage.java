@@ -137,11 +137,12 @@ public class UserManagementPage implements ISettingsPage {
       deleteButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent ev) {
+          
           if (currentSelection != null
               && MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
                   Messages.UserManagementPage_5 + currentSelection.getUsername(),
                   String.format(Messages.UserManagementPage_6, currentSelection.getUsername()))
-              && userSystem.deleteUser(currentSelection.getUserId())) {
+              && currentSelection.deleteUser(userSystem)) {
             deleteButton.setEnabled(false);
             currentSelection = null;
             userList.notifyListeners(REFRESH_USERS, null);

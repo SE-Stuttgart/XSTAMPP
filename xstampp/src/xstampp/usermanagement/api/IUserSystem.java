@@ -35,6 +35,8 @@ public interface IUserSystem {
   boolean canCreateUser();
 
   boolean deleteUser(UUID userId);
+  
+  boolean deleteAdmin(UUID userId);
 
   boolean canDeleteUser(UUID userId);
 

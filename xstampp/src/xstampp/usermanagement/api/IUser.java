@@ -53,6 +53,8 @@ public interface IUser {
   
   boolean isResponsible(UUID componentId);
 
+  boolean deleteUser(IUserSystem system);
+
   /**
    * 
    * @return an id for a project stored in the current workspace.

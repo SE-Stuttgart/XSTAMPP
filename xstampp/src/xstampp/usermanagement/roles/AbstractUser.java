@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.commons.lang3.SerializationUtils;
 
 import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
 
 /**
  * An abstract class which defines the basis af all users in thre system.
@@ -141,4 +142,6 @@ public abstract class AbstractUser implements IUser {
     }
     return false;
   }
+  
+  abstract public boolean deleteUser(IUserSystem system);
 }

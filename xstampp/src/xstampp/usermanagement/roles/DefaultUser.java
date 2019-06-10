@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import xstampp.usermanagement.api.AccessRights;
 import xstampp.usermanagement.api.IUser;
+import xstampp.usermanagement.api.IUserSystem;
 
 public class DefaultUser implements IUser {
 
@@ -57,6 +58,11 @@ public class DefaultUser implements IUser {
 
   @Override
   public boolean isResponsible(UUID componentId) {
+    return false;
+  }
+
+  @Override
+  public boolean deleteUser(IUserSystem system) {
     return false;
   }
 }

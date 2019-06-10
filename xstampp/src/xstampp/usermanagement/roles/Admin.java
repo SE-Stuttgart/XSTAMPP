@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xstampp.usermanagement.api.AccessRights;
+import xstampp.usermanagement.api.IUserSystem;
 
 /**
  * An admin which can access and manipulate all files.
@@ -44,6 +45,11 @@ public class Admin extends AbstractUser {
   public void addResponsibility(UUID responsibility) {
     // TODO Auto-generated method stub
 
+  }
+
+  @Override
+  public boolean deleteUser(IUserSystem system) {
+    return system.deleteAdmin(getUserId());
   }
 
 }
