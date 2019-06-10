@@ -55,7 +55,7 @@ public class ChangeUserShell extends AbstractUserShell {
   protected boolean doAccept() {
     if (getUserSystem().getCurrentUserId().equals(user.getUserId())
         || getUserSystem().checkAccess(AccessRights.ADMIN) && user instanceof AbstractUser) {
-      getUserSystem().setPassword(user.getUserId(), getPassword());
+      ((AbstractUser) user).setPassword(getPassword());
     }
     return true;
   }

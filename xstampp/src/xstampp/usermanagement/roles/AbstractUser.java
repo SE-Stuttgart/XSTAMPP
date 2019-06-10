@@ -80,7 +80,7 @@ public abstract class AbstractUser implements IUser {
 
   @Override
   public boolean setUsername(String password, String username) {
-    if (password.equals(this.password)) {
+    if (password.equals(getPassword())) {
       this.username = SerializationUtils.serialize(username);
       return true;
     }
