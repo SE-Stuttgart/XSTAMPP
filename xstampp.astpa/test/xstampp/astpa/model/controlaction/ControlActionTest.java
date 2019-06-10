@@ -40,12 +40,12 @@ public class ControlActionTest {
 		Assert.assertEquals(1, controlAction.getNumber());
 		
 		// add a unsafe control action
-		UUID uca1 = controlAction.addUnsafeControlAction(0,"Test NotGiven", UnsafeControlActionType.NOT_GIVEN);
+		UUID uca1 = controlAction.addUnsafeControlAction(0,"Test NotGiven", UnsafeControlActionType.NOT_GIVEN, false);
 		UUID uca2 =
-			controlAction.addUnsafeControlAction(1,"Test GivenIncorrectly", UnsafeControlActionType.GIVEN_INCORRECTLY);
+			controlAction.addUnsafeControlAction(1,"Test GivenIncorrectly", UnsafeControlActionType.GIVEN_INCORRECTLY, false);
 		UUID uca3 =
-			controlAction.addUnsafeControlAction(2,"Test StoppedTooSoon", UnsafeControlActionType.STOPPED_TOO_SOON);
-		UUID uca4 = controlAction.addUnsafeControlAction(3,"Test WrongTiming", UnsafeControlActionType.WRONG_TIMING);
+			controlAction.addUnsafeControlAction(2,"Test StoppedTooSoon", UnsafeControlActionType.STOPPED_TOO_SOON, false);
+		UUID uca4 = controlAction.addUnsafeControlAction(3,"Test WrongTiming", UnsafeControlActionType.WRONG_TIMING, false);
 		Assert.assertEquals(4, controlAction.getUnsafeControlActions().size());
 		Assert.assertEquals(1, controlAction.getUnsafeControlActions(UnsafeControlActionType.GIVEN_INCORRECTLY).size());
 		Assert.assertEquals(1, controlAction.getUnsafeControlActions(UnsafeControlActionType.NOT_GIVEN).size());

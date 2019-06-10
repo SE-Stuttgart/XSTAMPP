@@ -146,7 +146,7 @@ public class ControlAction extends ATableModel implements IControlAction {
   public ControlAction(ITableModel model) {
     super(model, -1);
     this.unsafeControlActions = new ArrayList<>();
-    if(model instanceof ControlAction) {
+    if (model instanceof ControlAction) {
       this.componentLink = ((ControlAction) model).componentLink;
       this.isSafetyCritical = ((ControlAction) model).isSafetyCritical;
     }
@@ -195,15 +195,20 @@ public class ControlAction extends ATableModel implements IControlAction {
    * @author Fabian Toth
    */
   public UUID addUnsafeControlAction(int number, String description,
-      UnsafeControlActionType unsafeControlActionType) {
+      UnsafeControlActionType unsafeControlActionType, boolean hasTemporaryId) {
     UnsafeControlAction unsafeControlAction = new UnsafeControlAction(description,
         unsafeControlActionType);
+    unsafeControlAction.setHasTempId(hasTemporaryId);
     setChanged(this.unsafeControlActions.add(unsafeControlAction));
     unsafeControlAction.setNumber(number);
     return unsafeControlAction.getId();
   }
-  public UUID addUnsafeControlAction(IUnsafeControlAction otherUca) {
-    UnsafeControlAction unsafeControlAction = new UnsafeControlAction(otherUca);
+
+  public UUID addUnsafeControlAction(IUnsafeControlAction otherUca, int number, boolean createTempId) {
+    UnsafeControlAction unsafeControlAction = new UnsafeControlAction(otherUca, createTempId);
+    if(unsafeControlAction.getNumber() < 0) {
+      unsafeControlAction.setNumber(number);
+    }
     setChanged(this.unsafeControlActions.add(unsafeControlAction));
     return unsafeControlAction.getId();
   }
@@ -479,8 +484,8 @@ public class ControlAction extends ATableModel implements IControlAction {
   /**
    * 
    * @param removeAll
-   *          whether all currently stored RefinedSafetyRule objects should be deleted<br>
-   *          when this is true than the ruleId will be ignored
+   *          whether all currently stored RefinedSafetyRule objects should be deleted<br> when this
+   *          is true than the ruleId will be ignored
    * @param ruleId
    *          an id of a RefinedSafetyRule object stored in a controlAction
    * 
@@ -515,7 +520,8 @@ public class ControlAction extends ATableModel implements IControlAction {
       unsafeControlAction.prepareForExport(dataModel);
     }
     rules = new ArrayList<>();
-    for (AbstractLTLProvider refinedRule : dataModel.getExtendedDataController().getAllScenarios(true, false, false)) {
+    for (AbstractLTLProvider refinedRule : dataModel.getExtendedDataController()
+        .getAllScenarios(true, false, false)) {
       if (refinedRule.getRelatedControlActionID().equals(getId())) {
         rules.add((RefinedSafetyRule) refinedRule);
       }
@@ -525,7 +531,8 @@ public class ControlAction extends ATableModel implements IControlAction {
       notProvidedVariableNames = new ArrayList<>();
       for (UUID id : notProvidedVariables) {
         if (dataModel.getControlStructureController().getComponent(id) != null) {
-          notProvidedVariableNames.add(dataModel.getControlStructureController().getComponent(id).getText());
+          notProvidedVariableNames
+              .add(dataModel.getControlStructureController().getComponent(id).getText());
         } else {
           trash.add(id);
         }
@@ -537,7 +544,8 @@ public class ControlAction extends ATableModel implements IControlAction {
       providedVariableNames = new ArrayList<>();
       for (UUID id : providedVariables) {
         if (dataModel.getControlStructureController().getComponent(id) != null) {
-          providedVariableNames.add(dataModel.getControlStructureController().getComponent(id).getText());
+          providedVariableNames
+              .add(dataModel.getControlStructureController().getComponent(id).getText());
         } else {
           trash.add(id);
         }

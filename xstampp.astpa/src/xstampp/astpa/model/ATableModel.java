@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2017 A-STPA Stupro Team Uni Stuttgart (Lukas Balzer, Adam Grahovac, Jarkko
- * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick Wickenhäuser,
- * Aliaksei Babkovich, Aleksander Zotov).
+ * Heidenwag, Benedikt Markt, Jaqueline Patzek, Sebastian Sieber, Fabian Toth, Patrick
+ * Wickenhäuser, Aliaksei Babkovich, Aleksander Zotov).
  * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @XmlElement
   private String links;
-  
+
   /**
    * constructor of a table model
    * 
@@ -82,7 +82,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   public ATableModel(String title, String description, int number, boolean createTempId) {
     this(title, description, number);
-    if(createTempId ) {
+    if (createTempId) {
       this.hasTemporaryId = createTempId;
     } else {
       this.hasTemporaryId = null;
@@ -91,7 +91,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   public ATableModel(String title, String description, boolean createTempId) {
     this(title, description);
-    if(createTempId ) {
+    if (createTempId) {
       this.hasTemporaryId = createTempId;
     } else {
       this.hasTemporaryId = null;
@@ -111,24 +111,23 @@ public abstract class ATableModel extends EntryWithSeverity
     this(title, description, -1);
   }
 
-  public ATableModel(ITableModel model, int i)
-  {
+  public ATableModel(ITableModel model, int i) {
     this.id = model.getId();
     this.title = model.getTitle();
     this.description = model.getDescription();
     this.number = model.getNumber();
     this.changed = false;
-    if ( model instanceof ATableModel) {
+    if (model instanceof ATableModel) {
       this.createdBy = ((ATableModel) model).createdBy;
     }
-    if(model instanceof EntryWithSeverity) {
+    if (model instanceof EntryWithSeverity) {
       this.setSeverity(((EntryWithSeverity) model).getSeverity());
     }
- }
-  
+  }
+
   /**
-   * creates a table model that has the same title and description as the given model,
-   * the number of the model is either also copied if model.hasTemporaryId is false or reset otherwise
+   * creates a table model that has the same title and description as the given model, the number of
+   * the model is either also copied if model.hasTemporaryId is false or reset otherwise
    * 
    * @param model
    * @param i
@@ -136,13 +135,12 @@ public abstract class ATableModel extends EntryWithSeverity
    */
   public ATableModel(ITableModel model, int i, boolean createTempId) {
     this(model, i);
-    if(model instanceof ATableModel && ((ATableModel) model).hasTemporaryId!= null && !createTempId) {
+    if (model instanceof ATableModel && ((ATableModel) model).hasTemporaryId != null
+        && !createTempId) {
       this.number = -1;
     }
     this.hasTemporaryId = createTempId;
   }
-  
-
 
   public static <T> boolean move(boolean up, UUID id, List<T> list) {
     for (int i = 0; i < list.size(); i++) {
@@ -182,6 +180,10 @@ public abstract class ATableModel extends EntryWithSeverity
     changed = changed == null ? null : true;
   }
 
+  public void setHasTempId(boolean hasTemporaryId) {
+    this.hasTemporaryId = hasTemporaryId;
+  }
+
   public boolean setChanged(boolean changed) {
     this.changed = this.changed == null ? null : changed;
     return changed;
@@ -191,11 +193,12 @@ public abstract class ATableModel extends EntryWithSeverity
    * Setter for the description
    * 
    * @param description
-   *          the new description, if <b>null</b> or the current text is given the method returns with <b>null</b>
+   *          the new description, if <b>null</b> or the current text is given the method returns
+   *          with <b>null</b>
    * 
    * @author Fabian Toth
    * @author Lukas Balzer
-   * @return  The old description if the description has been changed null otherwise
+   * @return The old description if the description has been changed null otherwise
    */
   public String setDescription(String description) {
     if (this.description == null || !this.description.equals(description)) {
@@ -216,7 +219,8 @@ public abstract class ATableModel extends EntryWithSeverity
    * Setter for the title
    * 
    * @param title
-   *          the new title, if <b>null</b> or the current text is given the method returns with <b>null</b> 
+   *          the new title, if <b>null</b> or the current text is given the method returns with
+   *          <b>null</b>
    * 
    * @author Fabian Toth
    * @author Lukas Balzer
@@ -271,7 +275,7 @@ public abstract class ATableModel extends EntryWithSeverity
 
   @Override
   public String getIdString() {
-    if(hasTemporaryId != null && hasTemporaryId) {
+    if (hasTemporaryId != null && hasTemporaryId) {
       return "[" + Integer.toString(this.number) + "]";
     }
     return Integer.toString(this.number);
@@ -318,7 +322,7 @@ public abstract class ATableModel extends EntryWithSeverity
   }
 
   public void setCreatedBy(UUID createdBy) {
-    if ( this.createdBy == null) {
+    if (this.createdBy == null) {
       this.createdBy = createdBy;
     }
   }
@@ -326,7 +330,7 @@ public abstract class ATableModel extends EntryWithSeverity
   public UUID getCreatedBy() {
     return createdBy;
   }
-  
+
   public Boolean getHasTemporaryId() {
     return hasTemporaryId;
   }

@@ -67,7 +67,6 @@ public class SDSController extends ATableModelController implements ISDSControll
   private LinkController linkController;
 
   private IUserSystem userSystem;
-  private boolean isExclusiveUserFile;
   /**
    * 
    * Constructor of the SDSCotnroller
@@ -94,7 +93,7 @@ public class SDSController extends ATableModelController implements ISDSControll
    */
   @Override
   public UUID addSafetyConstraint(String title, String description, UUID createdBy) {
-    SafetyConstraint safetyConstraint = new SafetyConstraint(title, description);
+    SafetyConstraint safetyConstraint = new SafetyConstraint(title, description, isExclusiveUserFile);
     safetyConstraint.setCreatedBy(createdBy);
     if (this.getSafetyConstraints().add(safetyConstraint)) {
       setChanged();
@@ -673,13 +672,5 @@ public class SDSController extends ATableModelController implements ISDSControll
             otherReq.getDescription());
       }
     }
-  }
-
-  public boolean isExclusiveUserFile() {
-    return isExclusiveUserFile;
-  }
-
-  public void setExclusiveUserFile(boolean isExclusiveUserFile) {
-    this.isExclusiveUserFile = isExclusiveUserFile;
   }
 }

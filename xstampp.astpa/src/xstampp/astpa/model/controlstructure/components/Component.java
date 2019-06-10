@@ -366,21 +366,6 @@ public class Component
   }
 
   /**
-   * Adds a causal factor to this component
-   * 
-   * @author Fabian Toth
-   * 
-   * @param causalFactorText
-   *          the text of the new causal factor
-   * @return the id of the new causal factor. null if the causal could not be added
-   */
-  public UUID addCausalFactor(String causalFactorText) {
-    CausalFactor causalFactor = new CausalFactor(causalFactorText);
-    this.causalFactors.add(causalFactor);
-    return causalFactor.getId();
-  }
-
-  /**
    * Sets the layout data of both Steps to the value of step 1.8
    * 
    * @author Lukas Balzer

@@ -149,8 +149,7 @@ public class CSCView extends AbstractFilteredTableView {
       return new CSCLabelProvider() {
         @Override
         public String getText(Object element) {
-          return "UCA1." + CSCView.this.getDataInterface()
-              .getUCANumber(((ICorrespondingUnsafeControlAction) element).getId());
+          return ((ICorrespondingUnsafeControlAction) element).getIdString();
         }
       };
     case 1:
@@ -175,8 +174,7 @@ public class CSCView extends AbstractFilteredTableView {
             }
             links += "H-" + haz.getNumber();
           }
-          return "UCA1." + CSCView.this.getDataInterface()
-              .getUCANumber(entry.getId()) + " - " + entry.getSeverity().toString() + "\n" + links;
+          return ((ICorrespondingUnsafeControlAction) element).getIdString() + " - " + entry.getSeverity().toString() + "\n" + links;
         }
       };
     case 2:

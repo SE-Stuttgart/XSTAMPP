@@ -187,7 +187,7 @@ public class ControlActionController extends ATableModelController
       return null;
     }
     UUID ucaId = controlAction.addUnsafeControlAction(getNextUCACount(), description,
-        unsafeControlActionType);
+        unsafeControlActionType, isExclusiveUserFile());
     if (ucaId != null) {
       getControlActionMap().put(ucaId, controlAction);
     }
@@ -199,7 +199,7 @@ public class ControlActionController extends ATableModelController
     if (controlAction == null) {
       return null;
     }
-    UUID ucaId = controlAction.addUnsafeControlAction(otherUca);
+    UUID ucaId = controlAction.addUnsafeControlAction(otherUca, getNextUCACount(), isExclusiveUserFile());
     if (ucaId != null) {
       getControlActionMap().put(ucaId, controlAction);
     }

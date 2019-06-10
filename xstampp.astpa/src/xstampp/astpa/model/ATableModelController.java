@@ -14,12 +14,18 @@ package xstampp.astpa.model;
 
 import java.util.Observable;
 
-import xstampp.astpa.model.interfaces.ITableModel;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import xstampp.astpa.model.interfaces.ITableModel;  
 import xstampp.astpa.model.service.UndoTextChange;
 import xstampp.model.ObserverValue;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class ATableModelController extends Observable {
 
+  protected boolean isExclusiveUserFile;
+  
   public ATableModelController() {
   }
 
@@ -52,5 +58,13 @@ public abstract class ATableModelController extends Observable {
 
   public boolean setModelDescription(ITableModel model, String newText, ObserverValue value) {
     return setModelText(model, newText, value, false);
+  }
+
+  public boolean isExclusiveUserFile() {
+    return isExclusiveUserFile;
+  }
+
+  public void setExclusiveUserFile(boolean isExclusiveUserFile) {
+    this.isExclusiveUserFile = isExclusiveUserFile;
   }
 }

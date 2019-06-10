@@ -74,6 +74,11 @@ public class UnsafeControlAction extends ATableModel
     setSeverity(Severity.S0);
   }
 
+  @Override
+  public void setHasTempId(boolean hasTemporaryId) {
+    super.setHasTempId(hasTemporaryId);
+    this.correspondingSafetyConstraint.setHasTempId(hasTemporaryId);
+  }
   /**
    * Constructs a new unsafe control action with the same values as the given one
    * 
@@ -84,6 +89,25 @@ public class UnsafeControlAction extends ATableModel
    */
   public UnsafeControlAction(IUnsafeControlAction otherUca) {
     super(otherUca, otherUca.getNumber());
+    this.type = otherUca.getType();
+    if (otherUca instanceof UnsafeControlAction) {
+      this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(
+          ((UnsafeControlAction) otherUca).getCorrespondingSafetyConstraint());
+    } else {
+      this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint();
+    }
+    setSeverity(Severity.S0);
+  }
+  /**
+   * Constructs a new unsafe control action with the same values as the given one
+   * 
+   * @param description
+   *          the description of the new unsafe control action
+   * @param type
+   *          the type of the new unsafe control action
+   */
+  public UnsafeControlAction(IUnsafeControlAction otherUca, boolean hasTemporaryId) {
+    super(otherUca, otherUca.getNumber(), hasTemporaryId);
     this.type = otherUca.getType();
     if (otherUca instanceof UnsafeControlAction) {
       this.correspondingSafetyConstraint = new CorrespondingSafetyConstraint(

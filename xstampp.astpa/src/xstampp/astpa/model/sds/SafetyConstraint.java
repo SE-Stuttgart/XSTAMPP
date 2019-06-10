@@ -39,6 +39,10 @@ public class SafetyConstraint extends ATableModel {
     super(title, description, number);
   }
 
+  public SafetyConstraint(String title, String description, boolean createTempId) {
+    super(title, description, createTempId);
+  }
+  
   /**
    * {@link ATableModel#ATableModel(String, String)}
    */

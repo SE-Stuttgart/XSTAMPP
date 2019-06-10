@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -48,10 +49,12 @@ public class CausalFactor extends AbstractNumberedEntry implements ITableModel, 
   @XmlElement(name = "text")
   private String text;
 
+  @XmlAttribute
+  private Boolean hasTemporaryId;
+
   /**
-   * This is only for representing the data in the export,
-   * for reference of the causal factor model during runtime refere to
-   * xstampp.astpa/docs/architecture
+   * This is only for representing the data in the export, for reference of the causal factor model
+   * during runtime refere to xstampp.astpa/docs/architecture
    */
   @XmlElementWrapper(name = "causalEntries")
   @XmlElement(name = "causalEntry")
@@ -68,9 +71,27 @@ public class CausalFactor extends AbstractNumberedEntry implements ITableModel, 
    * @param text
    *          the text of the new causal factor
    */
-  public CausalFactor(String text) {
+  public CausalFactor(String text, boolean hasTemporaryId) {
+    this.hasTemporaryId = hasTemporaryId;
     this.id = UUID.randomUUID();
     this.text = text;
+  }
+
+  /**
+   * Constructor of a causal factor
+   * 
+   * @author Fabian Toth
+   * 
+   * @param text
+   *          the text of the new causal factor
+   */
+  public CausalFactor(CausalFactor factor, boolean hasTemporaryId) {
+    if(!hasTemporaryId && !factor.hasTemporaryId) {
+      setNumber(factor.getNumber());
+    }
+    this.hasTemporaryId = hasTemporaryId;
+    this.id = factor.id;
+    this.text = factor.text;
   }
 
   /**
@@ -105,15 +126,14 @@ public class CausalFactor extends AbstractNumberedEntry implements ITableModel, 
   }
 
   public void prepareForExport(IHazAccController hazAccController,
-      IExtendedDataController extendedDataController,
-      IControlActionController caController,
-      CausalFactorController controller, List<Link> causalEntryList,
-      LinkController linkController, ISDSController sdsController) {
+      IExtendedDataController extendedDataController, IControlActionController caController,
+      CausalFactorController controller, List<Link> causalEntryList, LinkController linkController,
+      ISDSController sdsController) {
     this.entries = new ArrayList<>();
     for (Link link : causalEntryList) {
       CausalFactorEntry entry = new CausalFactorEntry();
-      entry.prepareForExport(hazAccController, extendedDataController, caController,
-          controller, link, linkController, sdsController);
+      entry.prepareForExport(hazAccController, extendedDataController, caController, controller,
+          link, linkController, sdsController);
       this.entries.add(entry);
     }
   }
@@ -155,7 +175,10 @@ public class CausalFactor extends AbstractNumberedEntry implements ITableModel, 
 
   @Override
   public String getIdString() {
-    return "CF-" + getNumber();
+    if (hasTemporaryId != null && hasTemporaryId) {
+      return "CF-" + "[" + Integer.toString(this.getNumber()) + "]";
+    }
+    return "CF-" + this.getNumber();
   }
 
 }

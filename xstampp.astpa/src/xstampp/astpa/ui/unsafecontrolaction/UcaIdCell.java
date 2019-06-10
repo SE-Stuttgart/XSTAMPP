@@ -40,7 +40,7 @@ public class UcaIdCell extends GridCellText {
 
   public UcaIdCell(UcaContentProvider provider, IUnsafeControlAction entry,
       IUnsafeControlActionDataModel dataModel) {
-    super("UCA1." + dataModel.getUCANumber(entry.getId()));
+    super(entry.getIdString());
     this.provider = provider;
     this.unsafeControlAction = entry;
     this.ucaId = entry.getId();

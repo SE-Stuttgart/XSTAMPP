@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 *  Fix a bug that the password of an admin can't be reseted by either the admin or an other admin(THERE MUST ALWAYS BE ONE ADMIN WHO CAN STILL LOCK IN!)
 *  Fix a bug that that an admin can not be deleted by an other admin
 
+###A-STPA Features
+*  When a User (not an admin) adds a new element (Safety Constraint, Design Requirement, UCA, CF, etc.)  in a user file the element receives
+   a temporary ID marked with '[ID]' which maybe changed when the changes are imported into the main file
+
 ### Other Changes
 *  Adding of new Control Actions is now only possible in the Control Structure to prevent inconsistencies between step 2 and 3
 

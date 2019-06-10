@@ -1923,6 +1923,8 @@ public class DataModelController extends AbstractDataModel
     if (this.controlActionController == null) {
       this.controlActionController = new ControlActionController();
     }
+
+    this.controlActionController.setExclusiveUserFile(this.exclusiveUserId != null);
     this.controlActionController.addObserver(this);
     return controlActionController;
 
@@ -1957,6 +1959,7 @@ public class DataModelController extends AbstractDataModel
     }
     this.causalFactorController.addObserver(this);
     this.causalFactorController.setLinkController(getLinkController());
+    this.causalFactorController.setExclusiveUserFile(this.exclusiveUserId != null);
     return this.causalFactorController;
   }
 

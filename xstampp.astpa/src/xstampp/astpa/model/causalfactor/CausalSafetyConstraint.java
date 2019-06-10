@@ -37,6 +37,10 @@ class CausalSafetyConstraint extends ATableModel {
   public CausalSafetyConstraint(String title) {
     super(title, "", -1);
   }
+  
+  public CausalSafetyConstraint(String title, boolean createTempId) {
+    super(title, "", createTempId);
+  }
 
   public CausalSafetyConstraint(ITableModel model) {
     super(model, -1);

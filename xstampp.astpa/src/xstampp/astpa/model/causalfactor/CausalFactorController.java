@@ -104,11 +104,11 @@ public class CausalFactorController extends ATableModelController implements ICa
 
   @Override
   public UUID addCausalFactor() {
-    return this.addCausalFactor(new CausalFactor(""));
+    return this.addCausalFactor(new CausalFactor("", isExclusiveUserFile()));
   }
 
   UUID addCausalFactor(CausalFactor factor) {
-    if (this.causalFactors.add(factor)) {
+    if (this.causalFactors.add(new CausalFactor(factor, isExclusiveUserFile()))) {
       setChanged();
       notifyObservers(new UndoAddCausalFactor(this, factor, linkController));
       return factor.getId();
@@ -299,7 +299,7 @@ public class CausalFactorController extends ATableModelController implements ICa
 
   @Override
   public UUID addSafetyConstraint(String text) {
-    CausalSafetyConstraint constraint = new CausalSafetyConstraint(text);
+    CausalSafetyConstraint constraint = new CausalSafetyConstraint(text, isExclusiveUserFile());
     if (this.causalSafetyConstraints.add(constraint)) {
       return constraint.getId();
     }
