@@ -11,6 +11,33 @@
 <h1 id="changelog">Changelog</h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="http://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> and this project adheres to <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+
+<h2><a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.1.2...Head">3.1.2</a> - 2019-06-28</h2>
+<h3>A-STPA Bugfixes:</h3>
+<ul>
+<li>Fix bug in causal Factors table that links to safety constraints from step 3 could not be deleted</li>
+<li>Fix a bug in CF Table that when creating a safety constraint for every hazard of an uca the hazard title is changed to no hazard</li>
+<li>Fix a bug in CF Table if I link a SC to one from previous step and afterwards I want to delete it, the operation is not performed.</li>
+<li>Fix a bug in CF Table newly added SC aren't linked with any CF in CausalAnalysis:Safety Constraints Step 4</li>
+<li>Fix a bug in the collaboration system that the system description is not synchronized</li>
+<li>Fix a bug in the collaboration system that no links for the corresponding safety constraints/ design requirements are imported</li>
+<li>Fix a bug in the collaboration system that design hints and notes of Causal Factors are not imported into a new user file</li>
+<li>Fix a bug in User file that in Accidents-Hazard Linking View the Add Button doesn`t work</li>
+<li>Fix a bug when a link is deleted in a User file it is not deleted in the master file after import</li>
+<li>Fix a bug that the password of an admin can't be reseted by either the admin or an other admin(THERE MUST ALWAYS BE ONE ADMIN WHO CAN STILL LOCK IN!)</li>
+<li>Fix a bug that that an admin can not be deleted by an other admin</li>
+</ul>
+
+<h3>A-STPA Features:</h3>
+<ul>
+<li>When a User (not an admin) adds a new element (Safety Constraint, Design Requirement, UCA, CF, etc.)  in a user file the element receives a temporary ID marked with '[ID]' which maybe changed when the changes are imported into the main file</li>
+</ul>
+
+<h3>Other Changes</h3>
+<ul>
+<li>Adding of new Control Actions is now only possible in the Control Structure to prevent inconsistencies between step 2 and 3</li>
+</ul>
+
 <h2><a href="https://github.com/SE-Stuttgart/XSTAMPP/compare/v3.1.0...Head">3.1.1</a> - 2018-11-05</h2>
 <h3>A-STPA Bugfixes:</h3>
 <ul>
