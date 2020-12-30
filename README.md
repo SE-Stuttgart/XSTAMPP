@@ -16,7 +16,7 @@ How to build XSTAMPP
     2.  `mvn clean install` as 3.1 but also installs xstampp on
         [user]/.m2 for usage as local dependency of other builds.
 
-4.  The build artifacts are located in `astpa.repository/target`.
+4.  The build artifacts are located in `xstampp.repository/target`.
 
 Working on XSTAMPP
 ==================
@@ -35,7 +35,7 @@ Setting up the environment
 --------------------------
 
 -   [Eclipse for RCP and RAP Developers (Plug-in
-    Developement)](http://eclipse.org/downloads) (> Lunar)
+    Developement)](http://eclipse.org/downloads) (> Lunar, <= 2018-09)
 
 -   At least JavaSE 1.8
 
